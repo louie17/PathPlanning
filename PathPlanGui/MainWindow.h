@@ -1,17 +1,28 @@
 #pragma once
 
+#include <map>
+#include <vector>
+#include <string>
+
 #include <QtWidgets/QMainWindow>
 #include <QLabel>
 #include <Qtxml>
-#include <string>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include <QPointer>
 #include <QTextTableFormat>
-#include "ui_MainWindow.h"
 
 #include "Scenario.hpp"
 #include "xml_prase.h"
+#include "DE_main.hpp"
+#include "de_types.hpp"
+
+#include "A_STAR.h"
+
+#include <Eigen/Eigen>
+#include "MarkovEvaluate.h"
+
+#include "ui_MainWindow.h"
 
 extern int choice_emitter;
 extern int choice_radar;
@@ -72,6 +83,9 @@ private:
 
 	size_t open_flag{ 0 };//文件打开次数标志位
 	size_t m_status_count{0}; //状态信息条数
+
+	MatrixXd RouteProb;
+	bool isfinished;
 
 	QVector<MyTab> vTab;
 	QVector<QTableWidget*> route_v;
@@ -187,6 +201,7 @@ private slots:
 	void ecm_tech();
 	void show_esmstrategy_section();
 	void show_ecmstrategy_section();
+	void run_algorithm();
 
 	void backTab();
 	void nextTab();

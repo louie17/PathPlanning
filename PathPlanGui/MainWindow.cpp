@@ -109,6 +109,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_back, SIGNAL(clicked()), this, SLOT(backTab()));
 	connect(ui.pushButton_next, SIGNAL(clicked()), this, SLOT(nextTab()));
 	connect(logger::instance(),SIGNAL(G_sndMsg(QtMsgType, QString)), this, SLOT(onStatusInfo(QtMsgType, QString)));
+	connect(ui.pushButton_algrun, SIGNAL(clicked()), this, SLOT(run_algorithm()));
 
 	//创建状态栏组件，
 	LabCurFile->setAlignment(Qt::AlignLeft);
@@ -283,25 +284,25 @@ void PathPlanGui::listDom(QDomElement &docelem)
 			node = node.nextSibling();//将兄弟元素赋给他
 		}
 
-		if (!f_vertex) qDebug() << "No Vertex data was found!";
+		if (!f_vertex)   qDebug() << "No Vertex data was found!";
 		if (!f_platform) qDebug() << "No Platform data was found!";
-		if (!f_emitter) qDebug() << "No Emitter data was found!";
-		if (!f_esm) qDebug() << "No Esm data was found!";
-		if (!f_ecm) qDebug() << "No Ecm data was found!";
-		if (!f_esms) qDebug() << "No EsmStrategy data was found!";
-		if (!f_ecms) qDebug() << "No EcmStrategy data was found!";
-		if (!f_op) qDebug() << "No OwnPlatform data was found!";
-		if (!f_route) qDebug() << "No Route data was found!";
-		if (!f_site) qDebug() << "No Site data was found!";
-		if (!f_weapon) qDebug() << "No Weapon data was found!";
-		if (!f_psr) 	qDebug() << "No PlatformSiteRelation data was found!";
-		if (!f_per) 	qDebug() << "No PlatformEmitterRelation data was found!";
-		if (!f_pwr) 	qDebug() << "No PlatformWeaponRelation data was found!";
-		if (!f_oesm) qDebug() << "No OwnPlatformEsmRelation data was found!";
-		if (!f_esmesms) qDebug() << "No EsmEsmStrategyRelation data was found!";
-		if (!f_oecm) qDebug() << "No OwnPlatformEcmRelation data was found!";
-		if (!f_ecmecms) qDebug() << "No EcmEcmStrategyRelation data was found!";
-		if (!f_orr) qDebug() << "No OwnPlatformRouteRelation data was found!";
+		if (!f_emitter)  qDebug() << "No Emitter data was found!";
+		if (!f_esm)      qDebug() << "No Esm data was found!";
+		if (!f_ecm)      qDebug() << "No Ecm data was found!";
+		if (!f_esms)     qDebug() << "No EsmStrategy data was found!";
+		if (!f_ecms)     qDebug() << "No EcmStrategy data was found!";
+		if (!f_op)       qDebug() << "No OwnPlatform data was found!";
+		if (!f_route)    qDebug() << "No Route data was found!";
+		if (!f_site)     qDebug() << "No Site data was found!";
+		if (!f_weapon)   qDebug() << "No Weapon data was found!";
+		if (!f_psr) 	 qDebug() << "No PlatformSiteRelation data was found!";
+		if (!f_per) 	 qDebug() << "No PlatformEmitterRelation data was found!";
+		if (!f_pwr) 	 qDebug() << "No PlatformWeaponRelation data was found!";
+		if (!f_oesm)     qDebug() << "No OwnPlatformEsmRelation data was found!";
+		if (!f_esmesms)  qDebug() << "No EsmEsmStrategyRelation data was found!";
+		if (!f_oecm)     qDebug() << "No OwnPlatformEcmRelation data was found!";
+		if (!f_ecmecms)  qDebug() << "No EcmEcmStrategyRelation data was found!";
+		if (!f_orr)      qDebug() << "No OwnPlatformRouteRelation data was found!";
 
 		qDebug() << "Data import successfully!";
 
@@ -429,7 +430,6 @@ void PathPlanGui::show_xml_data()
 	//aItem = new QStandardItem(str); //创建 "按钮"Item
 	//aItem->setCheckable(true);
 	//aItemList << aItem;   //添加到容器
-
 	//VertexModel->insertRow(theSelection->currentIndex().row(), aItemList); //插入一行，需要每个Cell的Item
 	//QModelIndex curIndex = VertexModel->index(theSelection->currentIndex().row() , 0);//创建最后一行的ModelIndex
 	//theSelection->clearSelection();//清空选择项
@@ -484,6 +484,211 @@ void PathPlanGui::show_ecmstrategy_section()
 	choice_ecmstrategy = ui.tableWidget_ECMStra->currentRow();
 	qDebug() << "choice_ecmstrategy" << choice_ecmstrategy;
 	emit sign_ecmstrategy_section();
+}
+
+void PathPlanGui::run_algorithm()
+{
+	//获取当前OwnPlatform的索引
+	int op_index = ui.comboBox_OPS->currentIndex();
+	QString tips("Select the: ");
+	tips.append(QString::fromStdString(scenario.getAllOwnPlatform()[op_index]->getName()));
+	tips.append("\nNew route name: ");
+	tips.append(ui.lineEdit_Rnew->text());
+	int op_select = QMessageBox::information(this, "Tip", tips, QStringLiteral("Yes"), QStringLiteral("No"));
+	if (op_select != 0)
+	{
+		return;
+	}
+	else {
+		int tab_index = ui.tabWidget->currentIndex();
+		double Lud = ui.lineEdit_Lud->text().toDouble();
+		double Ldu = ui.lineEdit_Ldu->text().toDouble();
+		double Ldt = ui.lineEdit_Ldt->text().toDouble();
+		double Ltd = ui.lineEdit_Ltd->text().toDouble();
+		double Lte = ui.lineEdit_Lte->text().toDouble();
+		double Let = ui.lineEdit_Let->text().toDouble();
+		double Leh = ui.lineEdit_Leh->text().toDouble();
+
+		std::map<std::string, double> CofRada;
+		CofRada.insert(std::make_pair("Sud", Lud));
+		CofRada.insert(std::make_pair("Sdu", Ldu));
+		CofRada.insert(std::make_pair("Sdt", Ldt));
+		CofRada.insert(std::make_pair("Std", Ltd));
+		CofRada.insert(std::make_pair("Ste", Lte));
+		CofRada.insert(std::make_pair("Set", Let));
+		CofRada.insert(std::make_pair("Seh", Leh));
+
+		//根据威胁位置获取每个威胁的最大武器射程
+		std::vector<double> wcrange(scenario.getAllSite().size(), 0.0);
+		sce::Site_WeaponRange_relation swRelation;
+
+		assert(scenario.getAllSite().size() > 0);
+		assert(scenario.getAllPlatformSiteRelation().size() > 0);
+		for (size_t i = 0; i < scenario.getAllSite().size(); ++i)
+		{
+			auto iterS = scenario.getAllSite().at(i);
+			std::vector<unsigned int> siteTmp;
+			for (size_t j = 0; j < scenario.getAllPlatformSiteRelation().size(); ++j)
+			{
+				auto iterPSR = scenario.getAllPlatformSiteRelation().at(j);
+				if (iterPSR.getSiteName() == iterS->getName())
+				{
+					for (size_t z = 0; z < scenario.getAllPlatformWeaponRelation().size(); ++z)
+					{
+						auto iterPWR = scenario.getAllPlatformWeaponRelation().at(z);
+						if (iterPSR.getPlatformName() == iterPWR.getPlatformName())
+						{
+							siteTmp.push_back(iterPWR.getWeapon()->getWeaponAreaCoverage());
+						}
+					}
+				}
+			}
+			assert(siteTmp.size() >= 0);
+			wcrange[i] = siteTmp.size() > 0 ? *std::max_element(siteTmp.cbegin(), siteTmp.cend()) : 0.0;
+			auto ret = swRelation.insert(std::make_pair(iterS, wcrange[i]));
+			assert(ret.second);
+		}
+		//获取路径片段的起始终止点序列
+		size_t target_size = scenario.getAllOwnPlatform()[op_index]->getMission().getAllTargetPoints().size();
+		assert(target_size);
+		std::vector<sce::Point> mission_section{ scenario.getAllOwnPlatform()[op_index]->getMission().getStartPoint() ,scenario.getAllOwnPlatform()[op_index]->getMission().getEndPoint() };
+		if (target_size > 0)
+		{
+			for (size_t i = 0; i < target_size; ++i)
+			{
+				mission_section.insert(mission_section.end() - 1, scenario.getAllOwnPlatform()[op_index]->getMission().getTargetPoint(i));
+			}
+		}
+
+
+		//scenario.getAllOwnPlatform->at(0);
+
+		if (tab_index == 0) //choose a* algorithm
+		{
+
+
+			float survice_w1 = ui.lineEdit_SurW->text().toFloat();
+			float end_w1 = ui.lineEdit_TarW->text().toFloat();
+			float StepLength1 = ui.lineEdit_StepL->text().toFloat();
+			float hmin1 = ui.lineEdit_minLH->text().toFloat();
+			float hmax1 = ui.lineEdit_maxLH->text().toFloat();
+			float horizontal_corner1 = ui.lineEdit_HorCor->text().toFloat();
+			float verticality_corner1 = ui.lineEdit_VerCor->text().toFloat();
+			float e_w1 = ui.lineEdit_EW->text().toFloat();
+			float start_w1 = ui.lineEdit_StartW->text().toFloat();
+
+			int ree = QMessageBox::information(this, "Tip", "Choose a* algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+
+			QVector<Rada*> radav;
+			for (auto x : swRelation)
+			{
+				auto site = x.first;
+				auto weapon_cov = x.second;
+				Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
+				radav.append(&Rada2);
+			}
+
+			std::vector<sce::Point> mission_section1;
+			sce::Point p[3];
+			for (int i = 0; i < 3; i++)
+			{
+				p[i].setAltitude(1);
+				p[i].setLongitude(10 + i * 100);
+				p[i].setLatitude(20 + i * 50);
+				mission_section1.push_back(p[i]);
+			}
+
+			sce::Route route;
+
+			if (ree != 0)
+			{
+				return;
+			}
+			else {
+				qDebug() << "choice is  A*";
+				for (int i = 0; i < mission_section1.size() - 2; i++)
+				{
+					APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+					APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+					APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
+					Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
+					A_STAR a(sp, tp, ep, radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
+
+					for (int i = 0; i < a.result_point.size(); i++)
+					{
+						route.addWayPoint(sce::WayPoint(i, a.result_point[i]->X, a.result_point[i]->Y, a.result_point[i]->Z));
+					}
+
+				}
+				auto rt = std::make_shared<sce::Route>(route);
+				scenario.addRoute(rt);
+				qDebug() << " A* complete";
+
+				RouteProb = markov_init(1, rt, swRelation, CofRada);
+				isfinished = true;
+				cout << RouteProb;
+
+			}
+		}
+		if (tab_index == 1) //choose DE algorithm
+		{
+			size_t Population_Number = ui.lineEdit_Popnum->text().toInt();
+			size_t Initial_Node_Number = ui.lineEdit_IniVnum->text().toInt();
+			size_t Evolution_Number = ui.lineEdit_ENum->text().toInt();
+			double Weight = ui.lineEdit_WF->text().toDouble();
+			double Cross_Probability = ui.lineEdit_CP->text().toDouble();
+			int ree = QMessageBox::information(this, "Tip", "Choose DE algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+			if (ree != 0)
+			{
+				return;
+			}
+			else {
+				qDebug() << "choice is DE";
+
+
+				sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),sce::WayPoint(mission_section[0].getLongitude(),mission_section[0].getLatitude(),mission_section[0].getAltitude()))) };
+
+				for (size_t i = 0; i < target_size; ++i)
+				{
+					de::NVectorPtr route_section(de::De_alg(swRelation, scenario.getAllVertex(), mission_section[i], mission_section[i + 1], Population_Number, Initial_Node_Number, Evolution_Number, Weight, Cross_Probability));
+
+					for (size_t iter = 1; iter < route_section->size(); ++iter)
+					{
+						de::Node node(route_section->at(iter));
+						route->addWayPoint(sce::WayPoint(iter, node.longitude(), node.latitude(), node.altitude()));
+					}
+				}
+
+				scenario.addRoute(route);
+				qDebug() << "DE complete!";
+				//MatrixXd stateprob = markov_init(1, route, swRelation, CofRada);
+			}
+		}
+		//if (tab_index == 2) //choose PSO algorithm
+		//{
+		//	double Swarm_Size = ui.lineEdit_50->text().toDouble();
+		//	double Loop_Couner = ui.lineEdit_51->text().toDouble();
+		//	double Search_Step = ui.lineEdit_57->text().toDouble();
+		//	double Eecute_Step = ui.lineEdit_58->text().toDouble();
+		//	double Step_Distance = ui.lineEdit_59->text().toDouble();
+		//	double Detect_Range = ui.lineEdit_61->text().toDouble();
+		//	double Pitch = ui.lineEdit_60->text().toDouble();
+		//	double Yaw = ui.lineEdit_62->text().toDouble();
+		//	double RefPath = ui.lineEdit_55->text().toDouble();
+		//	double OilCost = ui.lineEdit_53->text().toDouble();
+		//	double Missions = ui.lineEdit_56->text().toDouble();
+		//	double HightConstrain = ui.lineEdit_54->text().toDouble();
+		//	double SurvivalCost = ui.lineEdit_52->text().toDouble();
+		//	int ree = QMessageBox::information(this, "Tip", "Choose PSO algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+		//	if (ree != 0)
+		//	{
+		//		return;
+		//	}
+		//	else {
+		//		qDebug() << "choice is PSO";
+		//	}
+		//}
+	}
 }
 
 void PathPlanGui::backTab()
