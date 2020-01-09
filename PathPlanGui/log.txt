@@ -55,3 +55,36 @@ Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: 
 Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actSave_triggered() (2020-01-08 16:26:59 周三)
 Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actOpen_triggered() (2020-01-08 18:16:10 周三)
 Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actSave_triggered() (2020-01-08 18:16:10 周三)
+Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actOpen_triggered() (2020-01-09 10:03:35 周四)
+Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actSave_triggered() (2020-01-09 10:03:35 周四)
+Debug: File:(MainWindow.cpp) Line:(144) "E:/HSPDIS/PathPlanning/PathPlanGui/Output/Debug" (2020-01-09 10:03:59 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:42 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:44 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:44 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:45 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:45 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 1 
+ (2020-01-09 10:04:45 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 1 
+ (2020-01-09 10:04:45 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:46 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 0 
+ (2020-01-09 10:04:46 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 1 
+ (2020-01-09 10:04:46 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 1 
+ (2020-01-09 10:04:46 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 2 
+ (2020-01-09 10:04:47 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 2 
+ (2020-01-09 10:04:47 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 3 
+ (2020-01-09 10:04:47 周四)
+Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 3 
+ (2020-01-09 10:04:47 周四)

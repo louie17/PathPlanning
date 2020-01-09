@@ -303,6 +303,8 @@ void PathPlanGui::listDom(QDomElement &docelem)
 		if (!f_ecmecms) qDebug() << "No EcmEcmStrategyRelation data was found!";
 		if (!f_orr) qDebug() << "No OwnPlatformRouteRelation data was found!";
 
+		qDebug() << "Data import successfully!";
+
 		//根据位置获取每个site上的Emitter,Weapon
 		for (size_t i = 0; i < scenario.getAllSite().size(); ++i)
 		{
