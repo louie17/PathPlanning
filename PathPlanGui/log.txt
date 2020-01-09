@@ -88,3 +88,7 @@ Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 3
  (2020-01-09 10:04:47 周四)
 Debug: File:(MainWindow.cpp) Line:(456) choice_emitter-> 3 
  (2020-01-09 10:04:47 周四)
+Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actOpen_triggered() (2020-01-09 11:54:10 周四)
+Warning: File:(kernel\qobject.cpp) Line:(3588) QMetaObject::connectSlotsByName: No matching signal for on_actSave_triggered() (2020-01-09 11:54:10 周四)
+Debug: File:(MainWindow.cpp) Line:(144) "E:/HSPDIS/PathPlanning/PathPlanGui/Output/Debug" (2020-01-09 11:54:14 周四)
+Debug: File:(MainWindow.cpp) Line:(306) Data import successfully! (2020-01-09 11:54:20 周四)
