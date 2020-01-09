@@ -14,10 +14,6 @@
 
 #include "Scenario.hpp"
 #include "xml_prase.h"
-#include "DE_main.hpp"
-#include "de_types.hpp"
-
-#include "A_STAR.h"
 
 #include <Eigen/Eigen>
 #include "MarkovEvaluate.h"

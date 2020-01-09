@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "MainWindow.h"
 
+#include "de_types.hpp"
+#include "DE_main.hpp"
+#include "A_STAR.h"
+
 #pragma execution_character_set("utf-8")
 
 int choice_emitter = 0;

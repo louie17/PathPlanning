@@ -1,5 +1,4 @@
 // MS compatible compilers support #pragma once
-
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
 #endif
@@ -363,6 +362,5 @@ namespace de
 			return m_what.c_str();
 		}
 	};
-
 }
 #endif //DE_TYPES_HPP_INCLUDED
