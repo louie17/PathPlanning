@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MainWindow.h"
-
 #include "de_types.hpp"
 #include "DE_main.hpp"
 #include "A_STAR.h"
@@ -115,6 +114,11 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(logger::instance(),SIGNAL(G_sndMsg(QtMsgType, QString)), this, SLOT(onStatusInfo(QtMsgType, QString)));
 	connect(ui.pushButton_algrun, SIGNAL(clicked()), this, SLOT(run_algorithm()));
 
+	connect(ui.comboBox_OPS, SIGNAL(currentIndexChanged(int)), this, SLOT(setLabelText(int)));
+	connect(ui.comboBox_OPSel, SIGNAL(currentIndexChanged(int)), this, SLOT(setLabelText1(int)));
+	connect(ui.comboBox_OPSel, SIGNAL(currentIndexChanged(int)), this, SLOT(setSeleteRoute(int)));
+	connect(ui.pushButton_Eval, SIGNAL(clicked()), this, SLOT(route_evaluate()));
+
 	//创建状态栏组件，
 	LabCurFile->setAlignment(Qt::AlignLeft);
 	LabCurFile->setMinimumSize(LabCurFile->sizeHint());
@@ -148,7 +152,7 @@ void PathPlanGui::on_actOpen_triggered()
 	QString curPath = QCoreApplication::applicationDirPath(); //获取应用程序的路径
 	qDebug() << curPath;
 	//调用打开文件对话框打开一个文件
-	QString aFileName = QFileDialog::getOpenFileName(this, tr("Select file"), curPath, tr("xml(*.xml);;所有文件(*.*)"));
+	QString aFileName = QFileDialog::getOpenFileName(this, tr("Select file"), curPath, tr("xml(*.xml);;All file(*.*)"));
 	file.setFileName(aFileName);//以文件方式读出
 
 	if (aFileName.isEmpty())
@@ -158,11 +162,11 @@ void PathPlanGui::on_actOpen_triggered()
 	if (!file.open(QIODevice::ReadWrite))
 		return;
 
-	this->LabCurFile->setText("当前文件：" + aFileName);//状态栏显示
+	this->LabCurFile->setText("Current file：" + aFileName);//状态栏显示
 
 	if(!dom.setContent(&file))
 	{
-		QMessageBox::about(this, tr("提示"), tr("文件打开失败！"));
+		QMessageBox::about(this, tr("Tips"), tr("Failed to Open file！"));
 		file.close();
 		return;
 		
@@ -234,17 +238,17 @@ void PathPlanGui::on_actOpen_triggered()
 	emit sign_show_xml_data();
 
 	//释放Vector容器所占用的内存
-	std::vector<std::shared_ptr<sce::Route>>().swap(routes);
-	std::vector<std::shared_ptr<sce::EsmStrategy>>().swap(esmstrategys);
-	std::vector<std::shared_ptr<sce::EcmStrategy>>().swap(ecmstrategys);
-	std::vector<sce::PlatformSiteRelation>().swap(PSRs);
-	std::vector<sce::PlatformEmitterRelation>().swap(PERs);
-	std::vector<sce::PlatformWeaponRelation>().swap(PWRs);
-	std::vector<sce::OwnPlatformEsmRelation>().swap(OPEsmRs);
-	std::vector<sce::EsmEsmStrategyRelation>().swap(EsmESRs);
-	std::vector<sce::OwnPlatformEcmRelation>().swap(OPEcmRs);
-	std::vector<sce::EcmEcmStrategyRelation>().swap(EcmESRs);
-	std::vector<sce::OwnPlatformRouteRelation>().swap(OPRRs);
+	//std::vector<std::shared_ptr<sce::Route>>().swap(routes);
+	//std::vector<std::shared_ptr<sce::EsmStrategy>>().swap(esmstrategys);
+	//std::vector<std::shared_ptr<sce::EcmStrategy>>().swap(ecmstrategys);
+	//std::vector<sce::PlatformSiteRelation>().swap(PSRs);
+	//std::vector<sce::PlatformEmitterRelation>().swap(PERs);
+	//std::vector<sce::PlatformWeaponRelation>().swap(PWRs);
+	//std::vector<sce::OwnPlatformEsmRelation>().swap(OPEsmRs);
+	//std::vector<sce::EsmEsmStrategyRelation>().swap(EsmESRs);
+	//std::vector<sce::OwnPlatformEcmRelation>().swap(OPEcmRs);
+	//std::vector<sce::EcmEcmStrategyRelation>().swap(EcmESRs);
+	//std::vector<sce::OwnPlatformRouteRelation>().swap(OPRRs);
 }
 
 void PathPlanGui::listDom(QDomElement &docelem)
@@ -389,7 +393,7 @@ void PathPlanGui::show_xml_data()
 	show_Esm_data();
 	show_EsmStratgy_data();
 	show_EcmStratgy_data();
-	show_Route_data();//出现内存泄露问题
+	show_Route_data();
 	show_PSRs_data();
 	show_PERs_data();
 	show_PWRs_data();
@@ -398,6 +402,22 @@ void PathPlanGui::show_xml_data()
 	show_OPEcmRs_data();
 	show_EcmESRs_data();
 	show_OPRRs_data();
+
+	//提供平台选择下拉组合框
+	if (ui.comboBox_OPS->count()>0)	
+		ui.comboBox_OPS->clear();
+	if (ui.comboBox_OPSel->count()>0) 
+		ui.comboBox_OPSel->clear();
+
+	//QStringList ownPlatformlist;
+	for (auto &iter: scenario.getAllOwnPlatform())
+	{
+		//ownPlatformlist.append(QString::fromStdString(iter->getName()));
+		ui.comboBox_OPS->addItem(QString::fromStdString(iter->getName()));
+		ui.comboBox_OPSel->addItem(QString::fromStdString(iter->getName()));
+	}
+	//ui.comboBox_OPS->addItems(ownPlatformlist);//QComboBox默认阻止插入相同的内容
+	//ui.comboBox_OPSel->addItems(ownPlatformlist);
 }
 
 //void PathPlanGui::on_actAppend_triggered()
@@ -453,7 +473,7 @@ void PathPlanGui::show_xml_data()
 
 void PathPlanGui::on_actSave_triggered()
 {
-	
+	//TODO::这里添加场景数据导入xml操作
 }
 
 void PathPlanGui::show_rada()
@@ -490,6 +510,59 @@ void PathPlanGui::show_ecmstrategy_section()
 	emit sign_ecmstrategy_section();
 }
 
+void PathPlanGui::setLabelText(int index)
+{
+	if (index>=0 && index<scenario.getAllOwnPlatform().size())
+	{
+		if (scenario.getAllOwnPlatform()[index]->getMission().getMissionType() == sce::MissionType::STRIKE)
+		{
+			ui.label_OPMT->setText(tr("Strike"));
+		}
+		else if (scenario.getAllOwnPlatform()[index]->getMission().getMissionType() == sce::MissionType::SUPPORT)
+		{
+			ui.label_OPMT->setText(tr("Support"));
+		}
+	}
+	
+}
+
+void PathPlanGui::setLabelText1(int index)
+{
+	if (index >= 0 && index < scenario.getAllOwnPlatform().size())
+	{
+		if (scenario.getAllOwnPlatform()[index]->getMission().getMissionType() == sce::MissionType::STRIKE)
+		{
+			ui.label_OMissionT->setText(tr("Strike"));
+		}
+		else if (scenario.getAllOwnPlatform()[index]->getMission().getMissionType() == sce::MissionType::SUPPORT)
+		{
+			ui.label_OMissionT->setText(tr("Support"));
+		}
+	}
+}
+
+void PathPlanGui::setSeleteRoute(int index)
+{
+	if (index>=0 && index<scenario.getAllOwnPlatform().size())
+	{
+		if (ui.comboBox_RSel->count()>0)
+		{
+			ui.comboBox_RSel->clear();
+		}
+		//QStringList opRoutelist;
+		for (auto &iter : scenario.getAllOwnPlatformRouteRelation())
+		{
+			if (scenario.getAllOwnPlatform()[index]->getName() == iter.getOwnPlatformName())
+			{
+				ui.comboBox_RSel->addItem(QString::fromStdString(iter.getRouteName()));
+				//opRoutelist.append(QString::fromStdString(iter.getRouteName()));
+			}
+		}
+	}
+		
+	//ui.comboBox_RSel->addItems(opRoutelist);
+}
+
 void PathPlanGui::run_algorithm()
 {
 	//获取当前OwnPlatform的索引
@@ -513,7 +586,6 @@ void PathPlanGui::run_algorithm()
 		double Let = ui.lineEdit_Let->text().toDouble();
 		double Leh = ui.lineEdit_Leh->text().toDouble();
 
-		std::map<std::string, double> CofRada;
 		CofRada.insert(std::make_pair("Sud", Lud));
 		CofRada.insert(std::make_pair("Sdu", Ldu));
 		CofRada.insert(std::make_pair("Sdt", Ldt));
@@ -524,8 +596,7 @@ void PathPlanGui::run_algorithm()
 
 		//根据威胁位置获取每个威胁的最大武器射程
 		std::vector<double> wcrange(scenario.getAllSite().size(), 0.0);
-		sce::Site_WeaponRange_relation swRelation;
-
+		
 		assert(scenario.getAllSite().size() > 0);
 		assert(scenario.getAllPlatformSiteRelation().size() > 0);
 		for (size_t i = 0; i < scenario.getAllSite().size(); ++i)
@@ -628,9 +699,9 @@ void PathPlanGui::run_algorithm()
 				scenario.addRoute(rt);
 				qDebug() << " A* complete";
 
-				RouteProb = markov_init(1, rt, swRelation, CofRada);
-				isfinished = true;
-				cout << RouteProb;
+				//RouteProb = markov_init(1, rt, swRelation, CofRada);
+				//isfinished = true;
+				//cout << RouteProb;
 
 			}
 		}
@@ -648,8 +719,6 @@ void PathPlanGui::run_algorithm()
 			}
 			else {
 				qDebug() << "choice is DE";
-
-
 				sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),sce::WayPoint(mission_section[0].getLongitude(),mission_section[0].getLatitude(),mission_section[0].getAltitude()))) };
 
 				for (size_t i = 0; i < target_size; ++i)
@@ -693,6 +762,157 @@ void PathPlanGui::run_algorithm()
 		//	}
 		//}
 	}
+}
+
+void PathPlanGui::route_evaluate()
+{
+	//size_t route_index = ui.comboBox_RSel->currentIndex();
+	for (auto item : scenario.getAllRoute())
+	{
+		if (QString::fromStdString(item->getName())== ui.comboBox_RSel->currentText())
+		{
+			//TODO::这里进行路径评估
+			MatrixXd RouteProb = markov_init(1, item, swRelation, CofRada);
+			isfinished = true;
+			//cout << RouteProb;
+			draw_survival_rate(RouteProb);
+		}
+	}
+
+}
+
+void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
+{
+	QBarSet *set0 = new QBarSet("U");
+	QBarSet *set1 = new QBarSet("D");
+	QBarSet *set2 = new QBarSet("T");
+	QBarSet *set3 = new QBarSet("E");
+	QBarSet *set4 = new QBarSet("H");
+	for (int i = 0; i < stateProbs.cols(); i++)
+	{
+		*set0 << stateProbs(0, i);
+		*set1 << stateProbs(1, i);
+		*set2 << stateProbs(2, i);
+		*set3 << stateProbs(3, i);
+		*set4 << stateProbs(4, i);
+	}
+
+	QPercentBarSeries *series = new QPercentBarSeries();
+	series->append(set0);
+	series->append(set1);
+	series->append(set2);
+	series->append(set3);
+	series->append(set4);
+
+	QChart *chart = new QChart();
+	chart->addSeries(series);
+	chart->setTitle("Simple percentbarchart example");
+	chart->setAnimationOptions(QChart::SeriesAnimations);
+
+	QValueAxis *axisY = new QValueAxis();
+	chart->addAxis(axisY, Qt::AlignLeft);
+	series->attachAxis(axisY);
+
+	QChartView *chartView = new QChartView(chart, ui.graphicsView_pre);
+	chartView->setRenderHint(QPainter::Antialiasing);
+	//chartView->show();
+	ui.graphicsView_pre->show();
+
+	//AreaChart
+	//![1]
+	QLineSeries *qlseries0 = new QLineSeries();
+	QLineSeries *qlseries1 = new QLineSeries();
+	QLineSeries *qlseries2 = new QLineSeries();
+	QLineSeries *qlseries3 = new QLineSeries();
+	QLineSeries *qlseries4 = new QLineSeries();
+	//![1]
+
+	//![2]
+	for (int i = 0; i < stateProbs.cols(); i++)
+	{
+		*qlseries0 << QPointF(i, stateProbs(0, i));
+		*qlseries1 << QPointF(i, stateProbs(0, i) + stateProbs(1, i));
+		*qlseries2 << QPointF(i, stateProbs(0, i) + stateProbs(1, i) + stateProbs(2, i));
+		*qlseries3 << QPointF(i, stateProbs(0, i) + stateProbs(1, i) + stateProbs(2, i) + stateProbs(3, i));
+		*qlseries4 << QPointF(i, stateProbs(0, i) + stateProbs(1, i) + stateProbs(2, i) + stateProbs(3, i) + stateProbs(4, i));
+	}
+	//![2]
+
+	//![3]
+	QAreaSeries *qaseries0 = new QAreaSeries(qlseries0);
+	QAreaSeries *qaseries1 = new QAreaSeries(qlseries0, qlseries1);
+	QAreaSeries *qaseries2 = new QAreaSeries(qlseries1, qlseries2);
+	QAreaSeries *qaseries3 = new QAreaSeries(qlseries2, qlseries3);
+	QAreaSeries *qaseries4 = new QAreaSeries(qlseries3, qlseries4);
+	qaseries0->setName("Undetected");
+	qaseries1->setName("Detected");
+	qaseries2->setName("Tracked");
+	qaseries3->setName("Engaged");
+	qaseries4->setName("Hit");
+
+	QPen pen0(Qt::black), pen1(Qt::black), pen2(Qt::black), pen3(Qt::black), pen4(Qt::black);
+	pen0.setWidth(3);
+	pen1.setWidth(3);
+	pen2.setWidth(3);
+	pen3.setWidth(3);
+	pen4.setWidth(3);
+	qaseries0->setPen(pen0);
+	qaseries1->setPen(pen1);
+	qaseries2->setPen(pen2);
+	qaseries3->setPen(pen3);
+	qaseries4->setPen(pen4);
+
+	QLinearGradient gradient0(QPointF(0, 0), QPointF(0, 1));
+	gradient0.setColorAt(0.0, Qt::white);
+	gradient0.setColorAt(1.0, Qt::white);
+	gradient0.setCoordinateMode(QGradient::ObjectBoundingMode);
+	qaseries0->setBrush(gradient0);
+
+	QLinearGradient gradient1(QPointF(0, 0), QPointF(0, 1));
+	gradient1.setColorAt(0.0, Qt::yellow);
+	gradient1.setColorAt(1.0, Qt::yellow);
+	gradient1.setCoordinateMode(QGradient::ObjectBoundingMode);
+	qaseries1->setBrush(gradient1);
+
+	QLinearGradient gradient2(QPointF(0, 0), QPointF(0, 1));
+	gradient2.setColorAt(0.0, Qt::red);
+	gradient2.setColorAt(1.0, Qt::red);
+	gradient2.setCoordinateMode(QGradient::ObjectBoundingMode);
+	qaseries2->setBrush(gradient2);
+
+	QLinearGradient gradient3(QPointF(0, 0), QPointF(0, 1));
+	gradient3.setColorAt(0.0, Qt::gray);
+	gradient3.setColorAt(1.0, Qt::gray);
+	gradient3.setCoordinateMode(QGradient::ObjectBoundingMode);
+	qaseries3->setBrush(gradient3);
+
+	QLinearGradient gradient4(QPointF(0, 0), QPointF(0, 1));
+	gradient4.setColorAt(0.0, Qt::darkGray);
+	gradient4.setColorAt(1.0, Qt::darkGray);
+	gradient4.setCoordinateMode(QGradient::ObjectBoundingMode);
+	qaseries4->setBrush(gradient4);
+	//![3]
+
+	//![4]
+	QChart *achart = new QChart();
+	achart->addSeries(qaseries0);
+	achart->addSeries(qaseries1);
+	achart->addSeries(qaseries2);
+	achart->addSeries(qaseries3);
+	achart->addSeries(qaseries4);
+	achart->setTitle("Survival rate area map");
+	//achart->createDefaultAxes();
+	//achart->axes(Qt::Horizontal).first()->setRange(0, 20);
+	//achart->axes(Qt::Vertical).first()->setRange(0, 10);
+	//![4]
+
+	//![5]
+	QChartView *achartView = new QChartView(achart, ui.graphicsView_last);
+	achartView->setRenderHint(QPainter::Antialiasing);
+
+	ui.graphicsView_last->show();
+	//ui.graphicsView = achartView;
+	//this->setCentralWidget(ui.graphicsView);
 }
 
 void PathPlanGui::backTab()

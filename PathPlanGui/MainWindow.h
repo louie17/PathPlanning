@@ -11,6 +11,12 @@
 #include <QItemSelectionModel>
 #include <QPointer>
 #include <QTextTableFormat>
+#include <QPainter>
+#include <QPen>
+#include <QtCharts>
+QT_CHARTS_USE_NAMESPACE
+#include <QColor>
+#include <QBarSet>
 
 #include "Scenario.hpp"
 #include "xml_prase.h"
@@ -80,7 +86,9 @@ private:
 	size_t open_flag{ 0 };//文件打开次数标志位
 	size_t m_status_count{0}; //状态信息条数
 
-	MatrixXd RouteProb;
+	sce::Site_WeaponRange_relation swRelation;
+	std::map<std::string, double> CofRada;
+	
 	bool isfinished;
 
 	QVector<MyTab> vTab;
@@ -140,18 +148,19 @@ public:
 	PathPlanGui(QWidget *parent = Q_NULLPTR);
 
 	void listDom(QDomElement & docelem);
-	std::vector<std::shared_ptr<sce::Route>> routes;
-	std::vector<std::shared_ptr<sce::EsmStrategy>> esmstrategys;
-	std::vector<std::shared_ptr<sce::EcmStrategy>> ecmstrategys;
-	std::vector<sce::PlatformSiteRelation> PSRs;
-	std::vector<sce::PlatformEmitterRelation> PERs;
-	std::vector<sce::PlatformWeaponRelation> PWRs;
-	std::vector<sce::OwnPlatformEsmRelation> OPEsmRs;
-	std::vector<sce::EsmEsmStrategyRelation> EsmESRs;
-	std::vector<sce::OwnPlatformEcmRelation> OPEcmRs;
-	std::vector<sce::EcmEcmStrategyRelation> EcmESRs;
-	std::vector<sce::OwnPlatformRouteRelation> OPRRs;
+	//std::vector<std::shared_ptr<sce::Route>> routes;
+	//std::vector<std::shared_ptr<sce::EsmStrategy>> esmstrategys;
+	//std::vector<std::shared_ptr<sce::EcmStrategy>> ecmstrategys;
+	//std::vector<sce::PlatformSiteRelation> PSRs;
+	//std::vector<sce::PlatformEmitterRelation> PERs;
+	//std::vector<sce::PlatformWeaponRelation> PWRs;
+	//std::vector<sce::OwnPlatformEsmRelation> OPEsmRs;
+	//std::vector<sce::EsmEsmStrategyRelation> EsmESRs;
+	//std::vector<sce::OwnPlatformEcmRelation> OPEcmRs;
+	//std::vector<sce::EcmEcmStrategyRelation> EcmESRs;
+	//std::vector<sce::OwnPlatformRouteRelation> OPRRs;
 
+	void draw_survival_rate(MatrixXd stateProbs);
 	void show_Vertex_data();
 	void show_Platform_data();
 	void show_Emitter_data();
@@ -197,7 +206,11 @@ private slots:
 	void ecm_tech();
 	void show_esmstrategy_section();
 	void show_ecmstrategy_section();
+	void setLabelText(int);
+	void setLabelText1(int);
+	void setSeleteRoute(int);
 	void run_algorithm();
+	void route_evaluate();
 
 	void backTab();
 	void nextTab();
