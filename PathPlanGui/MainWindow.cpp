@@ -101,6 +101,25 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	//ui.tableView_Vertex->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	//ui.tableView_Vertex->setSelectionBehavior(QAbstractItemView::SelectItems);
 
+	//设置表格属性
+	//ui.tableWidget_Vertex->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
+	ui.tableWidget_Vertex->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}"); //设置水平表头背景色
+	ui.tableWidget_Vertex->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}"); //设置垂直表头背景色
+	ui.tableWidget_Platform->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Platform->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Weapon->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Weapon->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Site->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Site->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Emitter->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Emitter->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+
+	//ui.tableWidget_TransInt->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
+	ui.tableWidget_TransInt->horizontalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}");
+	ui.tableWidget_TransInt->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	ui.tableWidget_TransInt->verticalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}");
+	ui.tableWidget_TransInt->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(on_actOpen_triggered()));
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(setOpenFileFlag()));
 	connect(this, SIGNAL(sign_show_xml_data()), this, SLOT(show_xml_data()));
@@ -578,21 +597,62 @@ void PathPlanGui::run_algorithm()
 	}
 	else {
 		int tab_index = ui.tabWidget->currentIndex();
-		double Lud = ui.lineEdit_Lud->text().toDouble();
-		double Ldu = ui.lineEdit_Ldu->text().toDouble();
-		double Ldt = ui.lineEdit_Ldt->text().toDouble();
-		double Ltd = ui.lineEdit_Ltd->text().toDouble();
-		double Lte = ui.lineEdit_Lte->text().toDouble();
-		double Let = ui.lineEdit_Let->text().toDouble();
-		double Leh = ui.lineEdit_Leh->text().toDouble();
+		
+		double Lud_o = ui.tableWidget_TransInt->item(0, 0)->text().toDouble();
+		double Ldu_o = ui.tableWidget_TransInt->item(0, 1)->text().toDouble();
+		double Ldt_o = ui.tableWidget_TransInt->item(0, 2)->text().toDouble();
+		double Ltd_o = ui.tableWidget_TransInt->item(0, 3)->text().toDouble();
+		double Lte_o = ui.tableWidget_TransInt->item(0, 4)->text().toDouble();
+		double Let_o = ui.tableWidget_TransInt->item(0, 5)->text().toDouble();
+		double Leh_o = ui.tableWidget_TransInt->item(0, 6)->text().toDouble();
 
-		CofRada.insert(std::make_pair("Sud", Lud));
-		CofRada.insert(std::make_pair("Sdu", Ldu));
-		CofRada.insert(std::make_pair("Sdt", Ldt));
-		CofRada.insert(std::make_pair("Std", Ltd));
-		CofRada.insert(std::make_pair("Ste", Lte));
-		CofRada.insert(std::make_pair("Set", Let));
-		CofRada.insert(std::make_pair("Seh", Leh));
+		CofRada.insert(std::make_pair("Lud_o", Lud_o));
+		CofRada.insert(std::make_pair("Ldu_o", Ldu_o));
+		CofRada.insert(std::make_pair("Ldt_o", Ldt_o));
+		CofRada.insert(std::make_pair("Ltd_o", Ltd_o));
+		CofRada.insert(std::make_pair("Lte_o", Lte_o));
+		CofRada.insert(std::make_pair("Let_o", Let_o));
+		CofRada.insert(std::make_pair("Leh_o", Leh_o));
+
+		double Lud_r = ui.tableWidget_TransInt->item(1, 0)->text().toDouble();
+		double Ldu_r = ui.tableWidget_TransInt->item(1, 1)->text().toDouble();
+		double Ldt_r = ui.tableWidget_TransInt->item(1, 2)->text().toDouble();
+		double Ltd_r = ui.tableWidget_TransInt->item(1, 3)->text().toDouble();
+		double Lte_r = ui.tableWidget_TransInt->item(1, 4)->text().toDouble();
+		double Let_r = ui.tableWidget_TransInt->item(1, 5)->text().toDouble();
+		double Leh_r = ui.tableWidget_TransInt->item(1, 6)->text().toDouble();
+
+		CofRada.insert(std::make_pair("Lud_r", Lud_r));
+		CofRada.insert(std::make_pair("Ldu_r", Ldu_r));
+		CofRada.insert(std::make_pair("Ldt_r", Ldt_r));
+		CofRada.insert(std::make_pair("Ltd_r", Ltd_r));
+		CofRada.insert(std::make_pair("Lte_r", Lte_r));
+		CofRada.insert(std::make_pair("Let_r", Let_r));
+		CofRada.insert(std::make_pair("Leh_r", Leh_r));
+
+		double Lud_w = ui.tableWidget_TransInt->item(2, 0)->text().toDouble();
+		double Ldu_w = ui.tableWidget_TransInt->item(2, 1)->text().toDouble();
+		double Ldt_w = ui.tableWidget_TransInt->item(2, 2)->text().toDouble();
+		double Ltd_w = ui.tableWidget_TransInt->item(2, 3)->text().toDouble();
+		double Lte_w = ui.tableWidget_TransInt->item(2, 4)->text().toDouble();
+		double Let_w = ui.tableWidget_TransInt->item(2, 5)->text().toDouble();
+		double Leh_w = ui.tableWidget_TransInt->item(2, 6)->text().toDouble();
+
+		CofRada.insert(std::make_pair("Lud_w", Lud_w));
+		CofRada.insert(std::make_pair("Ldu_w", Ldu_w));
+		CofRada.insert(std::make_pair("Ldt_w", Ldt_w));
+		CofRada.insert(std::make_pair("Ltd_w", Ltd_w));
+		CofRada.insert(std::make_pair("Lte_w", Lte_w));
+		CofRada.insert(std::make_pair("Let_w", Let_w));
+		CofRada.insert(std::make_pair("Leh_w", Leh_w));
+
+		CofRada.insert(std::make_pair("Sud", 0.3));
+		CofRada.insert(std::make_pair("Sdu", 0.1));
+		CofRada.insert(std::make_pair("Sdt", 0.2));
+		CofRada.insert(std::make_pair("Std", 0.1));
+		CofRada.insert(std::make_pair("Ste", 0.1));
+		CofRada.insert(std::make_pair("Set", 0.1));
+		CofRada.insert(std::make_pair("Seh", 0.1));
 
 		//根据威胁位置获取每个威胁的最大武器射程
 		std::vector<double> wcrange(scenario.getAllSite().size(), 0.0);
@@ -1153,6 +1213,8 @@ void PathPlanGui::show_Route_data()
 		new_table->horizontalHeader()->setCascadingSectionResizes(false);
 		new_table->verticalHeader()->setVisible(true);
 		new_table->setHorizontalHeaderLabels(headers);
+		new_table->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
+		new_table->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头背景色
 		for (int j = 0; j < scenario.getAllRoute()[i]->getAllWayPoints().size(); j++)
 		{
 			new_table->insertRow(j);
