@@ -4052,7 +4052,7 @@ void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)
 		break;
 	case QtWarningMsg: //一般的warning提示
 		text = "WARN";
-		chfmt.setForeground(QBrush(Qt::yellow));
+		chfmt.setForeground(QBrush(Qt::darkYellow));
 		break;
 	case QtCriticalMsg: //严重错误提示
 		text = "ERROR";
