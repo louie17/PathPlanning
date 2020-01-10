@@ -207,6 +207,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(this, SIGNAL(sign_show_xml_data()), this, SLOT(show_xml_data()));
 	connect(ui.actionRefresh, SIGNAL(triggered()), this, SLOT(show_xml_data()));
 	connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(save_to_file()));
+	connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(save_as_new_file()));
 
 	//connect(ui.actionInsert, SIGNAL(triggered()), this, SLOT(on_actInsert_triggered()));
 	//connect(ui.actionDelete, SIGNAL(triggered()), this, SLOT(on_actDelete_triggered()));
@@ -300,6 +301,28 @@ void PathPlanGui::save_to_file() {
 	dom.save(out_stream, 4); //缩进4格
 	file.close();
 	QMessageBox::about(this, tr("Tip"), tr("Save to file successfully"));
+}
+void PathPlanGui::save_as_new_file() {
+	QFileDialog fileDialog;
+	QString fileName = fileDialog.getSaveFileName(this, tr("Open File"), "filename", tr("XML File(*.xml)"));
+	if (fileName == "")
+	{
+		return;
+	}
+	QFile file_new(fileName);
+	if (!file_new.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QMessageBox::warning(this, tr("错误"), tr("打开文件失败"));
+		return;
+	}
+	else
+	{
+		QTextStream out_stream(&file_new);
+		dom.save(out_stream, 4); //缩进4格
+		file_new.close();
+		QMessageBox::about(this, tr("Tip"), tr("Save to new file successfully"));
+	}
+
 }
 void PathPlanGui::save_PlatformSiteRelation() {
 	int num = ui.tableWidget_PSR->currentRow();
@@ -1758,8 +1781,13 @@ void PathPlanGui::del_RouteTab() {
 void PathPlanGui::add_Vertex()
 {
 	int row_count = ui.tableWidget_Vertex->rowCount(); //获取表单行数
-	ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
-
+	bool ok;
+	QString d = QInputDialog::getText(this, tr("Tip"), tr("The index of row:"), QLineEdit::Normal, "", &ok);
+	if (ok && !d.isEmpty()) {
+		if(d.toInt()<row_count)
+			ui.tableWidget_Vertex->insertRow(d.toInt() - 1);//添加新的一行
+		ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
+	}
 }
 void PathPlanGui::del_Vertex()		//删除列表数据
 {

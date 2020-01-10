@@ -14,6 +14,9 @@ bool find_Vertex_data(const QDomElement &qd,sce::Scenario &scenario)
 			if (qdd.nodeName() == "Longitude") {
 				vx.setLongitude(qdd.toElement().text().toDouble());
 			}
+			if (qdd.nodeName() == "Altitude") {
+				vx.setAltitude(qdd.toElement().text().toDouble());
+			}
 		}
 		scenario.addVertex(std::make_shared<sce::Vertex>(vx));
 		return true;
