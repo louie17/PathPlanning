@@ -105,6 +105,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(setOpenFileFlag()));
 	connect(this, SIGNAL(sign_show_xml_data()), this, SLOT(show_xml_data()));
 	connect(ui.actionRefresh, SIGNAL(triggered()), this, SLOT(show_xml_data()));
+	connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(save_to_file()));
 
 	//connect(ui.actionInsert, SIGNAL(triggered()), this, SLOT(on_actInsert_triggered()));
 	//connect(ui.actionDelete, SIGNAL(triggered()), this, SLOT(on_actDelete_triggered()));
@@ -119,6 +120,65 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.comboBox_OPSel, SIGNAL(currentIndexChanged(int)), this, SLOT(setSeleteRoute(int)));
 	connect(ui.pushButton_Eval, SIGNAL(clicked()), this, SLOT(route_evaluate()));
 
+	/*xml各个二级节点的添加删除以及保存功能函数与按钮的connect*/
+	connect(ui.pushButton_VaddRow, SIGNAL(clicked()), this, SLOT(add_Vertex()));
+	connect(ui.pushButton_VdelRow, SIGNAL(clicked()), this, SLOT(del_Vertex()));
+	connect(ui.pushButton_EaddRow, SIGNAL(clicked()), this, SLOT(add_Emitter()));
+	connect(ui.pushButton_EdeRow, SIGNAL(clicked()), this, SLOT(del_Emitter()));
+	connect(ui.pushButton_PaddRow, SIGNAL(clicked()), this, SLOT(add_Platform()));
+	connect(ui.pushButton_PdelRow, SIGNAL(clicked()), this, SLOT(del_Platform()));
+	connect(ui.pushButton_WaddRow, SIGNAL(clicked()), this, SLOT(add_Weapon()));
+	connect(ui.pushButton_WdelRow, SIGNAL(clicked()), this, SLOT(del_Weapon()));
+	connect(ui.pushButton_SaddRow, SIGNAL(clicked()), this, SLOT(add_Site()));
+	connect(ui.pushButton_SdelRow, SIGNAL(clicked()), this, SLOT(del_Site()));
+	connect(ui.pushButton_OPadd, SIGNAL(clicked()), this, SLOT(add_OwnPlatform()));
+	connect(ui.pushButton_OPdel, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
+	connect(ui.pushButton_Ecmadd, SIGNAL(clicked()), this, SLOT(add_Ecm()));
+	connect(ui.pushButton_Ecmdel, SIGNAL(clicked()), this, SLOT(del_Ecm()));
+	connect(ui.pushButton_Esmadd, SIGNAL(clicked()), this, SLOT(add_Esm()));
+	connect(ui.pushButton_Esmdel, SIGNAL(clicked()), this, SLOT(del_Esm()));
+	connect(ui.pushButton_Ecmsadd, SIGNAL(clicked()), this, SLOT(add_EcmStrategy()));
+	connect(ui.pushButton_Ecmsdel, SIGNAL(clicked()), this, SLOT(del_EcmStrategy()));
+	connect(ui.pushButton_Esmsadd, SIGNAL(clicked()), this, SLOT(add_EsmStrategy()));
+	connect(ui.pushButton_Esmsdel, SIGNAL(clicked()), this, SLOT(del_EsmStrategy()));
+	connect(ui.pushButton_PSRadd, SIGNAL(clicked()), this, SLOT(add_PlatformSiteRelation()));
+	connect(ui.pushButton_PSRdel, SIGNAL(clicked()), this, SLOT(del_PlatformSiteRelation()));
+	connect(ui.pushButton_PERadd, SIGNAL(clicked()), this, SLOT(add_PlatformEmitterRelation()));
+	connect(ui.pushButton_PERdel, SIGNAL(clicked()), this, SLOT(del_PlatformEmitterRelation()));
+	connect(ui.pushButton_PWRadd, SIGNAL(clicked()), this, SLOT(add_PlatformWeaponRelation()));
+	connect(ui.pushButton_PWRdel, SIGNAL(clicked()), this, SLOT(del_PlatformWeaponRelation()));
+	connect(ui.pushButton_OEsadd, SIGNAL(clicked()), this, SLOT(add_OwnPlatformEsmRelation()));
+	connect(ui.pushButton_OEsdel, SIGNAL(clicked()), this, SLOT(del_OwnPlatformEsmRelation()));
+	connect(ui.pushButton_EsmESadd, SIGNAL(clicked()), this, SLOT(add_EsmEsmStrategyRelation()));
+	connect(ui.pushButton_EsmESdel, SIGNAL(clicked()), this, SLOT(del_EsmEsmStrategyRelation()));
+	connect(ui.pushButton_ORRadd, SIGNAL(clicked()), this, SLOT(add_OwnPlatformRouteRelation()));
+	connect(ui.pushButton_ORRdel, SIGNAL(clicked()), this, SLOT(del_OwnPlatformRouteRelation()));
+	connect(ui.pushButton_OEcRadd, SIGNAL(clicked()), this, SLOT(add_OwnPlatformEcmRelation()));
+	connect(ui.pushButton_OEcRdel, SIGNAL(clicked()), this, SLOT(del_OwnPlatformEcmRelation()));
+	connect(ui.pushButton_EcmESadd, SIGNAL(clicked()), this, SLOT(add_EcmEcmStrategyRelation()));
+	connect(ui.pushButton_EcmESdel, SIGNAL(clicked()), this, SLOT(del_EcmEcmStrategyRelation()));
+	connect(ui.pushButton_addTab, SIGNAL(clicked()), this, SLOT(add_RouteTab()));
+	connect(ui.pushButton_delTab, SIGNAL(clicked()), this, SLOT(del_RouteTab()));
+	connect(ui.pushButton_Vsave, SIGNAL(clicked()), this, SLOT(save_Vertex()));
+	connect(ui.pushButton_Esave, SIGNAL(clicked()), this, SLOT(save_Emitter()));
+	connect(ui.pushButton_Psave, SIGNAL(clicked()), this, SLOT(save_Platform()));
+	connect(ui.pushButton_Wsave, SIGNAL(clicked()), this, SLOT(save_Weapon()));
+	connect(ui.pushButton_Ssave, SIGNAL(clicked()), this, SLOT(save_Site()));
+	connect(ui.pushButton_OPsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
+	connect(ui.pushButton_Ecmsave, SIGNAL(clicked()), this, SLOT(save_Ecm()));
+	connect(ui.pushButton_Esmsave, SIGNAL(clicked()), this, SLOT(save_Esm()));
+	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_ESMStrategy()));
+	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_ECMStrategy()));
+
+	connect(ui.pushButton_PSRsave, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
+	connect(ui.pushButton_PERsave, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
+	connect(ui.pushButton_PWRsave, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
+	connect(ui.pushButton_OEssave, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEsmRelation()));
+	connect(ui.pushButton_EsmESsave, SIGNAL(clicked()), this, SLOT(save_EsmEsmStrategyRelation()));
+	connect(ui.pushButton_ORRsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatformRouteRelation()));
+	connect(ui.pushButton_OEcRsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEcmRelation()));
+	connect(ui.pushButton_EcmESsave, SIGNAL(clicked()), this, SLOT(save_EcmEcmStrategyRelation()));
+
 	//创建状态栏组件，
 	LabCurFile->setAlignment(Qt::AlignLeft);
 	LabCurFile->setMinimumSize(LabCurFile->sizeHint());
@@ -132,7 +192,2179 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	LabCellText->setMinimumSize(LabCellText->sizeHint());
 	ui.statusBar->addWidget(LabCellText);
 }
+void PathPlanGui::save_to_file() {
+	if (!file.open(QFile::WriteOnly | QFile::Truncate)) //先读进来，再重写，如果不用truncate就是在后面追加内容，就无效了
+		return;
+	QTextStream out_stream(&file);
+	dom.save(out_stream, 4); //缩进4格
+	file.close();
+	QMessageBox::about(this, tr("Tip"), tr("Save to file successfully"));
+}
+void PathPlanGui::save_PlatformSiteRelation() {
+	int num = ui.tableWidget_PSR->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_PSR->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_PSR->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::PlatformSiteRelation new_relation;
+	for (auto x : scenario.getAllPlatform())
+	{
+		if (x->getPlatformName() == re.toStdString())
+		{
+			new_relation.setPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllSite())
+	{
+		if (x->getName() == re_2.toStdString())
+		{
+			new_relation.setSite(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllPlatformSiteRelation().size())
+	{
+		for (auto x : scenario.getAllPlatformSiteRelation())
+		{
+			if ((x.getPlatformName() == new_relation.getPlatformName()) && (x.getSiteName() == new_relation.getSiteName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addPlatformSiteRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("PlatformSiteRelation");
+		QDomElement third_1 = dom.createElement("Platform");
+		QDomElement third_2 = dom.createElement("Site");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllPlatformSiteRelation())
+		{
+			if ((x.getPlatformName() == new_relation.getPlatformName()) && (x.getSiteName() == new_relation.getSiteName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllPlatform())
+		{
+			if (x->getPlatformName() == re.toStdString())
+			{
+				scenario.getAllPlatformSiteRelation()[num].setPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllSite())
+		{
+			if (x->getName() == re_2.toStdString())
+			{
+				scenario.getAllPlatformSiteRelation()[num].setSite(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("PlatformSiteRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_PlatformEmitterRelation() {
+	int num = ui.tableWidget_PER->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_PER->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_PER->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::PlatformEmitterRelation new_relation;
+	for (auto x : scenario.getAllPlatform())
+	{
+		if (x->getPlatformName() == re.toStdString())
+		{
+			new_relation.setPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllEmitter())
+	{
+		if (x->getName() == re_2.toStdString())
+		{
+			new_relation.setEmitter(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllPlatformEmitterRelation().size())
+	{
+		for (auto x : scenario.getAllPlatformEmitterRelation())
+		{
+			if ((x.getEmitterName() == new_relation.getEmitterName()) && (x.getPlatformName() == new_relation.getPlatformName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addPlatformEmitterRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("PlatformEmitterRelation");
+		QDomElement third_1 = dom.createElement("Platform");
+		QDomElement third_2 = dom.createElement("Emitter");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllPlatformEmitterRelation())
+		{
+			if ((x.getEmitterName() == new_relation.getEmitterName()) && (x.getPlatformName() == new_relation.getPlatformName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllPlatform())
+		{
+			if (x->getPlatformName() == re.toStdString())
+			{
+				scenario.getAllPlatformEmitterRelation()[num].setPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllEmitter())
+		{
+			if (x->getName() == re_2.toStdString())
+			{
+				scenario.getAllPlatformEmitterRelation()[num].setEmitter(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("PlatformEmitterRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_PlatformWeaponRelation() {
+	int num = ui.tableWidget_PWR->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_PWR->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_PWR->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::PlatformWeaponRelation new_relation;
+	for (auto x : scenario.getAllPlatform())
+	{
+		if (x->getPlatformName() == re.toStdString())
+		{
+			new_relation.setPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllWeapon())
+	{
+		if (x->getName() == re_2.toStdString())
+		{
+			new_relation.setWeapon(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllPlatformWeaponRelation().size()) {
+		for (auto x : scenario.getAllPlatformWeaponRelation())
+		{
+			if ((x.getPlatformName() == new_relation.getPlatformName()) && (x.getWeaponName() == new_relation.getWeaponName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addPlatformWeaponRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("PlatformWeaponRelation");
+		QDomElement third_1 = dom.createElement("Platform");
+		QDomElement third_2 = dom.createElement("Weapon");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllPlatformWeaponRelation())
+		{
+			if ((x.getPlatformName() == new_relation.getPlatformName()) && (x.getWeaponName() == new_relation.getWeaponName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllPlatform())
+		{
+			if (x->getPlatformName() == re.toStdString())
+			{
+				scenario.getAllPlatformWeaponRelation()[num].setPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllWeapon())
+		{
+			if (x->getName() == re_2.toStdString())
+			{
+				scenario.getAllPlatformWeaponRelation()[num].setWeapon(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("PlatformWeaponRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_OwnPlatformEsmRelation() {
+	int num = ui.tableWidget_OEs->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_OEs->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_OEs->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::OwnPlatformEsmRelation new_relation;
+	for (auto x : scenario.getAllOwnPlatform())
+	{
+		if (x->getName() == re.toStdString()) {
+			new_relation.setOwnPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllEsm())
+	{
+		if (x->getName() == re_2.toStdString()) {
+			new_relation.setEsm(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllOwnPlatformEsmRelation().size()) {
+		for (auto x : scenario.getAllOwnPlatformEsmRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getEsmName() == new_relation.getEsmName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addOwnPlatformEsmRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("OwnPlatformEsmRelation");
+		QDomElement third_1 = dom.createElement("OwnPlatform");
+		QDomElement third_2 = dom.createElement("Esm");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllOwnPlatformEsmRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getEsmName() == new_relation.getEsmName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllOwnPlatform())
+		{
+			if (x->getName() == re.toStdString()) {
+				scenario.getAllOwnPlatformEsmRelation()[num].setOwnPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllEsm())
+		{
+			if (x->getName() == re_2.toStdString()) {
+				scenario.getAllOwnPlatformEsmRelation()[num].setEsm(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("OwnPlatformEsmRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_EsmEsmStrategyRelation() {
+	int num = ui.tableWidget_EsmES->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_EsmES->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_EsmES->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::EsmEsmStrategyRelation new_relation;
+	for (auto x : scenario.getAllEsm())
+	{
+		if (x->getName() == re.toStdString()) {
+			new_relation.setEsm(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllEsmStrategy())
+	{
+		if (x->getName() == re_2.toStdString()) {
+			new_relation.setEsmStrategy(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllEsmEsmStrategyRelation().size())
+	{
+		for (auto x : scenario.getAllEsmEsmStrategyRelation())
+		{
+			if ((x.getEsmName() == new_relation.getEsmName()) && (x.getEsmStrategyName() == new_relation.getEsmStrategyName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addEsmEsmStrategyRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("EsmEsmStrategyRelation");
+		QDomElement third_1 = dom.createElement("Esm");
+		QDomElement third_2 = dom.createElement("EsmStrategy");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllEsmEsmStrategyRelation())
+		{
+			if ((x.getEsmName() == new_relation.getEsmName()) && (x.getEsmStrategyName() == new_relation.getEsmStrategyName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllEsm())
+		{
+			if (x->getName() == re.toStdString()) {
+				scenario.getAllEsmEsmStrategyRelation()[num].setEsm(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllEsmStrategy())
+		{
+			if (x->getName() == re_2.toStdString()) {
+				scenario.getAllEsmEsmStrategyRelation()[num].setEsmStrategy(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("EsmEsmStrategyRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_OwnPlatformRouteRelation() {
+	int num = ui.tableWidget_ORR->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_ORR->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_ORR->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::OwnPlatformRouteRelation new_relation;
+	for (auto x : scenario.getAllOwnPlatform())
+	{
+		if (x->getName() == re.toStdString()) {
+			new_relation.setOwnPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllRoute())
+	{
+		if (x->getName() == re_2.toStdString()) {
+			new_relation.setRoute(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllOwnPlatformRouteRelation().size())
+	{
+		for (auto x : scenario.getAllOwnPlatformRouteRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getRouteName() == new_relation.getRouteName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addOwnPlatformRouteRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("OwnPlatformRouteRelation");
+		QDomElement third_1 = dom.createElement("OwnPlatform");
+		QDomElement third_2 = dom.createElement("Route");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllOwnPlatformRouteRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getRouteName() == new_relation.getRouteName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllOwnPlatform())
+		{
+			if (x->getName() == re.toStdString()) {
+				scenario.getAllOwnPlatformRouteRelation()[num].setOwnPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllRoute())
+		{
+			if (x->getName() == re_2.toStdString()) {
+				scenario.getAllOwnPlatformRouteRelation()[num].setRoute(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("OwnPlatformRouteRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_EcmEcmStrategyRelation() {
+	int num = ui.tableWidget_EcmES->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_EcmES->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_EcmES->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::EcmEcmStrategyRelation new_relation;
+	for (auto x : scenario.getAllEcm())
+	{
+		if (x->getName() == re.toStdString()) {
+			new_relation.setEcm(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllEcmStrategy())
+	{
+		if (x->getName() == re_2.toStdString()) {
+			new_relation.setEcmStrategy(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllEcmEcmStrategyRelation().size())
+	{
+		for (auto x : scenario.getAllEcmEcmStrategyRelation())
+		{
+			if ((x.getEcmName() == new_relation.getEcmName()) && (x.getEcmStrategyName() == new_relation.getEcmStrategyName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addEcmEcmStrategyRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("EcmEcmStrategyRelation");
+		QDomElement third_1 = dom.createElement("Ecm");
+		QDomElement third_2 = dom.createElement("EcmStrategy");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
 
+	}
+	else
+	{
+		for (int i = 0; i<scenario.getAllEcmEcmStrategyRelation().size(); i++)
+		{
+			for (int j = i; j<scenario.getAllEcmEcmStrategyRelation().size(); j++)
+			{
+				if ((scenario.getAllEcmEcmStrategyRelation()[i].getEcmName() == scenario.getAllEcmEcmStrategyRelation()[j].getEcmName()) && (scenario.getAllEcmEcmStrategyRelation()[i].getEcmStrategyName() == scenario.getAllEcmEcmStrategyRelation()[j].getEcmStrategyName()))
+				{
+					QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+					return;
+				}
+			}
+		}
+		for (auto x : scenario.getAllEcm())
+		{
+			if (x->getName() == re.toStdString()) {
+				scenario.getAllEcmEcmStrategyRelation()[num].setEcm(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllEcmStrategy())
+		{
+			if (x->getName() == re_2.toStdString()) {
+				scenario.getAllEcmEcmStrategyRelation()[num].setEcmStrategy(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("EcmEcmStrategyRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_OwnPlatformEcmRelation() {
+	int num = ui.tableWidget_OPEcmR->currentRow();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_OPEcmR->cellWidget(num, 0));
+	QString re = cell->currentText();
+	QComboBox* cell_2 = qobject_cast<QComboBox *>(ui.tableWidget_OPEcmR->cellWidget(num, 1));
+	QString re_2 = cell_2->currentText();
+	sce::OwnPlatformEcmRelation new_relation;
+	for (auto x : scenario.getAllOwnPlatform())
+	{
+		if (x->getName() == re.toStdString()) {
+			new_relation.setOwnPlatform(x);
+			break;
+		}
+	}
+	for (auto x : scenario.getAllEcm())
+	{
+		if (x->getName() == re_2.toStdString()) {
+			new_relation.setEcm(x);
+			break;
+		}
+	}
+	if (num + 1 > scenario.getAllOwnPlatformEcmRelation().size()) {
+		for (auto x : scenario.getAllOwnPlatformEcmRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getEcmName() == new_relation.getEcmName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		scenario.addOwnPlatformEcmRelation(new_relation);
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement relation = dom.createElement("OwnPlatformEcmRelation");
+		QDomElement third_1 = dom.createElement("OwnPlatform");
+		QDomElement third_2 = dom.createElement("Ecm");
+		QDomText text1 = dom.createTextNode(re);
+		QDomText text2 = dom.createTextNode(re_2);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		relation.appendChild(third_1);
+		relation.appendChild(third_2);
+		root.appendChild(relation);
+	}
+	else {
+		for (auto x : scenario.getAllOwnPlatformEcmRelation())
+		{
+			if ((x.getOwnPlatformName() == new_relation.getOwnPlatformName()) && (x.getEcmName() == new_relation.getEcmName()))
+			{
+				QMessageBox::warning(this, tr("Tip"), tr("The Relation already exists"));
+				return;
+			}
+		}
+		for (auto x : scenario.getAllOwnPlatform())
+		{
+			if (x->getName() == re.toStdString()) {
+				scenario.getAllOwnPlatformEcmRelation()[num].setOwnPlatform(x);
+				break;
+			}
+		}
+		for (auto x : scenario.getAllEcm())
+		{
+			if (x->getName() == re_2.toStdString()) {
+				scenario.getAllOwnPlatformEcmRelation()[num].setEcm(x);
+				break;
+			}
+		}
+		QMessageBox::about(this, tr("Tip"), tr("Save Relation successfully"));
+		QDomNodeList list = dom.elementsByTagName("OwnPlatformEcmRelation");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(re);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(re_2);
+	}
+}
+void PathPlanGui::save_Platform() {
+	int num = ui.tableWidget_Platform->currentRow();
+	QString a = ui.tableWidget_Platform->item(num, 0)->text();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_Platform->cellWidget(num, 1));
+	int re = cell->currentIndex();
+	if (num + 1 > scenario.getAllPlatform().size()) {
+		sce::Platform new_data;
+		new_data.setPlatformName(a.toStdString());
+		new_data.setPlatformType(sce::PlatformType(re));
+		scenario.addPlatform(make_shared<sce::Platform>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add Platform successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("Platform");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("Type");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(platformtype_list[re]);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllPlatform()[num]->setPlatformName(a.toStdString());
+		scenario.getAllPlatform()[num]->setPlatformType(sce::PlatformType(re));
+		QMessageBox::about(this, tr("Tip"), tr("Save Platform successfully"));
+		QDomNodeList list = dom.elementsByTagName("Platform");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(a);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(platformtype_list[re]);
+	}
+}
+void PathPlanGui::save_Weapon() {
+	int num = ui.tableWidget_Weapon->currentRow();
+	QString a = ui.tableWidget_Weapon->item(num, 0)->text();
+	QString b = ui.tableWidget_Weapon->item(num, 1)->text();
+	QString c = ui.tableWidget_Weapon->item(num, 2)->text();
+	if (num + 1 > scenario.getAllWeapon().size()) {
+		sce::Weapon new_data(a.toStdString(), b.toDouble(), c.toDouble());
+		scenario.addWeapon(make_shared<sce::Weapon>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add Weapon successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("Weapon");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("CEPR");
+		QDomElement third_3 = dom.createElement("WEAPONAREACOVERAGE");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(b);
+		QDomText text3 = dom.createTextNode(c);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		third_3.appendChild(text3);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		second.appendChild(third_3);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllWeapon()[num]->setName(a.toStdString());
+		scenario.getAllWeapon()[num]->setCEPR(b.toInt());
+		scenario.getAllWeapon()[num]->setWeaponAreaCoverage(c.toInt());
+		QMessageBox::about(this, tr("Tip"), tr("Save Weapon successfully"));
+		QDomNodeList list = dom.elementsByTagName("Weapon");
+		int flag_weapon = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement e = list.at(i).toElement();
+			if (e.parentNode().nodeName() == "Scenario")
+			{
+				if (flag_weapon == num)
+				{
+					e.firstChild().firstChild().setNodeValue(a);
+					e.firstChild().nextSibling().firstChild().setNodeValue(b);
+					e.firstChild().nextSibling().nextSibling().firstChild().setNodeValue(c);
+					break;
+				}
+				flag_weapon++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_Site() {
+	int num = ui.tableWidget_Site->currentRow();
+	QString a = ui.tableWidget_Site->item(num, 0)->text();
+	QString b = ui.tableWidget_Site->item(num, 1)->text();
+	QString c = ui.tableWidget_Site->item(num, 2)->text();
+	QString d = ui.tableWidget_Site->item(num, 3)->text();
+	if (num + 1 > scenario.getAllSite().size()) {
+		sce::Site new_data(a.toStdString(), b.toDouble(), c.toDouble(), d.toDouble());
+		scenario.addSite(make_shared<sce::Site>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add Site successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("Site");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("Altitude");
+		QDomElement third_3 = dom.createElement("Latitude");
+		QDomElement third_4 = dom.createElement("Longitude");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(b);
+		QDomText text3 = dom.createTextNode(c);
+		QDomText text4 = dom.createTextNode(d);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		third_3.appendChild(text3);
+		third_4.appendChild(text4);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		second.appendChild(third_3);
+		second.appendChild(third_4);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllSite()[num]->setName(a.toStdString());
+		scenario.getAllSite()[num]->setAltitude(b.toDouble());
+		scenario.getAllSite()[num]->setLatitude(c.toDouble());
+		scenario.getAllSite()[num]->setLongitude(d.toDouble());
+		QMessageBox::about(this, tr("Tip"), tr("Save Site successfully"));
+		QDomNodeList list = dom.elementsByTagName("Site");
+		int flag_site = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement e = list.at(i).toElement();
+			if (e.parentNode().nodeName() == "Scenario")
+			{
+				if (flag_site == num)
+				{
+					e.firstChild().firstChild().setNodeValue(a);
+					e.firstChild().nextSibling().firstChild().setNodeValue(b);
+					e.firstChild().nextSibling().nextSibling().firstChild().setNodeValue(c);
+					e.firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(d);
+					break;
+				}
+				flag_site++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_OwnPlatform() {
+	int num = ui.tableWidget_OPlatform->currentRow();
+	QString a = ui.tableWidget_OPlatform->item(num, 0)->text();
+	QComboBox* cell = qobject_cast<QComboBox *>(ui.tableWidget_OPlatform->cellWidget(num, 1));
+	int re = cell->currentIndex();
+	QString b = ui.tableWidget_OPlatform->item(num, 2)->text();
+	QString c = ui.tableWidget_OPlatform->item(num, 3)->text();
+	QString d = ui.tableWidget_OPlatform->item(num, 4)->text();
+	QString e = ui.tableWidget_OPlatform->item(num, 5)->text();
+	QString f = ui.tableWidget_OPlatform->item(num, 6)->text();
+	QString g = ui.tableWidget_OPlatform->item(num, 7)->text();
+	if (num + 1 > scenario.getAllOwnPlatform().size())
+	{
+		sce::OwnPlatform new_data(a.toStdString(), sce::OwnPlatformType(re), b.toDouble(), c.toDouble(), d.toDouble(), e.toDouble(), f.toDouble(), g.toDouble());
+		scenario.addOwnPlatform(make_shared<sce::OwnPlatform>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add OwnPlatform successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("OwnPlatform");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("Type");
+		QDomElement third_3 = dom.createElement("MaxAcceleration");
+		QDomElement third_4 = dom.createElement("MaxDeceleration");
+		QDomElement third_5 = dom.createElement("MaxClimbRate");
+		QDomElement third_6 = dom.createElement("MaxDiveRate");
+		QDomElement third_7 = dom.createElement("MaxSpeed");
+		QDomElement third_8 = dom.createElement("MaxTurnRadius");
+		QDomElement third_9 = dom.createElement("Mission");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(ownplatformtype_list[0]);
+		QDomText text3 = dom.createTextNode(b);
+		QDomText text4 = dom.createTextNode(c);
+		QDomText text5 = dom.createTextNode(d);
+		QDomText text6 = dom.createTextNode(e);
+		QDomText text7 = dom.createTextNode(f);
+		QDomText text8 = dom.createTextNode(g);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		third_3.appendChild(text3);
+		third_4.appendChild(text4);
+		third_5.appendChild(text5);
+		third_6.appendChild(text6);
+		third_7.appendChild(text7);
+		third_8.appendChild(text8);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		second.appendChild(third_3);
+		second.appendChild(third_4);
+		second.appendChild(third_5);
+		second.appendChild(third_6);
+		second.appendChild(third_7);
+		second.appendChild(third_8);
+		second.appendChild(third_9);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllOwnPlatform()[num]->setName(a.toStdString());
+		scenario.getAllOwnPlatform()[num]->setType(sce::OwnPlatformType(re));
+		scenario.getAllOwnPlatform()[num]->setMaxAcceleration(b.toDouble());
+		scenario.getAllOwnPlatform()[num]->setMaxDeceleration(c.toDouble());
+		scenario.getAllOwnPlatform()[num]->setMaxClimbRate(d.toDouble());
+		scenario.getAllOwnPlatform()[num]->setMaxDiveRate(e.toDouble());
+		scenario.getAllOwnPlatform()[num]->setMaxSpeed(f.toDouble());
+		scenario.getAllOwnPlatform()[num]->setMaxTurnRadius(g.toDouble());
+		QMessageBox::about(this, tr("Tip"), tr("Save OwnPlatform successfully"));
+		QDomNodeList list = dom.elementsByTagName("OwnPlatform");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement ele = list.at(i).toElement();
+			if (ele.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == num)
+				{
+					for (QDomNode OP_son = ele.firstChild(); !OP_son.isNull(); OP_son = OP_son.nextSibling())
+					{
+						if (OP_son.nodeName() == "Name")
+						{
+							OP_son.firstChild().setNodeValue(a);
+						}
+						if (OP_son.nodeName() == "Type")
+						{
+							OP_son.firstChild().setNodeValue(ownplatformtype_list[0]);
+						}
+						if (OP_son.nodeName() == "MaxAcceleration")
+						{
+							OP_son.firstChild().setNodeValue(b);
+						}
+						if (OP_son.nodeName() == "MaxDeceleration")
+						{
+							OP_son.firstChild().setNodeValue(c);
+						}
+						if (OP_son.nodeName() == "MaxClimbRate")
+						{
+							OP_son.firstChild().setNodeValue(d);
+						}
+						if (OP_son.nodeName() == "MaxDiveRate")
+						{
+							OP_son.firstChild().setNodeValue(e);
+						}
+						if (OP_son.nodeName() == "MaxSpeed")
+						{
+							OP_son.firstChild().setNodeValue(f);
+						}
+						if (OP_son.nodeName() == "MaxTurnRadius")
+						{
+							OP_son.firstChild().setNodeValue(g);
+						}
+					}
+					/*ele.firstChild().firstChild().setNodeValue(a);
+					ele.firstChild().nextSibling().firstChild().setNodeValue(ownplatformtype_list[0]);
+					ele.firstChild().nextSibling().nextSibling().firstChild().setNodeValue(b);
+					ele.firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(c);
+					ele.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(d);
+					ele.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(e);
+					ele.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(f);
+					ele.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(g);*/
+					break;
+				}
+				flag++;
+			}
+		}
+	}
+
+}
+void PathPlanGui::save_Ecm() {
+	int num = ui.tableWidget_Ecm->currentRow();
+	QString a = ui.tableWidget_Ecm->item(num, 0)->text();
+	QString b = ui.tableWidget_Ecm->item(num, 1)->text();
+	QString c = ui.tableWidget_Ecm->item(num, 2)->text();
+	QString d = ui.tableWidget_Ecm->item(num, 3)->text();
+	QString e = ui.tableWidget_Ecm->item(num, 4)->text();
+	if (num + 1 > scenario.getAllEcm().size())
+	{
+		sce::Ecm new_data(a.toStdString(), b.toDouble(), c.toInt(), d.toInt(), e.toInt());
+		scenario.addEcm(std::make_shared<sce::Ecm>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Save Ecm successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("Ecm");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("Pt");
+		QDomElement third_3 = dom.createElement("Gain");
+		QDomElement third_4 = dom.createElement("Rfmin");
+		QDomElement third_5 = dom.createElement("Rfmax");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(b);
+		QDomText text3 = dom.createTextNode(c);
+		QDomText text4 = dom.createTextNode(d);
+		QDomText text5 = dom.createTextNode(e);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		third_3.appendChild(text3);
+		third_4.appendChild(text4);
+		third_5.appendChild(text5);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		second.appendChild(third_3);
+		second.appendChild(third_4);
+		second.appendChild(third_5);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllEcm()[num]->setName(a.toStdString());
+		scenario.getAllEcm()[num]->setPt(b.toDouble());
+		scenario.getAllEcm()[num]->setGain(c.toInt());
+		scenario.getAllEcm()[num]->setRfMin(d.toInt());
+		scenario.getAllEcm()[num]->setRfMax(e.toInt());
+		QMessageBox::about(this, tr("Tip"), tr("Save Ecm successfully"));
+		QDomNodeList list = dom.elementsByTagName("Ecm");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement ele = list.at(i).toElement();
+			if (ele.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == num)
+				{
+					for (QDomNode qd = ele.firstChild(); !qd.isNull(); qd = qd.nextSibling())
+					{
+						if (qd.nodeName() == "Name")
+						{
+							qd.firstChild().setNodeValue(a);
+						}
+						if (qd.nodeName() == "Pt")
+						{
+							qd.firstChild().setNodeValue(b);
+						}
+						if (qd.nodeName() == "Gain")
+						{
+							qd.firstChild().setNodeValue(c);
+						}
+						if (qd.nodeName() == "Rfmin")
+						{
+							qd.firstChild().setNodeValue(d);
+						}
+						if (qd.nodeName() == "Rfmax")
+						{
+							qd.firstChild().setNodeValue(e);
+						}
+					}
+					break;
+				}
+				flag++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_ECMStrategy() {
+	int num = ui.tableWidget_ECMStra->currentRow();
+	QString a = ui.tableWidget_ECMStra->item(num, 0)->text();
+	//vector<EsmStrategySection>
+	sce::EcmStrategy new_data;
+	new_data.setName(a.toStdString());
+	int n = scenario.getAllEcmStrategy().size();
+	if (num + 1 > n)
+	{
+		//sce::EcmStrategySection sce1;
+		//sce::EcmStrategySection sce2;
+		//std::vector<std::shared_ptr<sce::EcmStrategySection>>sce{ std::make_shared<sce::EcmStrategySection>(sce1), std::make_shared<sce::EcmStrategySection>(sce2) };
+		//new_data.setAllPtr2Sections(sce);
+		scenario.addEcmStrategy(std::make_shared<sce::EcmStrategy>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Save EcmStrategy successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement es_node = dom.createElement("EcmStrategy");
+		QDomElement name_node = dom.createElement("Name");
+		QDomText text1 = dom.createTextNode(a);
+		name_node.appendChild(text1);;
+		es_node.appendChild(name_node);
+		root.appendChild(es_node);
+	}
+	else
+	{
+		scenario.getAllEcmStrategy()[num]->setName(a.toStdString());
+		QMessageBox::about(this, tr("Tip"), tr("Save EcmStrategy successfully"));
+		QDomNodeList list = dom.elementsByTagName("EcmStrategy");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement ele = list.at(i).toElement();
+			if (ele.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == num)
+				{
+					ele.firstChild().firstChild().setNodeValue(a);
+					break;
+				}
+				flag++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_ESMStrategy() {
+	int num = ui.tableWidget_ESMStra->currentRow();
+	QString a = ui.tableWidget_ESMStra->item(num, 0)->text();
+	sce::EsmStrategy new_data(a.toStdString());
+	int n = scenario.getAllEsmStrategy().size();
+	if (num + 1 > n)
+	{
+		//sce::EsmStrategySection sce1;
+		//sce::EsmStrategySection sce2;
+		//std::vector<std::shared_ptr<sce::EsmStrategySection>>sce  {std::make_shared<sce::EsmStrategySection>(sce1), std::make_shared<sce::EsmStrategySection>(sce2)};
+		//new_data.setAllPtr2Sections(sce);
+		scenario.addEsmStrategy(std::make_shared<sce::EsmStrategy>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Save EsmStrategy successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement es_node = dom.createElement("EsmStrategy");
+		QDomElement name_node = dom.createElement("Name");
+		QDomText text1 = dom.createTextNode(a);
+		name_node.appendChild(text1);;
+		es_node.appendChild(name_node);
+		root.appendChild(es_node);
+	}
+	else {
+		scenario.getAllEsmStrategy()[num]->setName(a.toStdString());
+		QMessageBox::about(this, tr("Tip"), tr("Save EsmStrategy successfully"));
+		QDomNodeList list = dom.elementsByTagName("EsmStrategy");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement e = list.at(i).toElement();
+			if (e.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == num)
+				{
+					e.firstChild().firstChild().setNodeValue(a);
+					break;
+				}
+				flag++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_Esm() {
+
+	int num = ui.tableWidget_Esm->currentRow();
+	QString a = ui.tableWidget_Esm->item(num, 0)->text();
+	QString b = ui.tableWidget_Esm->item(num, 1)->text();
+	QString c = ui.tableWidget_Esm->item(num, 2)->text();
+	QString d = ui.tableWidget_Esm->item(num, 3)->text();
+	QString e = ui.tableWidget_Esm->item(num, 4)->text();
+	QString f = ui.tableWidget_Esm->item(num, 5)->text();
+	QString g = ui.tableWidget_Esm->item(num, 6)->text();
+	if (num + 1 > scenario.getAllEsm().size())
+	{
+		sce::Esm new_data(a.toStdString(), b.toDouble(), c.toInt(), d.toInt(), e.toInt(), f.toInt(), g.toInt());
+		scenario.addEsm(std::make_shared<sce::Esm>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Save Esm successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement second = dom.createElement("Esm");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomElement third_2 = dom.createElement("Dwell_Freq_Resolution");
+		QDomElement third_3 = dom.createElement("Tuning_Step");
+		QDomElement third_4 = dom.createElement("RfCovmin");
+		QDomElement third_5 = dom.createElement("RfCovmax");
+		QDomElement third_6 = dom.createElement("Num_Pulses_Acquisition");
+		QDomElement third_7 = dom.createElement("Num_Pulses_Alarm");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(b);
+		QDomText text3 = dom.createTextNode(c);
+		QDomText text4 = dom.createTextNode(d);
+		QDomText text5 = dom.createTextNode(e);
+		QDomText text6 = dom.createTextNode(f);
+		QDomText text7 = dom.createTextNode(g);
+		third_1.appendChild(text1);
+		third_2.appendChild(text2);
+		third_3.appendChild(text3);
+		third_4.appendChild(text4);
+		third_5.appendChild(text5);
+		third_6.appendChild(text6);
+		third_7.appendChild(text7);
+		second.appendChild(third_1);
+		second.appendChild(third_2);
+		second.appendChild(third_3);
+		second.appendChild(third_4);
+		second.appendChild(third_5);
+		second.appendChild(third_6);
+		second.appendChild(third_7);
+		root.appendChild(second);
+	}
+	else {
+		scenario.getAllEsm()[num]->setName(a.toStdString());
+		scenario.getAllEsm()[num]->setDwellFreqResolution(b.toDouble());
+		scenario.getAllEsm()[num]->setTuningStep(c.toInt());
+		scenario.getAllEsm()[num]->setRfCovMin(d.toInt());
+		scenario.getAllEsm()[num]->setRfCovMax(e.toInt());
+		scenario.getAllEsm()[num]->setNumPulsesAcquisition(f.toInt());
+		scenario.getAllEsm()[num]->setNumPulsesAlarm(g.toInt());
+		QMessageBox::about(this, tr("Tip"), tr("Save Esm successfully"));
+		QDomNodeList list = dom.elementsByTagName("Esm");
+		for (QDomNode qd = list.at(num).firstChild(); !qd.isNull(); qd = qd.nextSibling())
+		{
+			if (qd.nodeName() == "Name")
+			{
+				qd.firstChild().setNodeValue(a);
+			}
+			if (qd.nodeName() == "Dwell_Freq_Resolution")
+			{
+				qd.firstChild().setNodeValue(b);
+			}
+			if (qd.nodeName() == "Tuning_Step")
+			{
+				qd.firstChild().setNodeValue(c);
+			}
+			if (qd.nodeName() == "RfCovmin")
+			{
+				qd.firstChild().setNodeValue(d);
+			}
+			if (qd.nodeName() == "RfCovmax")
+			{
+				qd.firstChild().setNodeValue(e);
+			}
+			if (qd.nodeName() == "Num_Pulses_Acquisition")
+			{
+				qd.firstChild().setNodeValue(f);
+			}
+			if (qd.nodeName() == "Num_Pulses_Alarm")
+			{
+				qd.firstChild().setNodeValue(g);
+			}
+		}
+	}
+}
+void PathPlanGui::save_Emitter() {
+	int num = ui.tableWidget_Emitter->currentRow();
+	if (num + 1 > scenario.getAllEmitter().size()) {
+		sce::Emitter new_data(ui.tableWidget_Emitter->item(num, 0)->text().toStdString());
+		scenario.addEmitter(make_shared<sce::Emitter>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add Emitter successfully"));
+
+		QDomElement root = dom.documentElement();
+		QDomElement ver = dom.createElement("Emitter");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomText text1 = dom.createTextNode(ui.tableWidget_Emitter->item(num, 0)->text());
+		third_1.appendChild(text1);
+		ver.appendChild(third_1);
+		root.appendChild(ver);
+	}
+	else {
+		scenario.getAllEmitter()[num]->setName(ui.tableWidget_Emitter->item(num, 0)->text().toStdString());
+		QMessageBox::about(this, tr("Tip"), tr("Save Emitter successfully"));
+		QDomNodeList list = dom.elementsByTagName("Emitter");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement ele = list.at(i).toElement();
+			if (ele.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == num)
+				{
+					ele.firstChild().firstChild().setNodeValue(ui.tableWidget_Emitter->item(num, 0)->text());
+					break;
+				}
+				flag++;
+			}
+		}
+	}
+}
+void PathPlanGui::save_Vertex() {
+	int num = ui.tableWidget_Vertex->currentRow();
+	if (num + 1 > scenario.getAllVertex().size()) {
+		QString a = ui.tableWidget_Vertex->item(num, 0)->text();
+		QString b = ui.tableWidget_Vertex->item(num, 1)->text();
+		QString c = ui.tableWidget_Vertex->item(num, 2)->text();
+		sce::Vertex new_data(a.toDouble(), b.toDouble(),c.toDouble());
+		scenario.addVertex(make_shared<sce::Vertex>(new_data));
+		QMessageBox::about(this, tr("Tip"), tr("Add Vertex successfully"));
+		QDomElement root = dom.documentElement();
+		QDomElement ver = dom.createElement("Vertex");
+		QDomElement la = dom.createElement("Latitude");
+		QDomElement lo = dom.createElement("Longitude");
+		QDomElement al = dom.createElement("Altitude");
+		QDomText text1 = dom.createTextNode(a);
+		QDomText text2 = dom.createTextNode(b);
+		QDomText text3 = dom.createTextNode(c);
+		la.appendChild(text1);
+		lo.appendChild(text2);
+		al.appendChild(text3);
+		ver.appendChild(la);
+		ver.appendChild(lo);
+		ver.appendChild(al);
+		root.appendChild(ver);
+	}
+	else {
+		QString a = ui.tableWidget_Vertex->item(num, 0)->text();
+		QString b = ui.tableWidget_Vertex->item(num, 1)->text();
+		QString c = ui.tableWidget_Vertex->item(num, 2)->text();
+		scenario.getAllVertex()[num]->setLatitude(a.toDouble());
+		scenario.getAllVertex()[num]->setLongitude(b.toDouble());
+		scenario.getAllVertex()[num]->setAltitude(c.toDouble());
+		QMessageBox::about(this, tr("Tip"), tr("Save Vertex successfully"));
+		QDomNodeList list = dom.elementsByTagName("Vertex");
+		QDomElement e = list.at(num).toElement();
+		e.firstChild().firstChild().setNodeValue(a);
+		e.firstChild().nextSiblingElement().firstChild().setNodeValue(b);
+		for (QDomNode son = e.firstChild(); !son.isNull(); son = son.nextSibling()) {
+			if (son.nodeName() == "Latitude") son.firstChild().setNodeValue(a);
+			if (son.nodeName() == "Longitude") son.firstChild().setNodeValue(b);
+			if (son.nodeName() == "Altitude") son.firstChild().setNodeValue(c);
+		}
+	}
+}
+void PathPlanGui::add_RouteTab() {
+	//设置对话框获取输入内容
+	bool ok;
+	QString d = QInputDialog::getText(this, tr("Tip"), tr("The name of tabpage："), QLineEdit::Normal, "Route", &ok);
+	if (ok && !d.isEmpty()) {
+
+		sce::Route new_route;
+		new_route.setName(d.toStdString());
+		scenario.addRoute(std::make_shared<sce::Route>(new_route));
+
+		QDomElement root = dom.documentElement();
+		QDomElement ver = dom.createElement("Route");
+		QDomElement third_1 = dom.createElement("Name");
+		QDomText text1 = dom.createTextNode(d);
+		third_1.appendChild(text1);
+		ver.appendChild(third_1);
+		root.appendChild(ver);
+
+		//首先设置一个widget
+		QWidget * tab_nn = new QWidget();
+		QGridLayout* gridLayout_n = new QGridLayout();
+		QPushButton *add = new QPushButton();
+		QPushButton *del = new QPushButton();
+		QPushButton *save = new QPushButton();
+		add->setText("Add");
+		del->setText("Del");
+		save->setText("Save");
+		QStringList headers;
+		headers << QStringLiteral("Index") << QStringLiteral("Altitude") << QStringLiteral("Index") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << QStringLiteral("Time") << QStringLiteral("Velocity") << QStringLiteral("Acceleration");
+		//创建route的表格
+		QTableWidget *new_table = new QTableWidget();
+		new_table->setColumnCount(7);
+		new_table->setLayoutDirection(Qt::LeftToRight);
+		new_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+		new_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+		new_table->setDragEnabled(true);
+		new_table->setSelectionBehavior(QAbstractItemView::SelectItems);
+		new_table->setTextElideMode(Qt::ElideMiddle);
+		new_table->horizontalHeader()->setCascadingSectionResizes(false);
+		new_table->verticalHeader()->setVisible(true);
+		new_table->setHorizontalHeaderLabels(headers);
+		gridLayout_n->addWidget(add);
+		gridLayout_n->addWidget(del);
+		gridLayout_n->addWidget(save);
+		gridLayout_n->addWidget(new_table);
+		tab_nn->setLayout(gridLayout_n);
+		//this->setCentralWidget(tab_nn);
+		ui.tabWidget_Route->addTab(tab_nn, d);
+		//测试tab类
+		MyTab *tab = new MyTab();
+		tab->add = add;
+		tab->del = del;
+		tab->save = save;
+		tab->myindex = ui.tabWidget_Route->currentIndex();
+		tab->my_table = new_table;
+		vTab.push_back(tab);
+
+		for (int i = 0; i < vTab.size(); i++)
+		{
+			connect(vTab[i]->add, &QPushButton::clicked, this, [=]()
+			{
+				vTab[i]->my_table->insertRow(vTab[i]->my_table->rowCount());
+
+			});
+			connect(vTab[i]->del, &QPushButton::clicked, this, [=]
+			{
+				int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+				if (ree == 0)
+				{
+					vTab[i]->my_table->removeRow(vTab[i]->my_table->currentRow());
+				}
+			});
+			connect(vTab[i]->save, &QPushButton::clicked, this, [=]
+			{
+				int cur = vTab[i]->my_table->currentRow();
+				QString a = vTab[i]->my_table->item(cur, 0)->text();
+				QString b = vTab[i]->my_table->item(cur, 1)->text();
+				QString c = vTab[i]->my_table->item(cur, 2)->text();
+				QString d = vTab[i]->my_table->item(cur, 3)->text();
+				QString e = vTab[i]->my_table->item(cur, 4)->text();
+				QString f = vTab[i]->my_table->item(cur, 5)->text();
+				QString g = vTab[i]->my_table->item(cur, 6)->text();
+				if (cur + 1 > scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints().size())
+				{
+					sce::WayPoint new_wp(a.toInt(), b.toDouble(), c.toDouble(), d.toDouble(), e.toDouble(), f.toDouble(), g.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->addWayPoint(new_wp);
+					QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+					QDomElement third = dom.createElement("WayPoints");
+
+					QDomElement fourth_1 = dom.createElement("Index");
+					QDomElement fourth_2 = dom.createElement("Altitude");
+					QDomElement fourth_3 = dom.createElement("Latitude");
+					QDomElement fourth_4 = dom.createElement("Longitude");
+					QDomElement fourth_5 = dom.createElement("Time");
+					QDomElement fourth_6 = dom.createElement("Velocity");
+					QDomElement fourth_7 = dom.createElement("Acceleration");
+
+					QDomText text1 = dom.createTextNode(a);
+					QDomText text2 = dom.createTextNode(b);
+					QDomText text3 = dom.createTextNode(c);
+					QDomText text4 = dom.createTextNode(d);
+					QDomText text5 = dom.createTextNode(e);
+					QDomText text6 = dom.createTextNode(f);
+					QDomText text7 = dom.createTextNode(g);
+
+					fourth_1.appendChild(text1);
+					fourth_2.appendChild(text2);
+					fourth_3.appendChild(text3);
+					fourth_4.appendChild(text4);
+					fourth_5.appendChild(text5);
+					fourth_6.appendChild(text6);
+					fourth_7.appendChild(text7);
+
+					third.appendChild(fourth_1);
+					third.appendChild(fourth_2);
+					third.appendChild(fourth_3);
+					third.appendChild(fourth_4);
+					third.appendChild(fourth_5);
+					third.appendChild(fourth_6);
+					third.appendChild(fourth_7);
+
+					QDomNodeList list = dom.elementsByTagName("Route");
+					int flag = 0;
+					for (int i = 0; i < list.count(); i++)
+					{
+						QDomElement ele = list.at(i).toElement();
+						if (ele.parentNode().nodeName() == "Scenario")
+						{
+							if (flag == ui.tabWidget_Route->currentIndex())
+							{
+								ele.appendChild(third);
+								break;
+							}
+							flag++;
+						}
+					}
+				}
+				else
+				{
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setIndex(a.toInt());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setAltitude(b.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setLatitude(c.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setLongitude(d.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setTime(e.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setVelocity(f.toDouble());
+					scenario.getAllRoute()[ui.tabWidget_Route->currentIndex()]->getAllWayPoints()[cur].setAcceleration(g.toDouble());
+					QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+					QDomNodeList list = dom.elementsByTagName("Route");
+					int flag = 0;
+					for (int i = 0; i < list.count(); i++)
+					{
+						QDomElement ele = list.at(i).toElement();
+						if (ele.parentNode().nodeName() == "Scenario")//找到为第二级节点的Route
+						{
+							if (flag == ui.tabWidget_Route->currentIndex())
+							{
+								int flag_2 = 0;
+								for (QDomNode qd = ele.firstChild(); !qd.isNull(); qd = qd.nextSibling())
+								{
+									if (qd.nodeName() == "WayPoints")//找到具体的WayPoints
+									{
+										if (flag_2 == ui.tabWidget_Route->currentIndex())
+										{
+											for (QDomNode qdd = qd.firstChild(); !qdd.isNull(); qdd = qdd.nextSibling())
+											{
+												if (qdd.nodeName() == "Index")
+												{
+													qdd.firstChild().setNodeValue(a);
+												}
+												if (qdd.nodeName() == "Altitude")
+												{
+													qdd.firstChild().setNodeValue(b);
+												}
+												if (qdd.nodeName() == "Latitude")
+												{
+													qdd.firstChild().setNodeValue(c);
+												}
+												if (qdd.nodeName() == "Longitude")
+												{
+													qdd.firstChild().setNodeValue(d);
+												}
+												if (qdd.nodeName() == "Time")
+												{
+													qdd.firstChild().setNodeValue(e);
+												}
+												if (qdd.nodeName() == "Velocity")
+												{
+													qdd.firstChild().setNodeValue(f);
+												}
+												if (qdd.nodeName() == "Acceleration")
+												{
+													qdd.firstChild().setNodeValue(g);
+												}
+											}
+											break;
+										}
+										flag_2++;
+									}
+								}
+								break;
+							}
+							flag++;
+						}
+					}
+				}
+			});
+
+		}
+
+	}
+}
+void PathPlanGui::del_RouteTab() {
+	int num = ui.tabWidget_Route->currentIndex();
+	int re = QMessageBox::information(this, "Tip", "Delete the current TAB?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (re == 0) {
+		ui.tabWidget_Route->removeTab(num);
+		if (num < scenario.getAllRoute().size()) {
+			scenario.deleteRoute(num);
+			QMessageBox::about(this, "Tip", "Delete Route successfully");
+
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Platform");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						QMessageBox::about(this, "Tip", "Delete Route in file successfully");
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Vertex()
+{
+	int row_count = ui.tableWidget_Vertex->rowCount(); //获取表单行数
+	ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
+
+}
+void PathPlanGui::del_Vertex()		//删除列表数据
+{
+	int num = ui.tableWidget_Vertex->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else
+	{
+		ui.tableWidget_Vertex->removeRow(num);
+		if (num < scenario.getAllVertex().size())
+		{
+			scenario.deleteVertex(num);
+			QMessageBox::about(this, "Tip", "Delete Vertex successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Vertex");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_PlatformSiteRelation(){
+	int row_count = ui.tableWidget_PSR->rowCount(); //获取表单行数
+	ui.tableWidget_PSR->insertRow(row_count);//添加新的一行
+	ui.tableWidget_PSR->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_PSR->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_PSR->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_PSR->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList platformname_List;
+	QStringList sitename_List;
+	for (int j = 0; j < scenario.getAllPlatform().size(); j++) {
+		platformname_List.append(QString::fromStdString(scenario.getAllPlatform()[j]->getPlatformName()));
+	}
+	for (int j = 0; j < scenario.getAllSite().size(); j++) {
+		sitename_List.append(QString::fromStdString(scenario.getAllSite()[j]->getName()));
+	}
+	combox->addItems(platformname_List);
+	combox_1->addItems(sitename_List);
+}
+void PathPlanGui::del_PlatformSiteRelation() {
+	int num = ui.tableWidget_PSR->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_PSR->removeRow(num);
+		if (num < scenario.getAllPlatformSiteRelation().size()) {
+			scenario.deletePlatformSiteRelation(num);
+			QMessageBox::about(this, "Tip", "Delete PlatformSiteRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("PlatformSiteRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_PlatformEmitterRelation() {
+	int row_count = ui.tableWidget_PER->rowCount(); //获取表单行数
+	ui.tableWidget_PER->insertRow(row_count);//添加新的一行
+	ui.tableWidget_PER->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_PER->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_PER->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_PER->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList platformname_List;
+	QStringList Emittername_List;
+	for (int j = 0; j < scenario.getAllPlatform().size(); j++) {
+		platformname_List.append(QString::fromStdString(scenario.getAllPlatform()[j]->getPlatformName()));
+	}
+	for (int j = 0; j < scenario.getAllEmitter().size(); j++) {
+		Emittername_List.append(QString::fromStdString(scenario.getAllEmitter()[j]->getName()));
+	}
+	combox->addItems(platformname_List);
+	combox_1->addItems(Emittername_List);
+}
+void PathPlanGui::del_PlatformEmitterRelation() {
+	int num = ui.tableWidget_PER->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_PER->removeRow(num);
+		if (num < scenario.getAllPlatformEmitterRelation().size()) {
+			scenario.deletePlatformEmitterRelation(num);
+			QMessageBox::about(this, "Tip", "Delete PlatformEmitterRealtion successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("PlatformEmitterRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_PlatformWeaponRelation() {
+	int row_count = ui.tableWidget_PWR->rowCount(); //获取表单行数
+	ui.tableWidget_PWR->insertRow(row_count);//添加新的一行
+	ui.tableWidget_PWR->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_PWR->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_PWR->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_PWR->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList platformname_List;
+	QStringList Weaponname_List;
+	for (int j = 0; j < scenario.getAllPlatform().size(); j++) {
+		platformname_List.append(QString::fromStdString(scenario.getAllPlatform()[j]->getPlatformName()));
+	}
+	for (int j = 0; j < scenario.getAllWeapon().size(); j++) {
+		Weaponname_List.append(QString::fromStdString(scenario.getAllWeapon()[j]->getName()));
+	}
+	combox->addItems(platformname_List);
+	combox_1->addItems(Weaponname_List);
+}
+void PathPlanGui::del_PlatformWeaponRelation() {
+	int num = ui.tableWidget_PWR->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_PWR->removeRow(num);
+		if (num < scenario.getAllPlatformWeaponRelation().size()) {
+			scenario.deletePlatformWeaponRelation(num);
+			QMessageBox::about(this, "Tip", "Delete PlatformWeaponRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("PlatformWeaponRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_OwnPlatformEsmRelation() {
+	int row_count = ui.tableWidget_OEs->rowCount(); //获取表单行数
+	ui.tableWidget_OEs->insertRow(row_count);//添加新的一行
+	ui.tableWidget_OEs->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_OEs->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_OEs->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_OEs->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList Ownplatformname_List;
+	QStringList Esmname_List;
+	for (int j = 0; j < scenario.getAllOwnPlatform().size(); j++) {
+		Ownplatformname_List.append(QString::fromStdString(scenario.getAllOwnPlatform()[j]->getName()));
+	}
+	for (int j = 0; j < scenario.getAllEsm().size(); j++) {
+		Esmname_List.append(QString::fromStdString(scenario.getAllEsm()[j]->getName()));
+	}
+	combox->addItems(Ownplatformname_List);
+	combox_1->addItems(Esmname_List);
+}
+void PathPlanGui::del_OwnPlatformEsmRelation() {
+	int num = ui.tableWidget_OEs->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_OEs->removeRow(num);
+		if (num < scenario.getAllOwnPlatformEsmRelation().size()) {
+			scenario.deleteOwnPlatformEsmRelation(num);
+			QMessageBox::about(this, "Tip", "Delete OwnPlatformEsmRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("OwnPlatformEsmRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_EsmEsmStrategyRelation() {
+	int row_count = ui.tableWidget_EsmES->rowCount(); //获取表单行数
+	ui.tableWidget_EsmES->insertRow(row_count);//添加新的一行
+	ui.tableWidget_EsmES->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_EsmES->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_EsmES->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_EsmES->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList Esmname_List;
+	QStringList EsmStrategyname_List;
+	for (int j = 0; j < scenario.getAllEsm().size(); j++) {
+		Esmname_List.append(QString::fromStdString(scenario.getAllEsm()[j]->getName()));
+	}
+	for (int j = 0; j < scenario.getAllEsmStrategy().size(); j++) {
+		EsmStrategyname_List.append(QString::fromStdString(scenario.getAllEsmStrategy()[j]->getName()));
+	}
+	combox->addItems(Esmname_List);
+	combox_1->addItems(EsmStrategyname_List);
+}
+void PathPlanGui::del_EsmEsmStrategyRelation() {
+	int num = ui.tableWidget_EsmES->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_EsmES->removeRow(num);
+		if (num < scenario.getAllEsmEsmStrategyRelation().size()) {
+			scenario.deleteEsmEsmStrategyRelation(num);
+			QMessageBox::about(this, "Tip", "Delete EsmEsmStrategyRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("EsmEsmStrategyRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_OwnPlatformRouteRelation() {
+	int row_count = ui.tableWidget_ORR->rowCount(); //获取表单行数
+	ui.tableWidget_ORR->insertRow(row_count);//添加新的一行
+	ui.tableWidget_ORR->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_ORR->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_ORR->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_ORR->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList Ownplatformname_List;
+	QStringList Routename_List;
+	for (int j = 0; j < scenario.getAllOwnPlatform().size(); j++) {
+		Ownplatformname_List.append(QString::fromStdString(scenario.getAllOwnPlatform()[j]->getName()));
+	}
+	for (int j = 0; j < scenario.getAllRoute().size(); j++) {
+		Routename_List.append(QString::fromStdString(scenario.getAllRoute()[j]->getName()));
+	}
+	combox->addItems(Ownplatformname_List);
+	combox_1->addItems(Routename_List);
+}
+void PathPlanGui::del_OwnPlatformRouteRelation() {
+	int num = ui.tableWidget_ORR->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_ORR->removeRow(num);
+		if (num < scenario.getAllOwnPlatformRouteRelation().size()) {
+			scenario.deleteOwnPlatformRouteRelation(num);
+			QMessageBox::about(this, "Tip", "Delete OwnPlatformRouteRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("OwnPlatformRouteRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_OwnPlatformEcmRelation() {
+	int row_count = ui.tableWidget_OPEcmR->rowCount(); //获取表单行数
+	ui.tableWidget_OPEcmR->insertRow(row_count);//添加新的一行
+	ui.tableWidget_OPEcmR->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_OPEcmR->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_OPEcmR->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_OPEcmR->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList Ownplatformname_List;
+	QStringList Ecmname_List;
+	for (int j = 0; j < scenario.getAllOwnPlatform().size(); j++) {
+		Ownplatformname_List.append(QString::fromStdString(scenario.getAllOwnPlatform()[j]->getName()));
+	}
+	for (int j = 0; j < scenario.getAllEcm().size(); j++) {
+		Ecmname_List.append(QString::fromStdString(scenario.getAllEcm()[j]->getName()));
+	}
+	combox->addItems(Ownplatformname_List);
+	combox_1->addItems(Ecmname_List);
+}
+void PathPlanGui::del_OwnPlatformEcmRelation() {
+	int num = ui.tableWidget_OPEcmR->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_OPEcmR->removeRow(num);
+		if (num < scenario.getAllOwnPlatformEcmRelation().size()) {
+			scenario.deleteOwnPlatformEcmRelation(num);
+			QMessageBox::about(this, "Tip", "Delete OwnPlatformEcmRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("OwnPlatformEcmRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_EcmEcmStrategyRelation() {
+	int row_count = ui.tableWidget_EcmES->rowCount(); //获取表单行数
+	ui.tableWidget_EcmES->insertRow(row_count);//添加新的一行
+	ui.tableWidget_EcmES->setCellWidget(row_count, 0, new QComboBox());
+	ui.tableWidget_EcmES->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_EcmES->cellWidget(row_count, 0);
+	auto cellWidget_1 = ui.tableWidget_EcmES->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QComboBox *combox_1 = qobject_cast<QComboBox*>(cellWidget_1);
+	QStringList Ecmname_List;
+	QStringList EcmStrategyname_List;
+	for (int j = 0; j < scenario.getAllEcm().size(); j++) {
+		Ecmname_List.append(QString::fromStdString(scenario.getAllEcm()[j]->getName()));
+	}
+	for (int j = 0; j < scenario.getAllEcmStrategy().size(); j++) {
+		EcmStrategyname_List.append(QString::fromStdString(scenario.getAllEcmStrategy()[j]->getName()));
+	}
+	combox->addItems(Ecmname_List);
+	combox_1->addItems(EcmStrategyname_List);
+}
+void PathPlanGui::del_EcmEcmStrategyRelation() {
+	int num = ui.tableWidget_EcmES->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_EcmES->removeRow(num);
+		if (num < scenario.getAllEcmEcmStrategyRelation().size()) {
+			scenario.deleteEcmEcmStrategyRelation(num);
+			QMessageBox::about(this, "Tip", "Delete EcmEcmStrategyRelation successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("EcmEcmStrategyRelation");
+			QDomElement ele = list_node.at(num).toElement();
+			root.removeChild(ele);
+		}
+	}
+}
+void PathPlanGui::add_EcmStrategy()
+{
+	QPushButton *add = new QPushButton();
+	add->setText("View");
+	int row_count = ui.tableWidget_ECMStra->rowCount();
+	ui.tableWidget_ECMStra->insertRow(row_count);
+	ui.tableWidget_ECMStra->setCellWidget(row_count, 1, add);
+	connect(add, SIGNAL(clicked()), this, SLOT(show_ecmstrategy_section()));
+}
+void PathPlanGui::del_EcmStrategy()
+{
+	int num = ui.tableWidget_ECMStra->currentRow();
+	int ree = QMessageBox::information(this, "", "Delete?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_ECMStra->removeRow(num);
+		if (num < scenario.getAllEcmStrategy().size()) {
+			scenario.deleteEcmStrategy(num);
+			QMessageBox::about(this, "Tip", "Delete EcmStrategy successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("EcmStrategy");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						QMessageBox::about(this, "Tip", "Delete EcmStrategy in file successfully");
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Esm()
+{
+	int row_count = ui.tableWidget_Esm->rowCount();
+	ui.tableWidget_Esm->insertRow(row_count);
+
+}
+void PathPlanGui::del_Esm()
+{
+	int num = ui.tableWidget_Esm->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_Esm->removeRow(num);
+		if (num < scenario.getAllEsm().size()) {
+			scenario.deleteEsm(num);
+			QMessageBox::about(this, "Tip", "Delete Esm successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Esm");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Ecm()
+{
+	int row_count = ui.tableWidget_Ecm->rowCount(); //获取表单行数
+	ui.tableWidget_Ecm->insertRow(row_count);//添加新的一行
+	QPushButton *bt = new QPushButton();
+	bt->setText("tech");
+	ui.tableWidget_Ecm->setCellWidget(row_count, 5, bt);
+	connect(bt, SIGNAL(clicked()), this, SLOT(ecm_tech()));
+
+}
+void PathPlanGui::del_Ecm()
+{
+	int num = ui.tableWidget_Ecm->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_Ecm->removeRow(num);
+		if (num < scenario.getAllEcm().size()) {
+			scenario.deleteEcm(num);
+			QMessageBox::about(this, "Tip", "Delete Ecm successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Ecm");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_EsmStrategy()
+{
+	QPushButton *add = new QPushButton();
+	add->setText("View");
+	int row_count = ui.tableWidget_ESMStra->rowCount();
+	ui.tableWidget_ESMStra->insertRow(row_count);
+	ui.tableWidget_ESMStra->setCellWidget(row_count, 1, add);
+	connect(add, SIGNAL(clicked()), this, SLOT(show_esmstrategy_section()));
+}
+void PathPlanGui::del_EsmStrategy()
+{
+	int num = ui.tableWidget_ESMStra->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_ESMStra->removeRow(num);
+		if (num < scenario.getAllEsmStrategy().size()) {
+			scenario.deleteEsmStrategy(num);
+			QMessageBox::about(this, "Tip", "Delete EsmStrategy successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("EsmStrategy");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						QMessageBox::about(this, "Tip", "Delete EsmStrategy in file successfully");
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_OwnPlatform() {
+	int num = ui.tableWidget_OPlatform->rowCount();
+	ui.tableWidget_OPlatform->insertRow(num);
+	QPushButton *btn = new QPushButton();
+	btn->setText("veiw");
+	ui.tableWidget_OPlatform->setCellWidget(num, 1, new QComboBox());
+	auto cell = ui.tableWidget_OPlatform->cellWidget(num, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cell);
+	QStringList list;
+	list << "Air";
+	combox->addItems(list);
+	ui.tableWidget_OPlatform->setCellWidget(num, 8, btn);
+	connect(btn, SIGNAL(clicked()), this, SLOT(show_mission()));
+}
+void PathPlanGui::del_OwnPlatform()
+{
+	int num = ui.tableWidget_OPlatform->currentRow();
+	int ree = QMessageBox::information(this, "Tip", "Confirm delrtion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_OPlatform->removeRow(num);
+		if (num < scenario.getAllOwnPlatform().size())
+		{
+			scenario.deleteOwnPlatform(num);
+			QMessageBox::about(this, "Tip", "Delete OwnPlatform successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("OwnPlatform");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Site()
+{
+	int row_count = ui.tableWidget_Site->rowCount(); //获取表单行数
+	ui.tableWidget_Site->insertRow(row_count);//添加新的一行
+}
+void PathPlanGui::del_Site()		//删除列表数据
+{
+	int num = ui.tableWidget_Site->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_Site->removeRow(num);
+		if (num < scenario.getAllSite().size()) {
+			scenario.deleteSite(num);
+			QMessageBox::about(this, "Tip", "Delete Site successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Site");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Weapon()
+{
+	int row_count = ui.tableWidget_Weapon->rowCount(); //获取表单行数
+	ui.tableWidget_Weapon->insertRow(row_count);//添加新的一行
+}
+void PathPlanGui::del_Weapon()		//删除列表数据
+{
+	int num = ui.tableWidget_Weapon->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_Weapon->removeRow(num);
+		if (num < scenario.getAllWeapon().size()) {
+			scenario.deleteWeapon(num);
+			QMessageBox::about(this, "Tip", "Delete Weapon successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Weapon");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Platform()
+{
+	int row_count = ui.tableWidget_Platform->rowCount(); //获取表单行数
+	ui.tableWidget_Platform->insertRow(row_count);//添加新的一行
+	ui.tableWidget_Platform->setCellWidget(row_count, 1, new QComboBox());
+	auto cellWidget = ui.tableWidget_Platform->cellWidget(row_count, 1);
+	QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+	QStringList list;
+	list << "Land" << "Air" << "Surface";
+	combox->addItems(list);
+}
+void PathPlanGui::del_Platform()		//删除列表数据
+{
+	int num = ui.tableWidget_Platform->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else
+	{
+		ui.tableWidget_Platform->removeRow(num);
+		if (num < scenario.getAllPlatform().size())
+		{
+			scenario.deletePlatform(num);
+			QMessageBox::about(this, "Tip", "Delete Platform successfully");
+
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Platform");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
+void PathPlanGui::add_Emitter() {
+	int row_count = ui.tableWidget_Emitter->rowCount(); //获取表单行数
+	ui.tableWidget_Emitter->insertRow(row_count);//添加新的一行
+	QPushButton *but = new QPushButton();
+	but->setText("View");
+	ui.tableWidget_Emitter->setCellWidget(row_count, 1, but);
+	connect(but, SIGNAL(clicked()), this, SLOT(show_rada()));
+}
+void PathPlanGui::del_Emitter()		//删除列表数据
+{
+	int num = ui.tableWidget_Emitter->currentRow();
+	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+	if (ree != 0)
+	{
+		return;
+	}
+	else {
+		ui.tableWidget_Emitter->removeRow(num);
+		if (num < scenario.getAllEmitter().size()) {
+			scenario.deleteEmitter(num);
+			QMessageBox::about(this, "Tip", "Delete Emitter successfully");
+			QDomElement root = dom.documentElement();
+			QDomNodeList list_node = dom.elementsByTagName("Emitter");
+			int flag = 0;
+			for (int i = 0; i < list_node.count(); i++)
+			{
+				QDomElement ele = list_node.at(i).toElement();
+				if (ele.parentNode().nodeName() == "Scenario")
+				{
+					if (flag == num)
+					{
+						root.removeChild(ele);
+						break;
+					}
+					flag++;
+				}
+			}
+		}
+	}
+}
 //void PathPlanGui::on_currentChanged(const QModelIndex &current, const QModelIndex &previous)
 //{ //选择单元格变化时的响应
 //	if (current.isValid())
@@ -1335,7 +3567,7 @@ void PathPlanGui::show_Route_data()
 			}
 		});
 
-		vTab.push_back(mytab);
+		vTab.push_back(&mytab);
 	}
 }
 

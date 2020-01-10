@@ -91,7 +91,7 @@ private:
 	
 	bool isfinished;
 
-	QVector<MyTab> vTab;
+	QVector<MyTab*> vTab;
 	QVector<QTableWidget*> route_v;
 	QPushButton * tab_btn = NULL;
 	int route_index = -1;
@@ -147,6 +147,14 @@ private:
 public:
 	PathPlanGui(QWidget *parent = Q_NULLPTR);
 
+
+
+
+
+
+
+	
+
 	void listDom(QDomElement & docelem);
 	//std::vector<std::shared_ptr<sce::Route>> routes;
 	//std::vector<std::shared_ptr<sce::EsmStrategy>> esmstrategys;
@@ -180,6 +188,7 @@ public:
 	void show_OPEcmRs_data();
 	void show_EcmESRs_data();
 	void show_OPRRs_data();
+//	QVector<MyTab*> vTab;
 	
 signals:
 	void go_next();//显示下一页
@@ -196,10 +205,84 @@ signals:
 private slots:
 	//当前选择单元格发生变化
 	//void on_currentChanged(const QModelIndex &current, const QModelIndex &previous);
+
+	void save_to_file();
+
+	void save_PlatformSiteRelation();
+
+	void save_PlatformEmitterRelation();
+
+	void save_PlatformWeaponRelation();
+
+	void save_OwnPlatformEsmRelation();
+
+	void save_EsmEsmStrategyRelation();
+
+	void save_OwnPlatformRouteRelation();
+
+	void save_EcmEcmStrategyRelation();
+
+	void save_OwnPlatformEcmRelation();
+
+	void save_Platform();
+
+	void save_Weapon();
+
+	void save_Site();
+
+	void save_OwnPlatform();
+
+	void save_Ecm();
+
+	void save_ECMStrategy();
+
+	void save_ESMStrategy();
+
+	void save_Esm();
+
+	void save_Emitter();
+	void save_Vertex();
+	void add_RouteTab();
+	void del_RouteTab();
 	void on_actOpen_triggered();
 	void show_xml_data();
 	void setOpenFileFlag();
-
+	void add_Vertex();
+	void del_Vertex();
+	void add_PlatformSiteRelation();
+	void del_PlatformSiteRelation();
+	void add_PlatformEmitterRelation();
+	void del_PlatformEmitterRelation();
+	void add_PlatformWeaponRelation();
+	void del_PlatformWeaponRelation();
+	void add_OwnPlatformEsmRelation();
+	void del_OwnPlatformEsmRelation();
+	void add_EsmEsmStrategyRelation();
+	void del_EsmEsmStrategyRelation();
+	void add_OwnPlatformRouteRelation();
+	void del_OwnPlatformRouteRelation();
+	void add_OwnPlatformEcmRelation();
+	void del_OwnPlatformEcmRelation();
+	void add_EcmEcmStrategyRelation();
+	void del_EcmEcmStrategyRelation();
+	void add_EcmStrategy();
+	void del_EcmStrategy();
+	void add_Esm();
+	void del_Esm();
+	void add_Ecm();
+	void del_Ecm();
+	void add_EsmStrategy();
+	void del_EsmStrategy();
+	void add_OwnPlatform();
+	void del_OwnPlatform();
+	void add_Site();
+	void del_Site();
+	void add_Weapon();
+	void del_Weapon();
+	void add_Platform();
+	void del_Platform();
+	void add_Emitter();
+	void del_Emitter();
 	void on_actSave_triggered();
 	void show_rada();
 	void show_mission();
