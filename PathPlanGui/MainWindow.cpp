@@ -105,20 +105,102 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	//ui.tableWidget_Vertex->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
 	ui.tableWidget_Vertex->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}"); //设置水平表头背景色
 	ui.tableWidget_Vertex->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}"); //设置垂直表头背景色
+	ui.tableWidget_Vertex->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Vertex->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
 	ui.tableWidget_Platform->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_Platform->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Platform->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Platform->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
 	ui.tableWidget_Weapon->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_Weapon->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Weapon->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Weapon->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
 	ui.tableWidget_Site->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_Site->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Site->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Site->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
 	ui.tableWidget_Emitter->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_Emitter->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Emitter->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Emitter->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_Ecm->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Ecm->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Ecm->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Ecm->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	ui.tableWidget_Ecm->verticalHeader()->setVisible(true);
+
+	ui.tableWidget_Esm->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Esm->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_Esm->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_Esm->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	ui.tableWidget_Esm->horizontalHeader()->setVisible(true);
+
+	ui.tableWidget_EcmES->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_EcmES->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_EcmES->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_EcmES->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_ECMStra->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ECMStra->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ECMStra->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_ECMStra->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_EsmES->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_EsmES->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_EsmES->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_EsmES->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_ESMStra->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ESMStra->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ESMStra->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_ESMStra->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_OEs->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OEs->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OEs->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_OEs->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_OPEcmR->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OPEcmR->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OPEcmR->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_OPEcmR->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_OPlatform->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OPlatform->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_OPlatform->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_OPlatform->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_ORR->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ORR->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_ORR->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_ORR->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_PER->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PER->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PER->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_PER->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_PSR->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PSR->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PSR->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_PSR->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+	ui.tableWidget_PWR->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PWR->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
+	ui.tableWidget_PWR->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	ui.tableWidget_PWR->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
 	//ui.tableWidget_TransInt->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
 	ui.tableWidget_TransInt->horizontalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}");
-	ui.tableWidget_TransInt->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	ui.tableWidget_TransInt->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	/*ui.tableWidget_TransInt->horizontalHeader()->setResizeMode(QHeaderView::Stretch); 自适应列宽*/
 	ui.tableWidget_TransInt->verticalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}");
-	ui.tableWidget_TransInt->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	ui.tableWidget_TransInt->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(on_actOpen_triggered()));
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(setOpenFileFlag()));
@@ -1123,7 +1205,7 @@ void PathPlanGui::show_Ecm_data()
 		ui.tableWidget_Ecm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getRfMax()), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
 		ui.tableWidget_Ecm->setCellWidget(i, 5, btn);
-		auto cell = ui.tableWidget_Ecm->cellWidget(i, 5);
+		//auto cell = ui.tableWidget_Ecm->cellWidget(i, 5);
 		//QPushButton *tech = qobject_cast<QPushButton*>(cell);
 		//tech->setText("View");
 		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
@@ -1213,8 +1295,13 @@ void PathPlanGui::show_Route_data()
 		new_table->horizontalHeader()->setCascadingSectionResizes(false);
 		new_table->verticalHeader()->setVisible(true);
 		new_table->setHorizontalHeaderLabels(headers);
-		new_table->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
-		new_table->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头背景色
+		//new_table->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
+		new_table->horizontalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}"); //设置水平表头背景色
+		new_table->verticalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240, 240, 240);}"); //设置垂直表头背景色
+		new_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+		new_table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+
 		for (int j = 0; j < scenario.getAllRoute()[i]->getAllWayPoints().size(); j++)
 		{
 			new_table->insertRow(j);
@@ -1755,9 +1842,9 @@ void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)
 	QTextTableFormat tableformate;
 	tableformate.setBorder(0);
 	//插入table，用于显示状态信息
-	QTextTable *table = cur.insertTable(2, 1, tableformate);
+	QTextTable *table = cur.insertTable(1, 2, tableformate);
 	table->cellAt(0, 0).firstCursorPosition().insertText("[" + QTime::currentTime().toString("hh:mm:ss") + "]");
-	table->cellAt(1, 0).firstCursorPosition().insertText(text);
+	table->cellAt(0, 1).firstCursorPosition().insertText(text);
 	cur.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor, 1);
 	cur.select(QTextCursor::BlockUnderCursor);
 	cur.mergeCharFormat(chfmt);
