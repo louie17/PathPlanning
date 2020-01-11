@@ -207,7 +207,8 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(this, SIGNAL(sign_show_xml_data()), this, SLOT(show_xml_data()));
 	connect(ui.actionRefresh, SIGNAL(triggered()), this, SLOT(show_xml_data()));
 	connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(save_to_file()));
-	connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(save_as_new_file()));
+	connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(save_as_new_file())); 
+	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
 	//connect(ui.actionInsert, SIGNAL(triggered()), this, SLOT(on_actInsert_triggered()));
 	//connect(ui.actionDelete, SIGNAL(triggered()), this, SLOT(on_actDelete_triggered()));
@@ -269,8 +270,8 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_OPsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
 	connect(ui.pushButton_Ecmsave, SIGNAL(clicked()), this, SLOT(save_Ecm()));
 	connect(ui.pushButton_Esmsave, SIGNAL(clicked()), this, SLOT(save_Esm()));
-	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_ESMStrategy()));
-	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_ECMStrategy()));
+	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
+	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
 	connect(ui.pushButton_PSRsave, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
 	connect(ui.pushButton_PERsave, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
 	connect(ui.pushButton_PWRsave, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
@@ -1290,7 +1291,7 @@ void PathPlanGui::save_Ecm() {
 		}
 	}
 }
-void PathPlanGui::save_ECMStrategy() {
+void PathPlanGui::save_EcmStrategy() {
 	int num = ui.tableWidget_ECMStra->currentRow();
 	QString a = ui.tableWidget_ECMStra->item(num, 0)->text();
 	//vector<EsmStrategySection>
@@ -1334,7 +1335,7 @@ void PathPlanGui::save_ECMStrategy() {
 		}
 	}
 }
-void PathPlanGui::save_ESMStrategy() {
+void PathPlanGui::save_EsmStrategy() {
 	int num = ui.tableWidget_ESMStra->currentRow();
 	QString a = ui.tableWidget_ESMStra->item(num, 0)->text();
 	sce::EsmStrategy new_data(a.toStdString());
@@ -3497,6 +3498,14 @@ void PathPlanGui::show_OwnPlatform_data()
 		QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
 		btn->setText("View");
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_mission()));
+		ui.tableWidget_OPlatform->setCellWidget(i, 9, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(i, 9));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
+		ui.tableWidget_OPlatform->setCellWidget(i, 10, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(i, 10));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
 	}
 }
 
@@ -3517,6 +3526,15 @@ void PathPlanGui::show_Ecm_data()
 		//QPushButton *tech = qobject_cast<QPushButton*>(cell);
 		//tech->setText("View");
 		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
+
+		ui.tableWidget_Ecm->setCellWidget(i, 6, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 6));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Ecm()));
+		ui.tableWidget_Ecm->setCellWidget(i, 7, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 7));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Ecm()));
 	}
 }
 
@@ -3533,6 +3551,15 @@ void PathPlanGui::show_Esm_data()
 		ui.tableWidget_Esm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getRfCovMax()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 5, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAcquisition()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAlarm()), 'f', 2)));
+
+		ui.tableWidget_Esm->setCellWidget(i, 7, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Esm->cellWidget(i, 7));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Esm()));
+		ui.tableWidget_Esm->setCellWidget(i, 8, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 8));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Esm()));
 	}
 }
 
@@ -3550,6 +3577,15 @@ void PathPlanGui::show_EsmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_esmstrategy_section()));
+
+		ui.tableWidget_ESMStra->setCellWidget(i, 2, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 2));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
+		ui.tableWidget_ESMStra->setCellWidget(i, 3, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 3));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EsmStrategy()));
 	}
 }
 
@@ -3567,6 +3603,15 @@ void PathPlanGui::show_EcmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_ecmstrategy_section()));
+
+		ui.tableWidget_ECMStra->setCellWidget(i, 2, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 2));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
+		ui.tableWidget_ECMStra->setCellWidget(i, 3, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 3));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EcmStrategy()));
 	}
 }
 

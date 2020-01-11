@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -949,6 +949,16 @@
                      <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -1142,6 +1152,16 @@
                      <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -1318,6 +1338,16 @@
                    <column>
                     <property name="text">
                      <string>Aeff</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -1500,6 +1530,16 @@
                    <string>Section</string>
                   </property>
                  </column>
+                 <column>
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Del</string>
+                  </property>
+                 </column>
                 </widget>
                </item>
               </layout>
@@ -1617,6 +1657,16 @@
                   </property>
                   <property name="textAlignment">
                    <set>AlignJustify|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Del</string>
                   </property>
                  </column>
                 </widget>
