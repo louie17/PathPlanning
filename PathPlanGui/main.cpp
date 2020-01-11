@@ -43,11 +43,9 @@ int main(int argc, char *argv[])
 
 	QObject::connect(&w, SIGNAL(sign_mission()), &mission, SLOT(show_mission()));
 	QObject::connect(&w, SIGNAL(rada_mode()), &rada, SLOT(rada_show()));
-	//QObject::connect(&w, SIGNAL(show_data_page2()), &w2, SLOT(show_xml_data()));
-	//QObject::connect(&w, SIGNAL(show_data_page3()), &w4, SLOT(show_xml_data()));
 
-	QObject::connect(&w, SIGNAL(sign_added_esmstrategy_section()), &section, SLOT(added_esmstrategy_section()));
-	QObject::connect(&w, SIGNAL(sign_added_ecmstrategy_section()), &section, SLOT(added_ecmstrategy_section()));
+	/*QObject::connect(&w, SIGNAL(sign_added_esmstrategy_section()), &section, SLOT(added_esmstrategy_section()));
+	QObject::connect(&w, SIGNAL(sign_added_ecmstrategy_section()), &section, SLOT(added_ecmstrategy_section()));*/
 	QObject::connect(&w, SIGNAL(sign_ecmstrategy_section()), &section, SLOT(show_ecmstrategy_section()));
 	QObject::connect(&w, SIGNAL(sign_esmstrategy_section()), &section, SLOT(show_esmstrategy_section()));
 

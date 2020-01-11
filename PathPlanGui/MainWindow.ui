@@ -195,6 +195,16 @@
                      <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -295,6 +305,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -421,6 +441,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -559,6 +589,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -722,6 +762,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>

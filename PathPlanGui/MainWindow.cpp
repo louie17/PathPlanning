@@ -271,7 +271,6 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_Esmsave, SIGNAL(clicked()), this, SLOT(save_Esm()));
 	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_ESMStrategy()));
 	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_ECMStrategy()));
-
 	connect(ui.pushButton_PSRsave, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
 	connect(ui.pushButton_PERsave, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
 	connect(ui.pushButton_PWRsave, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
@@ -295,6 +294,11 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	ui.statusBar->addWidget(LabCellText);
 }
 void PathPlanGui::save_to_file() {
+	if (dom.isNull())
+	{
+		QMessageBox::about(this, tr("Tips"), tr("Please open a valid file first"));
+		return;
+	}
 	if (!file.open(QFile::WriteOnly | QFile::Truncate)) //先读进来，再重写，如果不用truncate就是在后面追加内容，就无效了
 		return;
 	QTextStream out_stream(&file);
@@ -303,26 +307,30 @@ void PathPlanGui::save_to_file() {
 	QMessageBox::about(this, tr("Tip"), tr("Save to file successfully"));
 }
 void PathPlanGui::save_as_new_file() {
+	if (dom.isNull())
+	{
+		QMessageBox::about(this, tr("Tips"), tr("Please open a valid file first"));
+		return;
+	}
 	QFileDialog fileDialog;
-	QString fileName = fileDialog.getSaveFileName(this, tr("Open File"), "filename", tr("XML File(*.xml)"));
+	QString fileName = fileDialog.getSaveFileName(this, tr("Save File"), "filename", tr("XML File(*.xml)"));
 	if (fileName == "")
 	{
 		return;
 	}
 	QFile file_new(fileName);
-	if (!file_new.open(QIODevice::WriteOnly | QIODevice::Text))
+	/*if (!file_new.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QMessageBox::warning(this, tr("错误"), tr("打开文件失败"));
 		return;
 	}
 	else
-	{
-		QTextStream out_stream(&file_new);
-		dom.save(out_stream, 4); //缩进4格
-		file_new.close();
-		QMessageBox::about(this, tr("Tip"), tr("Save to new file successfully"));
-	}
-
+	{*/
+	QTextStream out_stream(&file_new);
+	dom.save(out_stream, 4); //缩进4格
+	file_new.close();
+	QMessageBox::about(this, tr("Tip"), tr("Save to new file successfully"));
+	//}
 }
 void PathPlanGui::save_PlatformSiteRelation() {
 	int num = ui.tableWidget_PSR->currentRow();
@@ -3351,6 +3359,14 @@ void PathPlanGui::show_Vertex_data()
 		ui.tableWidget_Vertex->setItem(i, 0, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getLongitude()), 'f', 2)));
 		ui.tableWidget_Vertex->setItem(i, 1, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getLatitude()), 'f', 2)));
 		ui.tableWidget_Vertex->setItem(i, 2, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getAltitude()), 'f', 2)));
+		ui.tableWidget_Vertex->setCellWidget(i, 3, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Vertex->cellWidget(i, 3));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Vertex()));
+		ui.tableWidget_Vertex->setCellWidget(i, 4, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Vertex->cellWidget(i, 4));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Vertex()));
 	}
 }
 
@@ -3381,6 +3397,14 @@ void PathPlanGui::show_Platform_data()
 		{
 			cb_Ptype->setCurrentIndex(2);
 		}
+		ui.tableWidget_Platform->setCellWidget(i, 2, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Platform->cellWidget(i, 2));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Platform()));
+		ui.tableWidget_Platform->setCellWidget(i, 3, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Platform->cellWidget(i, 3));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Platform()));
 	}	
 }
 
@@ -3394,6 +3418,14 @@ void PathPlanGui::show_Emitter_data()
 		QPointer<QPushButton> btn(new QPushButton("View"));
 		ui.tableWidget_Emitter->setCellWidget(i, 1, btn);
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_rada()));
+		ui.tableWidget_Emitter->setCellWidget(i, 2, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 2));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
+		ui.tableWidget_Emitter->setCellWidget(i, 3, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 3));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
 	}
 }
 
@@ -3407,6 +3439,14 @@ void PathPlanGui::show_Weapon_data()
 		ui.tableWidget_Weapon->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllWeapon()[i]->getName())));
 		ui.tableWidget_Weapon->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllWeapon()[i]->getCEPR())));
 		ui.tableWidget_Weapon->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllWeapon()[i]->getWeaponAreaCoverage())));
+		ui.tableWidget_Weapon->setCellWidget(i, 3, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Weapon->cellWidget(i, 3));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Weapon()));
+		ui.tableWidget_Weapon->setCellWidget(i, 4, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Weapon->cellWidget(i, 4));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Weapon()));
 	}
 }
 
@@ -3419,8 +3459,16 @@ void PathPlanGui::show_Site_data()
 		ui.tableWidget_Site->insertRow(i);
 		ui.tableWidget_Site->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllSite()[i]->getName())));
 		ui.tableWidget_Site->setItem(i, 1, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getAltitude()), 'f', 2)));
-		ui.tableWidget_Site->setItem(i, 3, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getLongitude()), 'f', 2)));
 		ui.tableWidget_Site->setItem(i, 2, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getLatitude()), 'f', 2)));
+		ui.tableWidget_Site->setItem(i, 3, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getLongitude()), 'f', 2)));
+		ui.tableWidget_Site->setCellWidget(i, 4, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Site->cellWidget(i, 4));
+		save->setText("Save");
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Site()));
+		ui.tableWidget_Site->setCellWidget(i, 5, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Site->cellWidget(i, 5));
+		del->setText("Del");
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Weapon()));
 	}
 }
 
