@@ -267,8 +267,8 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_OPsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
 	connect(ui.pushButton_Ecmsave, SIGNAL(clicked()), this, SLOT(save_Ecm()));
 	connect(ui.pushButton_Esmsave, SIGNAL(clicked()), this, SLOT(save_Esm()));
-	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_ESMStrategy()));
-	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_ECMStrategy()));
+	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
+	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
 	connect(ui.pushButton_PSRsave, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
 	connect(ui.pushButton_PERsave, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
 	connect(ui.pushButton_PWRsave, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
@@ -1292,7 +1292,7 @@ void PathPlanGui::save_Ecm() {
 		}
 	}
 }
-void PathPlanGui::save_ECMStrategy() {
+void PathPlanGui::save_EcmStrategy() {
 	int num = ui.tableWidget_ECMStra->currentRow();
 	QString a = ui.tableWidget_ECMStra->item(num, 0)->text();
 	//vector<EsmStrategySection>
@@ -1336,7 +1336,7 @@ void PathPlanGui::save_ECMStrategy() {
 		}
 	}
 }
-void PathPlanGui::save_ESMStrategy() {
+void PathPlanGui::save_EsmStrategy() {
 	int num = ui.tableWidget_ESMStra->currentRow();
 	QString a = ui.tableWidget_ESMStra->item(num, 0)->text();
 	sce::EsmStrategy new_data(a.toStdString());
