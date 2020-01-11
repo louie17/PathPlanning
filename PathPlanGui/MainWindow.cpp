@@ -78,8 +78,6 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 	file.close();
 
 	logger::instance()->loggerMaster(type, message);
-	//onStatusInfo(type, msg);
-	//emit outputMsg(type, msg);
 	mutex.unlock();
 }
 //------------------------------------------日志处理部分结束
@@ -292,6 +290,10 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 
 	LabCellText->setMinimumSize(LabCellText->sizeHint());
 	ui.statusBar->addWidget(LabCellText);
+
+	//初始化QChart
+	//ui.chartView_pre->setChart(preResult_chart);
+	//ui.chartView_last->setChart(lastResult_chart);
 }
 void PathPlanGui::save_to_file() {
 	if (!file.open(QFile::WriteOnly | QFile::Truncate)) //先读进来，再重写，如果不用truncate就是在后面追加内容，就无效了
@@ -2995,7 +2997,7 @@ void PathPlanGui::run_algorithm()
 			assert(siteTmp.size() >= 0);
 			wcrange[i] = siteTmp.size() > 0 ? *std::max_element(siteTmp.cbegin(), siteTmp.cend()) : 0.0;
 			auto ret = swRelation.insert(std::make_pair(iterS, wcrange[i]));
-			assert(ret.second);
+			//assert(ret.second);//插入失败是因为出现重复的键值对
 		}
 		//获取路径片段的起始终止点序列
 		size_t target_size = scenario.getAllOwnPlatform()[op_index]->getMission().getAllTargetPoints().size();
@@ -3157,40 +3159,77 @@ void PathPlanGui::route_evaluate()
 
 void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 {
-	QBarSet *set0 = new QBarSet("U");
-	QBarSet *set1 = new QBarSet("D");
-	QBarSet *set2 = new QBarSet("T");
-	QBarSet *set3 = new QBarSet("E");
-	QBarSet *set4 = new QBarSet("H");
+	QPen pen0(Qt::green), pen1(Qt::darkYellow), pen2(Qt::red), pen3(Qt::gray), pen4(Qt::black);
+	pen0.setWidth(1);
+	pen1.setWidth(1);
+	pen2.setWidth(1);
+	pen3.setWidth(1);
+	pen4.setWidth(1);
+
+	//QBarSet *set0 = new QBarSet("U");
+	//QBarSet *set1 = new QBarSet("D");
+	//QBarSet *set2 = new QBarSet("T");
+	//QBarSet *set3 = new QBarSet("E");
+	//QBarSet *set4 = new QBarSet("H");
+	//for (int i = 0; i < stateProbs.cols(); i++)
+	//{
+	//	*set0 << stateProbs(0, i);
+	//	*set1 << stateProbs(1, i);
+	//	*set2 << stateProbs(2, i);
+	//	*set3 << stateProbs(3, i);
+	//	*set4 << stateProbs(4, i);
+	//}
+
+	//QPercentBarSeries *series = new QPercentBarSeries();
+	//series->append(set0);
+	//series->append(set1);
+	//series->append(set2);
+	//series->append(set3);
+	//series->append(set4);
+	QLineSeries *lseries0 = new QLineSeries();
+	QLineSeries *lseries1 = new QLineSeries();
+	QLineSeries *lseries2 = new QLineSeries();
+	QLineSeries *lseries3 = new QLineSeries();
+	QLineSeries *lseries4 = new QLineSeries();
 	for (int i = 0; i < stateProbs.cols(); i++)
 	{
-		*set0 << stateProbs(0, i);
-		*set1 << stateProbs(1, i);
-		*set2 << stateProbs(2, i);
-		*set3 << stateProbs(3, i);
-		*set4 << stateProbs(4, i);
+		*lseries0 << QPointF(i, stateProbs(0, i));
+		*lseries1 << QPointF(i, stateProbs(1, i));
+		*lseries2 << QPointF(i, stateProbs(2, i));
+		*lseries3 << QPointF(i, stateProbs(3, i));
+		*lseries4 << QPointF(i, stateProbs(4, i));
 	}
 
-	QPercentBarSeries *series = new QPercentBarSeries();
-	series->append(set0);
-	series->append(set1);
-	series->append(set2);
-	series->append(set3);
-	series->append(set4);
+	lseries0->setName("U");
+	lseries1->setName("D");
+	lseries2->setName("T");
+	lseries3->setName("E");
+	lseries4->setName("H");
 
-	QChart *chart = new QChart();
-	chart->addSeries(series);
-	chart->setTitle("Simple percentbarchart example");
-	chart->setAnimationOptions(QChart::SeriesAnimations);
+	lseries0->setPen(pen0);
+	lseries1->setPen(pen1);
+	lseries2->setPen(pen2);
+	lseries3->setPen(pen3);
+	lseries4->setPen(pen4);
 
-	QValueAxis *axisY = new QValueAxis();
-	chart->addAxis(axisY, Qt::AlignLeft);
-	series->attachAxis(axisY);
+	QChart *preResult_chart = new QChart();
+	preResult_chart->addSeries(lseries0);
+	preResult_chart->addSeries(lseries1);
+	preResult_chart->addSeries(lseries2);
+	preResult_chart->addSeries(lseries3);
+	preResult_chart->addSeries(lseries4);
+	//preResult_chart->setTitle("Survival rate line map");
+	preResult_chart->setAnimationOptions(QChart::SeriesAnimations);//设置启用或禁用动画
 
-	QChartView *chartView = new QChartView(chart, ui.graphicsView_pre);
-	chartView->setRenderHint(QPainter::Antialiasing);
-	//chartView->show();
-	ui.graphicsView_pre->show();
+	//QValueAxis *axisY = new QValueAxis();
+	//preResult_chart->addAxis(axisY, Qt::AlignLeft);
+	//lseries0->attachAxis(axisY);
+
+	//QChartView *chartView = new QChartView(preResult_chart, ui.chartView_pre);
+	//chartView->setRenderHint(QPainter::Antialiasing);
+	//ui.chartView_pre->show();
+	ui.chartView_pre->setChart(preResult_chart);
+	ui.chartView_pre->setRenderHint(QPainter::Antialiasing);
 
 	//AreaChart
 	//![1]
@@ -3224,17 +3263,18 @@ void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 	qaseries3->setName("Engaged");
 	qaseries4->setName("Hit");
 
-	QPen pen0(Qt::black), pen1(Qt::black), pen2(Qt::black), pen3(Qt::black), pen4(Qt::black);
-	pen0.setWidth(3);
-	pen1.setWidth(3);
-	pen2.setWidth(3);
-	pen3.setWidth(3);
-	pen4.setWidth(3);
-	qaseries0->setPen(pen0);
-	qaseries1->setPen(pen1);
-	qaseries2->setPen(pen2);
-	qaseries3->setPen(pen3);
-	qaseries4->setPen(pen4);
+	QPen pen5(Qt::black), pen6(Qt::black), pen7(Qt::black), pen8(Qt::black), pen9(Qt::black);
+	pen5.setWidth(3);
+	pen6.setWidth(3);
+	pen7.setWidth(3);
+	pen8.setWidth(3);
+	pen9.setWidth(3);
+
+	qaseries0->setPen(pen5);
+	qaseries1->setPen(pen6);
+	qaseries2->setPen(pen7);
+	qaseries3->setPen(pen8);
+	qaseries4->setPen(pen9);
 
 	QLinearGradient gradient0(QPointF(0, 0), QPointF(0, 1));
 	gradient0.setColorAt(0.0, Qt::white);
@@ -3268,25 +3308,24 @@ void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 	//![3]
 
 	//![4]
-	QChart *achart = new QChart();
-	achart->addSeries(qaseries0);
-	achart->addSeries(qaseries1);
-	achart->addSeries(qaseries2);
-	achart->addSeries(qaseries3);
-	achart->addSeries(qaseries4);
-	achart->setTitle("Survival rate area map");
-	//achart->createDefaultAxes();
-	//achart->axes(Qt::Horizontal).first()->setRange(0, 20);
-	//achart->axes(Qt::Vertical).first()->setRange(0, 10);
+	QChart *lastResult_chart = new QChart();
+	lastResult_chart->addSeries(qaseries0);
+	lastResult_chart->addSeries(qaseries1);
+	lastResult_chart->addSeries(qaseries2);
+	lastResult_chart->addSeries(qaseries3);
+	lastResult_chart->addSeries(qaseries4);
+	//lastResult_chart->setTitle("Survival rate area map");
+	//lastResult_chart->createDefaultAxes();
+	//lastResult_chart->axes(Qt::Horizontal).first()->setRange(0, 20);
+	//lastResult_chart->axes(Qt::Vertical).first()->setRange(0, 10);
 	//![4]
 
 	//![5]
-	QChartView *achartView = new QChartView(achart, ui.graphicsView_last);
-	achartView->setRenderHint(QPainter::Antialiasing);
+	//QChartView *achartView = new QChartView(lastResult_chart, ui.chartView_last);
+	//achartView->setRenderHint(QPainter::Antialiasing);
 
-	ui.graphicsView_last->show();
-	//ui.graphicsView = achartView;
-	//this->setCentralWidget(ui.graphicsView);
+	ui.chartView_last->setChart(lastResult_chart);
+	ui.chartView_last->setRenderHint(QPainter::Antialiasing);
 }
 
 void PathPlanGui::backTab()
@@ -4059,7 +4098,7 @@ void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)
 		chfmt.setForeground(QBrush(Qt::red));
 		break;
 	case QtFatalMsg: //致命错误提示
-		text = "ERROR";
+		text = "Fatal ERROR";
 		chfmt.setForeground(QBrush(Qt::red));
 		abort();
 		break;
