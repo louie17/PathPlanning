@@ -203,6 +203,8 @@ private slots:
 
 	void save_to_file();
 
+	void save_as_new_file();
+
 	void save_PlatformSiteRelation();
 
 	void save_PlatformEmitterRelation();

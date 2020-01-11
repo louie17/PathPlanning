@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -195,6 +195,16 @@
                      <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -295,6 +305,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -421,6 +441,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -559,6 +589,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -722,6 +762,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Delete</string>
                     </property>
                    </column>
                   </widget>
@@ -3168,8 +3218,14 @@
          <attribute name="title">
           <string>Survival Rate Evaluation</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_12">
+          <item row="0" column="1">
+           <widget class="QChartView" name="graphicsView_pre"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QChartView" name="graphicsView_last"/>
+          </item>
+          <item row="0" column="0" rowspan="2">
            <widget class="QGroupBox" name="groupBox_10">
             <property name="font">
              <font>
@@ -3366,34 +3422,6 @@
              </item>
             </layout>
            </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_47">
-            <item>
-             <widget class="QGroupBox" name="groupBox_13">
-              <property name="title">
-               <string>Pre-jamming Results</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_28">
-               <item>
-                <widget class="QChartView" name="chartView_pre"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_15">
-              <property name="title">
-               <string>Last-jamming Result</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_46">
-               <item>
-                <widget class="QChartView" name="chartView_last"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
