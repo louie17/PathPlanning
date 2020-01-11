@@ -142,7 +142,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	ui.tableWidget_EcmES->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_EcmES->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget_EcmES->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
+	
 	ui.tableWidget_ECMStra->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_ECMStra->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_ECMStra->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -3454,15 +3454,17 @@ void PathPlanGui::show_Emitter_data()
 	for (int i = 0; i < scenario.getAllEmitter().size(); i++) {
 		ui.tableWidget_Emitter->insertRow(i);
 		ui.tableWidget_Emitter->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllEmitter()[i]->getName())));
+		ui.tableWidget_Emitter->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarMSR(), 'f', 2)));
+		ui.tableWidget_Emitter->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarDangerValue(), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
-		ui.tableWidget_Emitter->setCellWidget(i, 1, btn);
+		ui.tableWidget_Emitter->setCellWidget(i, 3, btn);
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_rada()));
-		ui.tableWidget_Emitter->setCellWidget(i, 2, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 2));
+		ui.tableWidget_Emitter->setCellWidget(i, 4, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 4));
 		save->setText("Save");
 		connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
-		ui.tableWidget_Emitter->setCellWidget(i, 3, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 3));
+		ui.tableWidget_Emitter->setCellWidget(i, 5, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 5));
 		del->setText("Del");
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
 	}
@@ -3520,6 +3522,9 @@ void PathPlanGui::show_OwnPlatform_data()
 		ui.tableWidget_OPlatform->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllOwnPlatform()[i]->getName())));
 		QPointer<QComboBox> cbOptype(new QComboBox());
 		ui.tableWidget_OPlatform->setCellWidget(i, 1, cbOptype);
+		QStringList alist{ "Air" };//OwnPlatform Type
+		cbOptype->addItems(alist);
+
 		ui.tableWidget_OPlatform->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxAcceleration())));
 		ui.tableWidget_OPlatform->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxDeceleration())));
 		ui.tableWidget_OPlatform->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxClimbRate())));
@@ -3528,14 +3533,15 @@ void PathPlanGui::show_OwnPlatform_data()
 		ui.tableWidget_OPlatform->setItem(i, 7, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxTurnRadius())));
 		QPointer<QPushButton> cb_mission(new QPushButton("View"));
 		ui.tableWidget_OPlatform->setCellWidget(i, 8, cb_mission);
-		auto cellWidget = ui.tableWidget_OPlatform->cellWidget(i, 1);
-		auto cellWidget_2 = ui.tableWidget_OPlatform->cellWidget(i, 8);
-		QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
-		QStringList alist{"Air"};
-		combox->addItems(alist);
-		QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
-		btn->setText("View");
-		connect(btn, SIGNAL(clicked()), this, SLOT(show_mission()));
+		//auto cellWidget = ui.tableWidget_OPlatform->cellWidget(i, 1);
+		//auto cellWidget_2 = ui.tableWidget_OPlatform->cellWidget(i, 8);
+		//QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+		//QStringList alist{"Air"};
+		//combox->addItems(alist);
+		//QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
+		//btn->setText("View");
+		ui.tableWidget_OPlatform->setItem(i, 9, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getplatformRCS(), 'f', 2)));
+		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
 	}
 }
 
@@ -3552,9 +3558,9 @@ void PathPlanGui::show_Ecm_data()
 		ui.tableWidget_Ecm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getRfMax()), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
 		ui.tableWidget_Ecm->setCellWidget(i, 5, btn);
-		//auto cell = ui.tableWidget_Ecm->cellWidget(i, 5);
-		//QPushButton *tech = qobject_cast<QPushButton*>(cell);
-		//tech->setText("View");
+
+		//ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getplatformRCS()), 'f', 2)));
+		ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerERP()), 'f', 2)));
 		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
 	}
 }
@@ -3572,6 +3578,9 @@ void PathPlanGui::show_Esm_data()
 		ui.tableWidget_Esm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getRfCovMax()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 5, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAcquisition()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAlarm()), 'f', 2)));
+		ui.tableWidget_Esm->setItem(i, 7, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getesmMinDwellTime()), 'f', 2)));
+		ui.tableWidget_Esm->setItem(i, 8, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getPmin()), 'f', 2)));
+		ui.tableWidget_Esm->setItem(i, 9, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getAeff()), 'f', 2)));
 	}
 }
 

@@ -848,21 +848,25 @@ namespace sce
 	//由于默认构造函数尚未进行RadarMode值初始化，所以调用默认构造后应尽快完成RadarMode值初始化操作
 	Emitter::Emitter(void)
 		:m_name("Emitter1")
+		, m_radarMSR(1.0)
+		, m_radarDangerValue(0.0)
 	{
 	}
 
 	Emitter::Emitter(const std::string & name)
 		:m_name(name)
+		, m_radarMSR(1.0)
+		, m_radarDangerValue(0.0)
 	{
 	}
 
 	Emitter::Emitter(const std::string &name, std::shared_ptr<Radar_Mode> ptrRadarMode)
-		:m_name(name), m_ptrRadarMode({ ptrRadarMode })
+		:m_name(name), m_ptrRadarMode({ ptrRadarMode }), m_radarMSR(1.0), m_radarDangerValue(0.0)
 	{
 	}
 
 	Emitter::Emitter(const std::string& name, std::vector<std::shared_ptr<Radar_Mode>>& ptrRadarModes)
-		:m_name(name), m_ptrRadarMode(ptrRadarModes)
+		:m_name(name), m_ptrRadarMode(ptrRadarModes), m_radarMSR(1.0), m_radarDangerValue(0.0)
 	{
 	}
 
@@ -935,6 +939,16 @@ namespace sce
 	void Emitter::setName(const std::string & name)
 	{
 		m_name = name;
+	}
+
+	void Emitter::setradarMSR(const double & radarMSR)
+	{
+		m_radarMSR = radarMSR;
+	}
+
+	void Emitter::setradarDangerValue(const double & radarDangerValue)
+	{
+		m_radarDangerValue = radarDangerValue;
 	}
 
 	void Emitter::setAllPtr2RadarModes(std::vector<std::shared_ptr<Radar_Mode>>& ptrRadarModes)
@@ -1243,6 +1257,7 @@ namespace sce
 		,m_maxDiveRate(30.0)
 		,m_maxSpeed(340.0)
 		,m_maxTurnRadius(10000)
+		,m_platformRCS(1.0)
 	{
 	}
 
@@ -1262,6 +1277,7 @@ namespace sce
 		,m_maxDiveRate(maxDiveRate)
 		,m_maxSpeed(maxSpeed)
 		,m_maxTurnRadius(maxTurnRadius)
+		, m_platformRCS(1.0)
 	{
 	}
 
@@ -1283,6 +1299,7 @@ namespace sce
 		,m_maxSpeed(maxSpeed)
 		,m_maxTurnRadius(maxTurnRadius)
 		,m_mission(mission)
+		, m_platformRCS(1.0)
 	{
 	}
 
@@ -1350,6 +1367,11 @@ namespace sce
 		m_type = ownPlatformType;
 	}
 
+	void OwnPlatform::setplatformRCS(const double & platformRCS)
+	{
+		m_platformRCS = platformRCS;
+	}
+
 	void OwnPlatform::setMaxAcceleration(const double &maxAcceleration)
 	{
 		m_maxAcceleration = maxAcceleration;
@@ -1395,8 +1417,8 @@ namespace sce
 		,m_numPulsesAcquisition(200)
 		,m_numPulsesAlarm(100)
 		,m_esmMinDwellTime(0.01)
-		,m_nEmitter(2)
-		,m_taoScan(1.0)
+		//,m_nEmitter(2)
+		//,m_taoScan(1.0)
 		,m_Pmin(1.0)
 		,m_Aeff(1.0)
 	{
@@ -1417,8 +1439,8 @@ namespace sce
 		, m_numPulsesAcquisition(numPulsesAcquisition)
 		, m_numPulsesAlarm(numPulsesAlarm)
 		, m_esmMinDwellTime(0.01)
-		, m_nEmitter(2)
-		, m_taoScan(1.0)
+		//, m_nEmitter(2)
+		//, m_taoScan(1.0)
 		, m_Pmin(1.0)
 		, m_Aeff(1.0)
 	{
@@ -1432,8 +1454,8 @@ namespace sce
 		const size_t &numPulsesAcquisition,
 		const size_t &numPulsesAlarm,
 		const double &esmMinDwellTime,
-		const size_t &nEmitter,
-		const double &taoScan,
+		//const size_t &nEmitter,
+		//const double &taoScan,
 		const double &Pmin,
 		const double &Aeff)
 		:m_name(name)
@@ -1444,8 +1466,8 @@ namespace sce
 		, m_numPulsesAcquisition(numPulsesAcquisition)
 		, m_numPulsesAlarm(numPulsesAlarm)
 		, m_esmMinDwellTime(esmMinDwellTime)
-		, m_nEmitter(nEmitter)
-		, m_taoScan(taoScan)
+		//, m_nEmitter(nEmitter)
+		//, m_taoScan(taoScan)
 		, m_Pmin(Pmin)
 		, m_Aeff(Aeff)
 	{
@@ -1533,15 +1555,15 @@ namespace sce
 		m_esmMinDwellTime = esmMinDwellTime;
 	}
 
-	void Esm::setnEmitter(const int &nEmitter)
-	{
-		m_nEmitter = m_nEmitter;
-	}
+	//void Esm::setnEmitter(const int &nEmitter)
+	//{
+	//	m_nEmitter = m_nEmitter;
+	//}
 
-	void Esm::settaoScan(const double &taoScan)
-	{
-		m_taoScan = taoScan;
-	}
+	//void Esm::settaoScan(const double &taoScan)
+	//{
+	//	m_taoScan = taoScan;
+	//}
 
 	void Esm::setPmin(const double &Pmin)
 	{
@@ -1561,11 +1583,10 @@ namespace sce
 		,m_rfMin(9000)
 		,m_rfMax(9500)
 		,m_techName({ Tech::NOISE })
-		,m_radarMSR(1.0)
-		,m_jammerERP_support(1.0)
-		,m_platformRCS(1.0)
-		,m_radarDangerValue(1.0)
-		,m_jammerERP_attack(1.0)
+		//,m_radarMSR(1.0)
+		,m_jammerERP(1.0)
+		//,m_platformRCS(1.0)
+		//,m_radarDangerValue(1.0)
 	{
 	}
 
@@ -1576,11 +1597,10 @@ namespace sce
 		,m_rfMin(rfMin)
 		,m_rfMax(rfMax)
 		,m_techName({ Tech::NOISE })
-		,m_radarMSR(1.0)
-		,m_jammerERP_support(1.0)
-		,m_platformRCS(1.0)
-		,m_radarDangerValue(1.0)
-		,m_jammerERP_attack(1.0)
+		//,m_radarMSR(1.0)
+		,m_jammerERP(1.0)
+		//,m_platformRCS(1.0)
+		//,m_radarDangerValue(1.0)
 	{
 	}
 
@@ -1596,11 +1616,10 @@ namespace sce
 		, m_rfMin(rfmin)
 		, m_rfMax(rfmax)
 		, m_techName({ techName })
-		, m_radarMSR(1.0)
-		, m_jammerERP_support(1.0)
-		, m_platformRCS(1.0)
-		, m_radarDangerValue(1.0)
-		, m_jammerERP_attack(1.0)
+		//, m_radarMSR(1.0)
+		, m_jammerERP(1.0)
+		//, m_platformRCS(1.0)
+		//, m_radarDangerValue(1.0)
 	{
 	}
 
@@ -1616,11 +1635,10 @@ namespace sce
 		, m_rfMin(rfmin)
 		, m_rfMax(rfmax)
 		, m_techName(techName)
-		, m_radarMSR(1.0)
-		, m_jammerERP_support(1.0)
-		, m_platformRCS(1.0)
-		, m_radarDangerValue(1.0)
-		, m_jammerERP_attack(1.0)
+		//, m_radarMSR(1.0)
+		, m_jammerERP(1.0)
+		//, m_platformRCS(1.0)
+		//, m_radarDangerValue(1.0)
 	{
 	}
 
@@ -1631,21 +1649,19 @@ namespace sce
 		const size_t &rfmax, 
 		const std::vector<Tech> &techName,
 		const double &radarMSR,
-		const double &jammerERP_support,
+		const double &jammerERP,
 		const double &platformRCS,
-		const double &radarDangerValue,
-		const double &jammerERP_attack)
-		:m_name(name)
+		const double &radarDangerValue)
+		: m_name(name)
 		, m_pt(pt)
 		, m_gain(gain)
 		, m_rfMin(rfmin)
 		, m_rfMax(rfmax)
 		, m_techName(techName)
-		, m_radarMSR(radarMSR)
-		, m_jammerERP_support(jammerERP_support)
-		, m_platformRCS(platformRCS)
-		, m_radarDangerValue(radarDangerValue)
-		, m_jammerERP_attack(jammerERP_attack)
+		//, m_radarMSR(radarMSR)
+		, m_jammerERP(jammerERP)
+		//, m_platformRCS(platformRCS)
+		//, m_radarDangerValue(radarDangerValue)
 	{
 	}
 
@@ -1764,30 +1780,15 @@ namespace sce
 		m_rfMax = rfMax;
 	}
 
-	void Ecm::setradarMSR(const double & radarMSR)
+	void Ecm::setjammerERP(const double & jammerERP)
 	{
-		m_radarMSR = radarMSR;
+		m_jammerERP = jammerERP;
 	}
 
-	void Ecm::setjammerERP_support(const double & jammerERP_support)
-	{
-		m_jammerERP_support = jammerERP_support;
-	}
-
-	void Ecm::setplatformRCS(const double & platformRCS)
-	{
-		m_platformRCS = platformRCS;
-	}
-
-	void Ecm::setradarDangerValue(const double & radarDangerValue)
-	{
-		m_radarDangerValue = radarDangerValue;
-	}
-
-	void Ecm::setjammerERP_attack(const double & jammerERP_attack)
-	{
-		m_jammerERP_attack = jammerERP_attack;
-	}
+	//void Ecm::setplatformRCS(const double & platformRCS)
+	//{
+	//	m_platformRCS = platformRCS;
+	//}
 
 	void Ecm::setAllTechs(const std::vector<Tech>& techs)
 	{

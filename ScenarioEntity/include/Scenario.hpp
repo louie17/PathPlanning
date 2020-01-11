@@ -779,7 +779,8 @@ namespace sce
 
 		//get method
 		const std::string& getName(void) const;
-
+		const double & getradarMSR(void) { return m_radarMSR; }
+		const double& getradarDangerValue(void) { return m_radarDangerValue; }
 		//获取RadarMode容器对象
 		std::vector<std::shared_ptr<Radar_Mode>>& getAllPtr2RadarModes(void);
 
@@ -802,12 +803,15 @@ namespace sce
 
 		//set method
 		void setName(const std::string& name);
-
+		void setradarMSR(const double &radarMSR);
+		void setradarDangerValue(const double&radarDangerValue);
 		//整体设置修改RadarMode
 		void setAllPtr2RadarModes(std::vector<std::shared_ptr<Radar_Mode>>&);
 
 	private:
 		std::string m_name{ "Emitter1" };
+		double m_radarMSR;
+		double m_radarDangerValue;
 		std::vector<std::shared_ptr<Radar_Mode>> m_ptrRadarMode;
 	};
 
@@ -982,6 +986,7 @@ namespace sce
 
 		const std::string& getName(void) const;
 		const OwnPlatformType& getType(void) const;
+		const double& getplatformRCS(void) { return m_platformRCS; }
 		const double& getMaxAcceleration(void)const;
 		const double& getMaxDeceleration(void)const;
 		const double& getMaxClimbRate(void)const;
@@ -993,6 +998,7 @@ namespace sce
 
 		void setName(const std::string&);
 		void setType(const OwnPlatformType&);
+		void setplatformRCS(const double &platformRCS);
 		void setMaxAcceleration(const double&);
 		void setMaxDeceleration(const double&);
 		void setMaxClimbRate(const double&);
@@ -1012,6 +1018,7 @@ namespace sce
 		double m_maxSpeed;
 		double m_maxTurnRadius;
 		Mission m_mission;
+		double m_platformRCS;
 	};
 
 	class Esm
@@ -1034,8 +1041,8 @@ namespace sce
 			const size_t &numPulsesAcquisition,
 			const size_t &numPulsesAlarm,
 			const double &esmMinDwellTime,
-			const size_t &nEmitter,
-			const double &taoScan,
+			//const size_t &nEmitter,
+			//const double &taoScan,
 			const double &Pmin,
 			const double &Aeff);
 
@@ -1047,8 +1054,8 @@ namespace sce
 		const size_t& getNumPulsesAcquisition(void);
 		const size_t& getNumPulsesAlarm(void);
 		const double& getesmMinDwellTime(void) { return m_esmMinDwellTime; }
-		const size_t& getnEmitter(void) { return m_nEmitter; }
-		const double& gettaoScan(void) { return m_taoScan; }
+		//const size_t& getnEmitter(void) { return m_nEmitter; }
+		//const double& gettaoScan(void) { return m_taoScan; }
 		const double& getPmin(void) { return m_Pmin; }
 		const double& getAeff(void) { return m_Aeff; }
 
@@ -1060,8 +1067,8 @@ namespace sce
 		void setNumPulsesAcquisition(const size_t&);
 		void setNumPulsesAlarm(const size_t&);
 		void setesmMinDwellTime(const double&);
-		void setnEmitter(const int&);
-		void settaoScan(const double&);
+		//void setnEmitter(const int&);
+		//void settaoScan(const double&);
 		void setPmin(const double&);
 		void setAeff(const double&);
 
@@ -1074,8 +1081,8 @@ namespace sce
 		size_t m_numPulsesAcquisition;
 		size_t m_numPulsesAlarm;
 		double m_esmMinDwellTime;
-		size_t m_nEmitter;
-		double m_taoScan;
+		//size_t m_nEmitter;
+		//double m_taoScan;
 		double m_Pmin;
 		double m_Aeff;
 	};
@@ -1095,17 +1102,17 @@ namespace sce
 		Ecm(const std::string &name, const size_t &pt, const size_t &gain, const size_t &rfMin, const size_t &rfMax);
 		Ecm(const std::string &name, const size_t &pt, const size_t &gain, const size_t &rfmin, const size_t &rfmax, const Tech& techName);
 		Ecm(const std::string &name, const size_t &pt, const size_t &gain, const size_t &rfmin, const size_t &rfmax, const std::vector<Tech> &techName);
-		Ecm(const std::string &name, const size_t &pt, const size_t &gain, const size_t &rfmin, const size_t &rfmax, const std::vector<Tech> &techName,	const double &radarMSR, const double &jammerERP_support, const double &platformRCS, const double &radarDangerValue, const double &jammerERP_attack);
+		Ecm(const std::string &name, const size_t &pt, const size_t &gain, const size_t &rfmin, const size_t &rfmax, const std::vector<Tech> &techName,	const double &radarMSR, const double &jammerERP, const double &platformRCS, const double &radarDangerValue);
 		const std::string& getName(void);
 		const size_t& getPt(void);
 		const size_t& getGain(void);
 		const size_t& getRfMin(void);
 		const size_t& getRfMax(void);
-		const double& getjammerERP_attack(void) { return m_jammerERP_attack; }
-		const double& getradarDangerValue(void) { return m_radarDangerValue; }
-		const double& getplatformRCS(void) { return m_platformRCS; }
-		const double& getjammerERP_support(void) { return m_jammerERP_support; }
-		const double & getradarMSR(void) { return m_radarMSR; }
+		const double& getjammerERP(void) { return m_jammerERP; }
+		
+		//const double& getplatformRCS(void) { return m_platformRCS; }
+		//const double& getjammerERP_support(void) { return m_jammerERP_support; }
+		//const double & getradarMSR(void) { return m_radarMSR; }
 
 		//获取装填所有Tech的容器对象
 		std::vector<Tech>& getAllTechs(void);
@@ -1134,11 +1141,11 @@ namespace sce
 		void setGain(const size_t& gain);
 		void setRfMin(const size_t& rfMin);
 		void setRfMax(const size_t& rfMax);
-		void setradarMSR(const double &radarMSR);
-		void setjammerERP_support(const double &jammerERP_support);
-		void setplatformRCS(const double &platformRCS);
-		void setradarDangerValue(const double&radarDangerValue);
-		void setjammerERP_attack(const double &jammerERP_attack);
+		//void setradarMSR(const double &radarMSR);
+		void setjammerERP(const double &jammerERP);
+		//void setplatformRCS(const double &platformRCS);
+		//void setradarDangerValue(const double&radarDangerValue);
+		//void setjammerERP_attack(const double &jammerERP_attack);
 
 		//以容器为单位，整体赋值修改
 		void setAllTechs(const std::vector<Tech>& techs);
@@ -1150,11 +1157,10 @@ namespace sce
 		size_t m_rfMin;
 		size_t m_rfMax;
 		std::vector<Tech> m_techName;
-		double m_radarMSR;
-		double m_jammerERP_support;
-		double m_platformRCS;
-		double m_radarDangerValue;
-		double m_jammerERP_attack;
+		//double m_radarMSR;
+		double m_jammerERP;
+		//double m_platformRCS;
+		//double m_radarDangerValue;
 	};
 
 	class WayPoint

@@ -75,6 +75,13 @@ bool find_Esm_data(const QDomElement &qd,sce::Scenario &scenario)
 			if (qdd.nodeName() == "Num_Pulses_Alarm") {
 				es.setNumPulsesAlarm(qdd.toElement().text().toDouble());
 			}
+			if (qdd.nodeName() == "Pmin") {
+				es.setPmin(qdd.toElement().text().toDouble());
+			}
+			if (qdd.nodeName() == "Aeff") {
+				es.setAeff(qdd.toElement().text().toDouble());
+			}
+
 		}
 		scenario.addEsm(std::make_shared<sce::Esm>(es));
 		return true;
@@ -115,6 +122,9 @@ bool find_Ecm_data(const QDomElement &qd,sce::Scenario &scenario)
 				if (qdd.firstChildElement().text() == "RGPO")
 					temp = Tech(3);
 				vtech.push_back(temp);
+			}
+			if (qdd.nodeName() == "ERP") {
+				ec.setjammerERP(qdd.toElement().text().toDouble());
 			}
 			ec.setAllTechs(vtech);
 		}
@@ -266,6 +276,9 @@ bool find_OwnPlatform_data(const QDomElement &qd,sce::Scenario &scenario)
 				ms.setAllTargetPoints(vpoint);
 				op.setMission(ms);
 			}
+			if (qdd.nodeName() == "RCS") {
+				op.setplatformRCS(qdd.toElement().text().toDouble());
+			}
 		}
 		scenario.addOwnPlatform(std::make_shared<sce::OwnPlatform>(op));
 		return true;
@@ -284,6 +297,14 @@ bool find_Emitter_data(const QDomElement &qd,sce::Scenario &scenario)
 			if (qdd.nodeName() == "Name")
 			{
 				emitter.setName(qdd.toElement().text().toStdString());
+			}
+			if (qdd.nodeName() == "MSR")
+			{
+				emitter.setradarMSR(qdd.toElement().text().toDouble());
+			}
+			if (qdd.nodeName() == "DangerValues")
+			{
+				emitter.setradarDangerValue(qdd.toElement().text().toDouble());
 			}
 			if (qdd.nodeName() == "Radar_Mode")
 			{
