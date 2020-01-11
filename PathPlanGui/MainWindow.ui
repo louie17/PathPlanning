@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -3220,10 +3220,10 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="1">
-           <widget class="QChartView" name="graphicsView_pre"/>
+           <widget class="QChartView" name="chartView_pre"/>
           </item>
           <item row="1" column="1">
-           <widget class="QChartView" name="graphicsView_last"/>
+           <widget class="QChartView" name="chartView_last"/>
           </item>
           <item row="0" column="0" rowspan="2">
            <widget class="QGroupBox" name="groupBox_10">
