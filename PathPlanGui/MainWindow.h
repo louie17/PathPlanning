@@ -83,6 +83,9 @@ private:
 	QLabel *LabCellPos = new QLabel("Position");   //当前单元格行列号
 	QLabel *LabCellText = new QLabel("Text"); //当前单元格内容
 
+	//QChart *preResult_chart = new QChart();
+	//QChart *lastResult_chart = new QChart();
+
 	size_t open_flag{ 0 };//文件打开次数标志位
 	size_t m_status_count{0}; //状态信息条数
 
@@ -146,16 +149,8 @@ private:
 	
 public:
 	PathPlanGui(QWidget *parent = Q_NULLPTR);
-
-
-
-
-
-
-
-	
-
 	void listDom(QDomElement & docelem);
+
 	//std::vector<std::shared_ptr<sce::Route>> routes;
 	//std::vector<std::shared_ptr<sce::EsmStrategy>> esmstrategys;
 	//std::vector<std::shared_ptr<sce::EcmStrategy>> ecmstrategys;

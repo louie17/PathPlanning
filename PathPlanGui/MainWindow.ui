@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -166,7 +166,7 @@
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </attribute>
                    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                     <bool>true</bool>
@@ -286,7 +286,7 @@
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </attribute>
                    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                     <bool>true</bool>
@@ -297,6 +297,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>MSR</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>DangerValue</string>
                     </property>
                    </column>
                    <column>
@@ -422,7 +432,7 @@
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </attribute>
                    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                     <bool>true</bool>
@@ -951,12 +961,7 @@
                    </column>
                    <column>
                     <property name="text">
-                     <string>Save</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Del</string>
+                     <string>RCS</string>
                     </property>
                    </column>
                   </widget>
@@ -1125,41 +1130,10 @@
                    </column>
                    <column>
                     <property name="text">
-                     <string>platformRCS</string>
-                    </property>
-                    <property name="textAlignment">
-                     <set>AlignJustify|AlignVCenter</set>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>radarDangerValue</string>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <kerning>false</kerning>
-                     </font>
-                    </property>
-                    <property name="textAlignment">
-                     <set>AlignJustify|AlignVCenter</set>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
                      <string>jammerERP</string>
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Save</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -1338,16 +1312,6 @@
                    <column>
                     <property name="text">
                      <string>Aeff</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Save</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -1530,16 +1494,6 @@
                    <string>Section</string>
                   </property>
                  </column>
-                 <column>
-                  <property name="text">
-                   <string>Save</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Del</string>
-                  </property>
-                 </column>
                 </widget>
                </item>
               </layout>
@@ -1657,16 +1611,6 @@
                   </property>
                   <property name="textAlignment">
                    <set>AlignJustify|AlignVCenter</set>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Save</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Del</string>
                   </property>
                  </column>
                 </widget>
@@ -3270,10 +3214,10 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="1">
-           <widget class="QChartView" name="graphicsView_pre"/>
+           <widget class="QChartView" name="chartView_pre"/>
           </item>
           <item row="1" column="1">
-           <widget class="QChartView" name="graphicsView_last"/>
+           <widget class="QChartView" name="chartView_last"/>
           </item>
           <item row="0" column="0" rowspan="2">
            <widget class="QGroupBox" name="groupBox_10">

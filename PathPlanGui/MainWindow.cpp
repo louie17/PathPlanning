@@ -78,8 +78,6 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 	file.close();
 
 	logger::instance()->loggerMaster(type, message);
-	//onStatusInfo(type, msg);
-	//emit outputMsg(type, msg);
 	mutex.unlock();
 }
 //------------------------------------------日志处理部分结束
@@ -144,7 +142,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	ui.tableWidget_EcmES->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_EcmES->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui.tableWidget_EcmES->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
+	
 	ui.tableWidget_ECMStra->horizontalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_ECMStra->verticalHeader()->setStyleSheet("QHeaderView::section{background: rgb(240, 240, 240);}");
 	ui.tableWidget_ECMStra->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -207,8 +205,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(this, SIGNAL(sign_show_xml_data()), this, SLOT(show_xml_data()));
 	connect(ui.actionRefresh, SIGNAL(triggered()), this, SLOT(show_xml_data()));
 	connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(save_to_file()));
-	connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(save_as_new_file())); 
-	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
+	connect(ui.actionSave_as, SIGNAL(triggered()), this, SLOT(save_as_new_file()));
 
 	//connect(ui.actionInsert, SIGNAL(triggered()), this, SLOT(on_actInsert_triggered()));
 	//connect(ui.actionDelete, SIGNAL(triggered()), this, SLOT(on_actDelete_triggered()));
@@ -270,8 +267,8 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_OPsave, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
 	connect(ui.pushButton_Ecmsave, SIGNAL(clicked()), this, SLOT(save_Ecm()));
 	connect(ui.pushButton_Esmsave, SIGNAL(clicked()), this, SLOT(save_Esm()));
-	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
-	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
+	connect(ui.pushButton_Esmssave, SIGNAL(clicked()), this, SLOT(save_ESMStrategy()));
+	connect(ui.pushButton_Ecmssave, SIGNAL(clicked()), this, SLOT(save_ECMStrategy()));
 	connect(ui.pushButton_PSRsave, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
 	connect(ui.pushButton_PERsave, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
 	connect(ui.pushButton_PWRsave, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
@@ -293,6 +290,10 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 
 	LabCellText->setMinimumSize(LabCellText->sizeHint());
 	ui.statusBar->addWidget(LabCellText);
+
+	//初始化QChart
+	//ui.chartView_pre->setChart(preResult_chart);
+	//ui.chartView_last->setChart(lastResult_chart);
 }
 void PathPlanGui::save_to_file() {
 	if (dom.isNull())
@@ -1291,7 +1292,7 @@ void PathPlanGui::save_Ecm() {
 		}
 	}
 }
-void PathPlanGui::save_EcmStrategy() {
+void PathPlanGui::save_ECMStrategy() {
 	int num = ui.tableWidget_ECMStra->currentRow();
 	QString a = ui.tableWidget_ECMStra->item(num, 0)->text();
 	//vector<EsmStrategySection>
@@ -1335,7 +1336,7 @@ void PathPlanGui::save_EcmStrategy() {
 		}
 	}
 }
-void PathPlanGui::save_EsmStrategy() {
+void PathPlanGui::save_ESMStrategy() {
 	int num = ui.tableWidget_ESMStra->currentRow();
 	QString a = ui.tableWidget_ESMStra->item(num, 0)->text();
 	sce::EsmStrategy new_data(a.toStdString());
@@ -3032,7 +3033,7 @@ void PathPlanGui::run_algorithm()
 			assert(siteTmp.size() >= 0);
 			wcrange[i] = siteTmp.size() > 0 ? *std::max_element(siteTmp.cbegin(), siteTmp.cend()) : 0.0;
 			auto ret = swRelation.insert(std::make_pair(iterS, wcrange[i]));
-			assert(ret.second);
+			//assert(ret.second);//插入失败是因为出现重复的键值对
 		}
 		//获取路径片段的起始终止点序列
 		size_t target_size = scenario.getAllOwnPlatform()[op_index]->getMission().getAllTargetPoints().size();
@@ -3194,40 +3195,77 @@ void PathPlanGui::route_evaluate()
 
 void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 {
-	QBarSet *set0 = new QBarSet("U");
-	QBarSet *set1 = new QBarSet("D");
-	QBarSet *set2 = new QBarSet("T");
-	QBarSet *set3 = new QBarSet("E");
-	QBarSet *set4 = new QBarSet("H");
+	QPen pen0(Qt::green), pen1(Qt::darkYellow), pen2(Qt::red), pen3(Qt::gray), pen4(Qt::black);
+	pen0.setWidth(1);
+	pen1.setWidth(1);
+	pen2.setWidth(1);
+	pen3.setWidth(1);
+	pen4.setWidth(1);
+
+	//QBarSet *set0 = new QBarSet("U");
+	//QBarSet *set1 = new QBarSet("D");
+	//QBarSet *set2 = new QBarSet("T");
+	//QBarSet *set3 = new QBarSet("E");
+	//QBarSet *set4 = new QBarSet("H");
+	//for (int i = 0; i < stateProbs.cols(); i++)
+	//{
+	//	*set0 << stateProbs(0, i);
+	//	*set1 << stateProbs(1, i);
+	//	*set2 << stateProbs(2, i);
+	//	*set3 << stateProbs(3, i);
+	//	*set4 << stateProbs(4, i);
+	//}
+
+	//QPercentBarSeries *series = new QPercentBarSeries();
+	//series->append(set0);
+	//series->append(set1);
+	//series->append(set2);
+	//series->append(set3);
+	//series->append(set4);
+	QLineSeries *lseries0 = new QLineSeries();
+	QLineSeries *lseries1 = new QLineSeries();
+	QLineSeries *lseries2 = new QLineSeries();
+	QLineSeries *lseries3 = new QLineSeries();
+	QLineSeries *lseries4 = new QLineSeries();
 	for (int i = 0; i < stateProbs.cols(); i++)
 	{
-		*set0 << stateProbs(0, i);
-		*set1 << stateProbs(1, i);
-		*set2 << stateProbs(2, i);
-		*set3 << stateProbs(3, i);
-		*set4 << stateProbs(4, i);
+		*lseries0 << QPointF(i, stateProbs(0, i));
+		*lseries1 << QPointF(i, stateProbs(1, i));
+		*lseries2 << QPointF(i, stateProbs(2, i));
+		*lseries3 << QPointF(i, stateProbs(3, i));
+		*lseries4 << QPointF(i, stateProbs(4, i));
 	}
 
-	QPercentBarSeries *series = new QPercentBarSeries();
-	series->append(set0);
-	series->append(set1);
-	series->append(set2);
-	series->append(set3);
-	series->append(set4);
+	lseries0->setName("U");
+	lseries1->setName("D");
+	lseries2->setName("T");
+	lseries3->setName("E");
+	lseries4->setName("H");
 
-	QChart *chart = new QChart();
-	chart->addSeries(series);
-	chart->setTitle("Simple percentbarchart example");
-	chart->setAnimationOptions(QChart::SeriesAnimations);
+	lseries0->setPen(pen0);
+	lseries1->setPen(pen1);
+	lseries2->setPen(pen2);
+	lseries3->setPen(pen3);
+	lseries4->setPen(pen4);
 
-	QValueAxis *axisY = new QValueAxis();
-	chart->addAxis(axisY, Qt::AlignLeft);
-	series->attachAxis(axisY);
+	QChart *preResult_chart = new QChart();
+	preResult_chart->addSeries(lseries0);
+	preResult_chart->addSeries(lseries1);
+	preResult_chart->addSeries(lseries2);
+	preResult_chart->addSeries(lseries3);
+	preResult_chart->addSeries(lseries4);
+	//preResult_chart->setTitle("Survival rate line map");
+	preResult_chart->setAnimationOptions(QChart::SeriesAnimations);//设置启用或禁用动画
 
-	QChartView *chartView = new QChartView(chart, ui.graphicsView_pre);
-	chartView->setRenderHint(QPainter::Antialiasing);
-	//chartView->show();
-	ui.graphicsView_pre->show();
+	//QValueAxis *axisY = new QValueAxis();
+	//preResult_chart->addAxis(axisY, Qt::AlignLeft);
+	//lseries0->attachAxis(axisY);
+
+	//QChartView *chartView = new QChartView(preResult_chart, ui.chartView_pre);
+	//chartView->setRenderHint(QPainter::Antialiasing);
+	//ui.chartView_pre->show();
+	ui.chartView_pre->setChart(preResult_chart);
+	ui.chartView_pre->setRenderHint(QPainter::Antialiasing);
 
 	//AreaChart
 	//![1]
@@ -3261,17 +3299,18 @@ void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 	qaseries3->setName("Engaged");
 	qaseries4->setName("Hit");
 
-	QPen pen0(Qt::black), pen1(Qt::black), pen2(Qt::black), pen3(Qt::black), pen4(Qt::black);
-	pen0.setWidth(3);
-	pen1.setWidth(3);
-	pen2.setWidth(3);
-	pen3.setWidth(3);
-	pen4.setWidth(3);
-	qaseries0->setPen(pen0);
-	qaseries1->setPen(pen1);
-	qaseries2->setPen(pen2);
-	qaseries3->setPen(pen3);
-	qaseries4->setPen(pen4);
+	QPen pen5(Qt::black), pen6(Qt::black), pen7(Qt::black), pen8(Qt::black), pen9(Qt::black);
+	pen5.setWidth(3);
+	pen6.setWidth(3);
+	pen7.setWidth(3);
+	pen8.setWidth(3);
+	pen9.setWidth(3);
+
+	qaseries0->setPen(pen5);
+	qaseries1->setPen(pen6);
+	qaseries2->setPen(pen7);
+	qaseries3->setPen(pen8);
+	qaseries4->setPen(pen9);
 
 	QLinearGradient gradient0(QPointF(0, 0), QPointF(0, 1));
 	gradient0.setColorAt(0.0, Qt::white);
@@ -3305,25 +3344,24 @@ void PathPlanGui::draw_survival_rate(MatrixXd stateProbs)
 	//![3]
 
 	//![4]
-	QChart *achart = new QChart();
-	achart->addSeries(qaseries0);
-	achart->addSeries(qaseries1);
-	achart->addSeries(qaseries2);
-	achart->addSeries(qaseries3);
-	achart->addSeries(qaseries4);
-	achart->setTitle("Survival rate area map");
-	//achart->createDefaultAxes();
-	//achart->axes(Qt::Horizontal).first()->setRange(0, 20);
-	//achart->axes(Qt::Vertical).first()->setRange(0, 10);
+	QChart *lastResult_chart = new QChart();
+	lastResult_chart->addSeries(qaseries0);
+	lastResult_chart->addSeries(qaseries1);
+	lastResult_chart->addSeries(qaseries2);
+	lastResult_chart->addSeries(qaseries3);
+	lastResult_chart->addSeries(qaseries4);
+	//lastResult_chart->setTitle("Survival rate area map");
+	//lastResult_chart->createDefaultAxes();
+	//lastResult_chart->axes(Qt::Horizontal).first()->setRange(0, 20);
+	//lastResult_chart->axes(Qt::Vertical).first()->setRange(0, 10);
 	//![4]
 
 	//![5]
-	QChartView *achartView = new QChartView(achart, ui.graphicsView_last);
-	achartView->setRenderHint(QPainter::Antialiasing);
+	//QChartView *achartView = new QChartView(lastResult_chart, ui.chartView_last);
+	//achartView->setRenderHint(QPainter::Antialiasing);
 
-	ui.graphicsView_last->show();
-	//ui.graphicsView = achartView;
-	//this->setCentralWidget(ui.graphicsView);
+	ui.chartView_last->setChart(lastResult_chart);
+	ui.chartView_last->setRenderHint(QPainter::Antialiasing);
 }
 
 void PathPlanGui::backTab()
@@ -3416,15 +3454,17 @@ void PathPlanGui::show_Emitter_data()
 	for (int i = 0; i < scenario.getAllEmitter().size(); i++) {
 		ui.tableWidget_Emitter->insertRow(i);
 		ui.tableWidget_Emitter->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllEmitter()[i]->getName())));
+		ui.tableWidget_Emitter->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarMSR(), 'f', 2)));
+		ui.tableWidget_Emitter->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarDangerValue(), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
-		ui.tableWidget_Emitter->setCellWidget(i, 1, btn);
+		ui.tableWidget_Emitter->setCellWidget(i, 3, btn);
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_rada()));
-		ui.tableWidget_Emitter->setCellWidget(i, 2, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 2));
+		ui.tableWidget_Emitter->setCellWidget(i, 4, new QPushButton());
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 4));
 		save->setText("Save");
 		connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
-		ui.tableWidget_Emitter->setCellWidget(i, 3, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 3));
+		ui.tableWidget_Emitter->setCellWidget(i, 5, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 5));
 		del->setText("Del");
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
 	}
@@ -3482,6 +3522,9 @@ void PathPlanGui::show_OwnPlatform_data()
 		ui.tableWidget_OPlatform->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllOwnPlatform()[i]->getName())));
 		QPointer<QComboBox> cbOptype(new QComboBox());
 		ui.tableWidget_OPlatform->setCellWidget(i, 1, cbOptype);
+		QStringList alist{ "Air" };//OwnPlatform Type
+		cbOptype->addItems(alist);
+
 		ui.tableWidget_OPlatform->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxAcceleration())));
 		ui.tableWidget_OPlatform->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxDeceleration())));
 		ui.tableWidget_OPlatform->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxClimbRate())));
@@ -3490,22 +3533,15 @@ void PathPlanGui::show_OwnPlatform_data()
 		ui.tableWidget_OPlatform->setItem(i, 7, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxTurnRadius())));
 		QPointer<QPushButton> cb_mission(new QPushButton("View"));
 		ui.tableWidget_OPlatform->setCellWidget(i, 8, cb_mission);
-		auto cellWidget = ui.tableWidget_OPlatform->cellWidget(i, 1);
-		auto cellWidget_2 = ui.tableWidget_OPlatform->cellWidget(i, 8);
-		QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
-		QStringList alist{"Air"};
-		combox->addItems(alist);
-		QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
-		btn->setText("View");
-		connect(btn, SIGNAL(clicked()), this, SLOT(show_mission()));
-		ui.tableWidget_OPlatform->setCellWidget(i, 9, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(i, 9));
-		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
-		ui.tableWidget_OPlatform->setCellWidget(i, 10, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(i, 10));
-		del->setText("Del");
-		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
+		//auto cellWidget = ui.tableWidget_OPlatform->cellWidget(i, 1);
+		//auto cellWidget_2 = ui.tableWidget_OPlatform->cellWidget(i, 8);
+		//QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
+		//QStringList alist{"Air"};
+		//combox->addItems(alist);
+		//QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
+		//btn->setText("View");
+		ui.tableWidget_OPlatform->setItem(i, 9, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getplatformRCS(), 'f', 2)));
+		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
 	}
 }
 
@@ -3522,19 +3558,10 @@ void PathPlanGui::show_Ecm_data()
 		ui.tableWidget_Ecm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getRfMax()), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
 		ui.tableWidget_Ecm->setCellWidget(i, 5, btn);
-		//auto cell = ui.tableWidget_Ecm->cellWidget(i, 5);
-		//QPushButton *tech = qobject_cast<QPushButton*>(cell);
-		//tech->setText("View");
-		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
 
-		ui.tableWidget_Ecm->setCellWidget(i, 6, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 6));
-		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_Ecm()));
-		ui.tableWidget_Ecm->setCellWidget(i, 7, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 7));
-		del->setText("Del");
-		connect(del, SIGNAL(clicked()), this, SLOT(del_Ecm()));
+		//ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getplatformRCS()), 'f', 2)));
+		ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerERP()), 'f', 2)));
+		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
 	}
 }
 
@@ -3551,15 +3578,9 @@ void PathPlanGui::show_Esm_data()
 		ui.tableWidget_Esm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getRfCovMax()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 5, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAcquisition()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getNumPulsesAlarm()), 'f', 2)));
-
-		ui.tableWidget_Esm->setCellWidget(i, 7, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Esm->cellWidget(i, 7));
-		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_Esm()));
-		ui.tableWidget_Esm->setCellWidget(i, 8, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Ecm->cellWidget(i, 8));
-		del->setText("Del");
-		connect(del, SIGNAL(clicked()), this, SLOT(del_Esm()));
+		ui.tableWidget_Esm->setItem(i, 7, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getesmMinDwellTime()), 'f', 2)));
+		ui.tableWidget_Esm->setItem(i, 8, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getPmin()), 'f', 2)));
+		ui.tableWidget_Esm->setItem(i, 9, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getAeff()), 'f', 2)));
 	}
 }
 
@@ -3577,15 +3598,6 @@ void PathPlanGui::show_EsmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_esmstrategy_section()));
-
-		ui.tableWidget_ESMStra->setCellWidget(i, 2, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 2));
-		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
-		ui.tableWidget_ESMStra->setCellWidget(i, 3, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 3));
-		del->setText("Del");
-		connect(del, SIGNAL(clicked()), this, SLOT(del_EsmStrategy()));
 	}
 }
 
@@ -3603,15 +3615,6 @@ void PathPlanGui::show_EcmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_ecmstrategy_section()));
-
-		ui.tableWidget_ECMStra->setCellWidget(i, 2, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 2));
-		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
-		ui.tableWidget_ECMStra->setCellWidget(i, 3, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 3));
-		del->setText("Del");
-		connect(del, SIGNAL(clicked()), this, SLOT(del_EcmStrategy()));
 	}
 }
 
@@ -4180,7 +4183,7 @@ void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)
 		chfmt.setForeground(QBrush(Qt::red));
 		break;
 	case QtFatalMsg: //致命错误提示
-		text = "ERROR";
+		text = "Fatal ERROR";
 		chfmt.setForeground(QBrush(Qt::red));
 		abort();
 		break;
