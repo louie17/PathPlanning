@@ -1597,7 +1597,7 @@ void PathPlanGui::add_RouteTab() {
 		//this->setCentralWidget(tab_nn);
 		ui.tabWidget_Route->addTab(tab_nn, d);
 		//测试tab类
-		MyTab *tab = new MyTab();
+		QPointer<MyTab> tab;
 		tab->add = add;
 		tab->del = del;
 		tab->save = save;
@@ -1607,6 +1607,7 @@ void PathPlanGui::add_RouteTab() {
 
 		for (int i = 0; i < vTab.size(); i++)
 		{
+			
 			connect(vTab[i]->add, &QPushButton::clicked, this, [=]()
 			{
 				vTab[i]->my_table->insertRow(vTab[i]->my_table->rowCount());
@@ -1796,10 +1797,20 @@ void PathPlanGui::add_Vertex()
 	bool ok;
 	QString d = QInputDialog::getText(this, tr("Tip"), tr("The index of row:"), QLineEdit::Normal, "", &ok);
 	if (ok && !d.isEmpty()) {
-		if(d.toInt()<row_count)
+		if (d.toInt() < row_count) {
 			ui.tableWidget_Vertex->insertRow(d.toInt() - 1);//添加新的一行
-		else
+
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget_Vertex->setCellWidget(d.toInt() - 1, 3, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_Vertex()));
+		}
+		else {
 			ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
+
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget_Vertex->setCellWidget(row_count, 3, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_Vertex()));
+		}
 	}
 }
 void PathPlanGui::del_Vertex()		//删除列表数据
@@ -1843,6 +1854,13 @@ void PathPlanGui::add_PlatformSiteRelation(){
 	}
 	combox->addItems(platformname_List);
 	combox_1->addItems(sitename_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_PSR->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_PSR->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformSiteRelation()));
 }
 void PathPlanGui::del_PlatformSiteRelation() {
 	int num = ui.tableWidget_PSR->currentRow();
@@ -1882,6 +1900,13 @@ void PathPlanGui::add_PlatformEmitterRelation() {
 	}
 	combox->addItems(platformname_List);
 	combox_1->addItems(Emittername_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_PER->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_PER->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformEmitterRelation()));
 }
 void PathPlanGui::del_PlatformEmitterRelation() {
 	int num = ui.tableWidget_PER->currentRow();
@@ -1921,6 +1946,13 @@ void PathPlanGui::add_PlatformWeaponRelation() {
 	}
 	combox->addItems(platformname_List);
 	combox_1->addItems(Weaponname_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_PWR->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_PWR->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformWeaponRelation()));
 }
 void PathPlanGui::del_PlatformWeaponRelation() {
 	int num = ui.tableWidget_PWR->currentRow();
@@ -1960,6 +1992,13 @@ void PathPlanGui::add_OwnPlatformEsmRelation() {
 	}
 	combox->addItems(Ownplatformname_List);
 	combox_1->addItems(Esmname_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_OEs->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEsmRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_OEs->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformEsmRelation()));
 }
 void PathPlanGui::del_OwnPlatformEsmRelation() {
 	int num = ui.tableWidget_OEs->currentRow();
@@ -1999,6 +2038,13 @@ void PathPlanGui::add_EsmEsmStrategyRelation() {
 	}
 	combox->addItems(Esmname_List);
 	combox_1->addItems(EsmStrategyname_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_EsmES->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_EsmEsmStrategyRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_EsmES->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_EsmEsmStrategyRelation()));
 }
 void PathPlanGui::del_EsmEsmStrategyRelation() {
 	int num = ui.tableWidget_EsmES->currentRow();
@@ -2038,6 +2084,13 @@ void PathPlanGui::add_OwnPlatformRouteRelation() {
 	}
 	combox->addItems(Ownplatformname_List);
 	combox_1->addItems(Routename_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_ORR->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformRouteRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_ORR->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformRouteRelation()));
 }
 void PathPlanGui::del_OwnPlatformRouteRelation() {
 	int num = ui.tableWidget_ORR->currentRow();
@@ -2077,6 +2130,13 @@ void PathPlanGui::add_OwnPlatformEcmRelation() {
 	}
 	combox->addItems(Ownplatformname_List);
 	combox_1->addItems(Ecmname_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_OPEcmR->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEcmRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_OPEcmR->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEcmRelation()));
 }
 void PathPlanGui::del_OwnPlatformEcmRelation() {
 	int num = ui.tableWidget_OPEcmR->currentRow();
@@ -2116,6 +2176,13 @@ void PathPlanGui::add_EcmEcmStrategyRelation() {
 	}
 	combox->addItems(Ecmname_List);
 	combox_1->addItems(EcmStrategyname_List);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_EcmES->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_EcmEcmStrategyRelation()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_EcmES->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_EcmEcmStrategyRelation()));
 }
 void PathPlanGui::del_EcmEcmStrategyRelation() {
 	int num = ui.tableWidget_EcmES->currentRow();
@@ -2183,6 +2250,12 @@ void PathPlanGui::add_Esm()
 	int row_count = ui.tableWidget_Esm->rowCount();
 	ui.tableWidget_Esm->insertRow(row_count);
 
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Esm->setCellWidget(row_count, 10, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Esm()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Esm->setCellWidget(row_count, 11, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Esm()));
 }
 void PathPlanGui::del_Esm()
 {
@@ -2225,6 +2298,12 @@ void PathPlanGui::add_Ecm()
 	ui.tableWidget_Ecm->setCellWidget(row_count, 5, bt);
 	connect(bt, SIGNAL(clicked()), this, SLOT(ecm_tech()));
 
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Ecm->setCellWidget(row_count, 7, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Ecm()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Ecm->setCellWidget(row_count, 8, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Ecm()));
 }
 void PathPlanGui::del_Ecm()
 {
@@ -2351,6 +2430,13 @@ void PathPlanGui::add_Site()
 {
 	int row_count = ui.tableWidget_Site->rowCount(); //获取表单行数
 	ui.tableWidget_Site->insertRow(row_count);//添加新的一行
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Site->setCellWidget(row_count, 4, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Site()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Site->setCellWidget(row_count, 5, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Site()));
 }
 void PathPlanGui::del_Site()		//删除列表数据
 {
@@ -2388,6 +2474,13 @@ void PathPlanGui::add_Weapon()
 {
 	int row_count = ui.tableWidget_Weapon->rowCount(); //获取表单行数
 	ui.tableWidget_Weapon->insertRow(row_count);//添加新的一行
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Weapon->setCellWidget(row_count, 3, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Weapon()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Weapon->setCellWidget(row_count, 4, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Weapon()));
 }
 void PathPlanGui::del_Weapon()		//删除列表数据
 {
@@ -2431,6 +2524,13 @@ void PathPlanGui::add_Platform()
 	QStringList list;
 	list << "Land" << "Air" << "Surface";
 	combox->addItems(list);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Platform->setCellWidget(row_count, 2, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Platform()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Platform->setCellWidget(row_count, 3, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Platform()));
 }
 void PathPlanGui::del_Platform()		//删除列表数据
 {
@@ -2472,8 +2572,16 @@ void PathPlanGui::add_Emitter() {
 	ui.tableWidget_Emitter->insertRow(row_count);//添加新的一行
 	QPushButton *but = new QPushButton();
 	but->setText("View");
-	ui.tableWidget_Emitter->setCellWidget(row_count, 1, but);
+	ui.tableWidget_Emitter->setCellWidget(row_count, 3, but);
 	connect(but, SIGNAL(clicked()), this, SLOT(show_rada()));
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget_Emitter->setCellWidget(row_count, 4, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget_Emitter->setCellWidget(row_count, 5, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
+	
 }
 void PathPlanGui::del_Emitter()		//删除列表数据
 {
@@ -3440,6 +3548,7 @@ void PathPlanGui::show_Platform_data()
 		{
 			cb_Ptype->setCurrentIndex(2);
 		}
+
 		ui.tableWidget_Platform->setCellWidget(i, 2, new QPushButton());
 		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Platform->cellWidget(i, 2));
 		save->setText("Save");
@@ -3679,7 +3788,8 @@ void PathPlanGui::show_Route_data()
 		headers << QStringLiteral("Index") << QStringLiteral("Altitude") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << QStringLiteral("Time") << QStringLiteral("Velocity") << QStringLiteral("Acceleration");
 		//创建route的表格
 		QPointer<QTableWidget> new_table = new QTableWidget();
-		new_table->setColumnCount(7);
+		//new_table->setColumnCount(7);
+		new_table->setColumnCount(9);
 		new_table->setRowCount(0);
 		new_table->setLayoutDirection(Qt::LeftToRight);
 		new_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -3696,7 +3806,6 @@ void PathPlanGui::show_Route_data()
 		new_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 		new_table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-
 		for (int j = 0; j < scenario.getAllRoute()[i]->getAllWayPoints().size(); j++)
 		{
 			new_table->insertRow(j);
@@ -3707,6 +3816,155 @@ void PathPlanGui::show_Route_data()
 			new_table->setItem(j, 4, new QTableWidgetItem(QString::number(scenario.getAllRoute()[i]->getAllWayPoints()[j].getTime(), 'f', 2)));
 			new_table->setItem(j, 5, new QTableWidgetItem(QString::number(scenario.getAllRoute()[i]->getAllWayPoints()[j].getVelocity(), 'f', 2)));
 			new_table->setItem(j, 6, new QTableWidgetItem(QString::number(scenario.getAllRoute()[i]->getAllWayPoints()[j].getAcceleration(), 'f', 2)));
+
+			//QPointer<QPushButton> save(new QPushButton("Save"));
+			//new_table->setCellWidget(j, 7, save);
+			//connect(save, &QPushButton::clicked, this, [=]
+			//{
+			//	int cur = new_table->currentRow();
+			//	QString a = new_table->item(cur, 0)->text();
+			//	QString b = new_table->item(cur, 1)->text();
+			//	QString c = new_table->item(cur, 2)->text();
+			//	QString d = new_table->item(cur, 3)->text();
+			//	QString e = new_table->item(cur, 4)->text();
+			//	QString f = new_table->item(cur, 5)->text();
+			//	QString g = new_table->item(cur, 6)->text();
+			//	if (cur + 1 > scenario.getAllRoute()[i]->getAllWayPoints().size())
+			//	{
+			//		sce::WayPoint new_wp(a.toInt(), b.toDouble(), c.toDouble(), d.toDouble(), e.toDouble(), f.toDouble(), g.toDouble());
+			//		scenario.getAllRoute()[i]->addWayPoint(new_wp);
+			//		QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+			//		QDomElement third = dom.createElement("WayPoints");
+
+			//		QDomElement fourth_1 = dom.createElement("Index");
+			//		QDomElement fourth_2 = dom.createElement("Altitude");
+			//		QDomElement fourth_3 = dom.createElement("Latitude");
+			//		QDomElement fourth_4 = dom.createElement("Longitude");
+			//		QDomElement fourth_5 = dom.createElement("Time");
+			//		QDomElement fourth_6 = dom.createElement("Velocity");
+			//		QDomElement fourth_7 = dom.createElement("Acceleration");
+
+			//		QDomText text1 = dom.createTextNode(a);
+			//		QDomText text2 = dom.createTextNode(b);
+			//		QDomText text3 = dom.createTextNode(c);
+			//		QDomText text4 = dom.createTextNode(d);
+			//		QDomText text5 = dom.createTextNode(e);
+			//		QDomText text6 = dom.createTextNode(f);
+			//		QDomText text7 = dom.createTextNode(g);
+
+			//		fourth_1.appendChild(text1);
+			//		fourth_2.appendChild(text2);
+			//		fourth_3.appendChild(text3);
+			//		fourth_4.appendChild(text4);
+			//		fourth_5.appendChild(text5);
+			//		fourth_6.appendChild(text6);
+			//		fourth_7.appendChild(text7);
+
+			//		third.appendChild(fourth_1);
+			//		third.appendChild(fourth_2);
+			//		third.appendChild(fourth_3);
+			//		third.appendChild(fourth_4);
+			//		third.appendChild(fourth_5);
+			//		third.appendChild(fourth_6);
+			//		third.appendChild(fourth_7);
+
+			//		QDomNodeList list = dom.elementsByTagName("Route");
+			//		int flag = 0;
+			//		for (int i = 0; i < list.count(); i++)
+			//		{
+			//			QDomElement ele = list.at(i).toElement();
+			//			if (ele.parentNode().nodeName() == "Scenario")
+			//			{
+			//				if (flag == i)
+			//				{
+			//					ele.appendChild(third);
+			//					break;
+			//				}
+			//				flag++;
+			//			}
+			//		}
+			//	}
+			//	else
+			//	{
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setIndex(a.toInt());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setAltitude(b.toDouble());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setLatitude(c.toDouble());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setLongitude(d.toDouble());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setTime(e.toDouble());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setVelocity(f.toDouble());
+			//		scenario.getAllRoute()[i]->getAllWayPoints()[cur].setAcceleration(g.toDouble());
+			//		QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+			//		QDomNodeList list = dom.elementsByTagName("Route");
+			//		int flag = 0;
+			//		for (int i = 0; i < list.count(); i++)
+			//		{
+			//			QDomElement ele = list.at(i).toElement();
+			//			if (ele.parentNode().nodeName() == "Scenario")//找到为第二级节点的Route
+			//			{
+			//				if (flag == i)
+			//				{
+			//					int flag_2 = 0;
+			//					for (QDomNode qd = ele.firstChild(); !qd.isNull(); qd = qd.nextSibling())
+			//					{
+			//						if (qd.nodeName() == "WayPoints")//找到具体的WayPoints
+			//						{
+			//							if (flag_2 == cur)
+			//							{
+			//								for (QDomNode qdd = qd.firstChild(); !qdd.isNull(); qdd = qdd.nextSibling())
+			//								{
+			//									if (qdd.nodeName() == "Index")
+			//									{
+			//										qdd.firstChild().setNodeValue(a);
+			//									}
+			//									if (qdd.nodeName() == "Altitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(b);
+			//									}
+			//									if (qdd.nodeName() == "Latitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(c);
+			//									}
+			//									if (qdd.nodeName() == "Longitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(d);
+			//									}
+			//									if (qdd.nodeName() == "Time")
+			//									{
+			//										qdd.firstChild().setNodeValue(e);
+			//									}
+			//									if (qdd.nodeName() == "Velocity")
+			//									{
+			//										qdd.firstChild().setNodeValue(f);
+			//									}
+			//									if (qdd.nodeName() == "Acceleration")
+			//									{
+			//										qdd.firstChild().setNodeValue(g);
+			//									}
+			//								}
+			//								break;
+			//							}
+			//							flag_2++;
+			//						}
+			//					}
+			//					break;
+			//				}
+			//				flag++;
+			//			}
+			//		}
+			//	}
+			//});
+			//QPointer<QPushButton> del(new QPushButton("Del"));
+			//new_table->setCellWidget(j, 8, del);
+			//connect(del, &QPushButton::clicked, this, [=]
+			//{
+			//	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+			//	if (ree == 0)
+			//	{
+			//		new_table->removeRow(new_table->currentRow());
+			//	}
+			//});
 		}
 		hbLayout_n->addItem(horizontalSpacer_0);
 		hbLayout_n->addWidget(add);
@@ -3719,39 +3977,190 @@ void PathPlanGui::show_Route_data()
 
 		tab_nn->setLayout(vbLayout_n);
 		ui.tabWidget_Route->setCurrentWidget(tab_nn);
+		ui.tabWidget_Route->currentWidget();
 		ui.tabWidget_Route->addTab(tab_nn, QString::fromStdString(scenario.getAllRoute()[i]->getName()));
 
 		int cur_index = ui.tabWidget_Route->currentIndex();
 		//测试tab类
-		MyTab mytab;
-		mytab.add = add;
-		mytab.del = del;
-		mytab.save = save;
-		mytab.myindex = cur_index;
-		mytab.my_table = new_table;
-		connect(mytab.add, &QPushButton::clicked, this, [=]()
+		QPointer<MyTab> mytab;
+		mytab->add = add;
+		mytab->del = del;
+		mytab->save = save;
+		mytab->myindex = cur_index;
+		mytab->my_table = new_table;
+		connect(mytab->add, &QPushButton::clicked, this, [=]()
 		{
-			mytab.my_table->insertRow(mytab.my_table->rowCount());
+			mytab->my_table->insertRow(mytab->my_table->rowCount());
+
+			//QPointer<QPushButton> save(new QPushButton("Save"));
+			//mytab.my_table->setCellWidget(i, 5, save);
+			//connect(save, &QPushButton::clicked, this, [=]
+			//{
+			//	int cur = mytab.my_table->currentRow();
+			//	QString a = mytab.my_table->item(cur, 0)->text();
+			//	QString b = mytab.my_table->item(cur, 1)->text();
+			//	QString c = mytab.my_table->item(cur, 2)->text();
+			//	QString d = mytab.my_table->item(cur, 3)->text();
+			//	QString e = mytab.my_table->item(cur, 4)->text();
+			//	QString f = mytab.my_table->item(cur, 5)->text();
+			//	QString g = mytab.my_table->item(cur, 6)->text();
+			//	if (cur + 1 > scenario.getAllRoute()[cur_index]->getAllWayPoints().size())
+			//	{
+			//		sce::WayPoint new_wp(a.toInt(), b.toDouble(), c.toDouble(), d.toDouble(), e.toDouble(), f.toDouble(), g.toDouble());
+			//		scenario.getAllRoute()[cur_index]->addWayPoint(new_wp);
+			//		QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+			//		QDomElement third = dom.createElement("WayPoints");
+
+			//		QDomElement fourth_1 = dom.createElement("Index");
+			//		QDomElement fourth_2 = dom.createElement("Altitude");
+			//		QDomElement fourth_3 = dom.createElement("Latitude");
+			//		QDomElement fourth_4 = dom.createElement("Longitude");
+			//		QDomElement fourth_5 = dom.createElement("Time");
+			//		QDomElement fourth_6 = dom.createElement("Velocity");
+			//		QDomElement fourth_7 = dom.createElement("Acceleration");
+
+			//		QDomText text1 = dom.createTextNode(a);
+			//		QDomText text2 = dom.createTextNode(b);
+			//		QDomText text3 = dom.createTextNode(c);
+			//		QDomText text4 = dom.createTextNode(d);
+			//		QDomText text5 = dom.createTextNode(e);
+			//		QDomText text6 = dom.createTextNode(f);
+			//		QDomText text7 = dom.createTextNode(g);
+
+			//		fourth_1.appendChild(text1);
+			//		fourth_2.appendChild(text2);
+			//		fourth_3.appendChild(text3);
+			//		fourth_4.appendChild(text4);
+			//		fourth_5.appendChild(text5);
+			//		fourth_6.appendChild(text6);
+			//		fourth_7.appendChild(text7);
+
+			//		third.appendChild(fourth_1);
+			//		third.appendChild(fourth_2);
+			//		third.appendChild(fourth_3);
+			//		third.appendChild(fourth_4);
+			//		third.appendChild(fourth_5);
+			//		third.appendChild(fourth_6);
+			//		third.appendChild(fourth_7);
+
+			//		QDomNodeList list = dom.elementsByTagName("Route");
+			//		int flag = 0;
+			//		for (int i = 0; i < list.count(); i++)
+			//		{
+			//			QDomElement ele = list.at(i).toElement();
+			//			if (ele.parentNode().nodeName() == "Scenario")
+			//			{
+			//				if (flag == cur_index)
+			//				{
+			//					ele.appendChild(third);
+			//					break;
+			//				}
+			//				flag++;
+			//			}
+			//		}
+			//	}
+			//	else
+			//	{
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setIndex(a.toInt());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setAltitude(b.toDouble());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setLatitude(c.toDouble());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setLongitude(d.toDouble());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setTime(e.toDouble());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setVelocity(f.toDouble());
+			//		scenario.getAllRoute()[cur_index]->getAllWayPoints()[cur].setAcceleration(g.toDouble());
+			//		QMessageBox::about(this, tr("Tip"), tr("Save WayPoint successfully"));
+
+			//		QDomNodeList list = dom.elementsByTagName("Route");
+			//		int flag = 0;
+			//		for (int i = 0; i < list.count(); i++)
+			//		{
+			//			QDomElement ele = list.at(i).toElement();
+			//			if (ele.parentNode().nodeName() == "Scenario")//找到为第二级节点的Route
+			//			{
+			//				if (flag == cur_index)
+			//				{
+			//					int flag_2 = 0;
+			//					for (QDomNode qd = ele.firstChild(); !qd.isNull(); qd = qd.nextSibling())
+			//					{
+			//						if (qd.nodeName() == "WayPoints")//找到具体的WayPoints
+			//						{
+			//							if (flag_2 == cur)
+			//							{
+			//								for (QDomNode qdd = qd.firstChild(); !qdd.isNull(); qdd = qdd.nextSibling())
+			//								{
+			//									if (qdd.nodeName() == "Index")
+			//									{
+			//										qdd.firstChild().setNodeValue(a);
+			//									}
+			//									if (qdd.nodeName() == "Altitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(b);
+			//									}
+			//									if (qdd.nodeName() == "Latitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(c);
+			//									}
+			//									if (qdd.nodeName() == "Longitude")
+			//									{
+			//										qdd.firstChild().setNodeValue(d);
+			//									}
+			//									if (qdd.nodeName() == "Time")
+			//									{
+			//										qdd.firstChild().setNodeValue(e);
+			//									}
+			//									if (qdd.nodeName() == "Velocity")
+			//									{
+			//										qdd.firstChild().setNodeValue(f);
+			//									}
+			//									if (qdd.nodeName() == "Acceleration")
+			//									{
+			//										qdd.firstChild().setNodeValue(g);
+			//									}
+			//								}
+			//								break;
+			//							}
+			//							flag_2++;
+			//						}
+			//					}
+			//					break;
+			//				}
+			//				flag++;
+			//			}
+			//		}
+			//	}
+			//});
+			//QPointer<QPushButton> del(new QPushButton("Del"));
+			//mytab.my_table->setCellWidget(i, 6, del);
+			//connect(del, &QPushButton::clicked, this, [=]
+			//{
+			//	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
+			//	if (ree == 0)
+			//	{
+			//		mytab.my_table->removeRow(mytab.my_table->currentRow());
+			//	}
+			//});
+			
 
 		});
-		connect(mytab.del, &QPushButton::clicked, this, [=]
+		connect(mytab->del, &QPushButton::clicked, this, [=]
 		{
 			int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
 			if (ree == 0)
 			{
-				mytab.my_table->removeRow(mytab.my_table->currentRow());
+				mytab->my_table->removeRow(mytab->my_table->currentRow());
 			}
 		});
-		connect(mytab.save, &QPushButton::clicked, this, [=]
+		connect(mytab->save, &QPushButton::clicked, this, [=]
 		{
-			int cur = mytab.my_table->currentRow();
-			QString a = mytab.my_table->item(cur, 0)->text();
-			QString b = mytab.my_table->item(cur, 1)->text();
-			QString c = mytab.my_table->item(cur, 2)->text();
-			QString d = mytab.my_table->item(cur, 3)->text();
-			QString e = mytab.my_table->item(cur, 4)->text();
-			QString f = mytab.my_table->item(cur, 5)->text();
-			QString g = mytab.my_table->item(cur, 6)->text();
+			int cur = mytab->my_table->currentRow();
+			QString a = mytab->my_table->item(cur, 0)->text();
+			QString b = mytab->my_table->item(cur, 1)->text();
+			QString c = mytab->my_table->item(cur, 2)->text();
+			QString d = mytab->my_table->item(cur, 3)->text();
+			QString e = mytab->my_table->item(cur, 4)->text();
+			QString f = mytab->my_table->item(cur, 5)->text();
+			QString g = mytab->my_table->item(cur, 6)->text();
 			if (cur + 1 > scenario.getAllRoute()[cur_index]->getAllWayPoints().size())
 			{
 				sce::WayPoint new_wp(a.toInt(), b.toDouble(), c.toDouble(), d.toDouble(), e.toDouble(), f.toDouble(), g.toDouble());
@@ -3879,7 +4288,7 @@ void PathPlanGui::show_Route_data()
 			}
 		});
 
-		vTab.push_back(&mytab);
+		vTab.push_back(mytab);
 	}
 }
 

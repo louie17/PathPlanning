@@ -17,7 +17,7 @@ Pri_values_page::Pri_values_page(QMainWindow *parent)
 	save->setText("save");
 	QStringList headers_Pri;
 	headers_Pri << QStringLiteral("PhaseOrder") << QStringLiteral("NumberOfPulses") << QStringLiteral("Primin") << QStringLiteral("Primax") << QStringLiteral("SweepTime");
-	tableWidget->setColumnCount(5);
+	tableWidget->setColumnCount(7);
 	tableWidget->setRowCount(3);
 	tableWidget->setHorizontalHeaderLabels(headers_Pri);
 	tableWidget->setGeometry(QRect(200, 70, 700, 300));
@@ -26,15 +26,16 @@ Pri_values_page::Pri_values_page(QMainWindow *parent)
 	layout->addWidget(save);
 	layout->addWidget(tableWidget);
 	widget->setLayout(layout);
-	connect(add, SIGNAL(clicked()), this, SLOT(add()));
-	connect(del, SIGNAL(clicked()), this, SLOT(del()));
-	connect(save, SIGNAL(clicked()), this, SLOT(save()));
+	connect(add, SIGNAL(clicked()), this, SLOT(add_pri_v()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_pri_v()));
+	connect(save, SIGNAL(clicked()), this, SLOT(save_pri_v()));
 }
 
 Pri_values_page::~Pri_values_page()
 {
+
 }
-void Pri_values_page::save() {
+void Pri_values_page::save_pri_v() {
 	int num = tableWidget->currentRow();
 	QString a = tableWidget->item(num, 0)->text();
 	QString b = tableWidget->item(num, 1)->text();
@@ -179,12 +180,21 @@ void Pri_values_page::save() {
 void Pri_values_page::show_pri_v() {
 	int num = scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues().size();
 	if (tableWidget->currentRow() < num) {
+		tableWidget->setRowCount(0);
 		for (int i = 0; i < scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues().size(); i++) {
+			tableWidget->insertRow(i);
 			tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues()[i].getPhaseOrder())));
 			tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues()[i].getNumberOfPulses())));
 			tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues()[i].getMin(), 'f', 2)));
 			tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues()[i].getMax())));
 			tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPri().getAllPriValues()[i].getSweepTime(), 'f', 2)));
+		
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			tableWidget->setCellWidget(i, 5, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_pri_v()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			tableWidget->setCellWidget(i, 6, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_pri_v()));
 		}
 		this->show();
 	}
@@ -193,11 +203,18 @@ void Pri_values_page::show_pri_v() {
 		this->show();
 	}
 }
-void Pri_values_page::add() {
+void Pri_values_page::add_pri_v() {
 	int row_count = tableWidget->rowCount(); //获取表单行数
 	tableWidget->insertRow(row_count);//添加新的一行
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	tableWidget->setCellWidget(row_count, 5, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_pri_v()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	tableWidget->setCellWidget(row_count, 6, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_pri_v()));
 }
-void Pri_values_page::del()		//删除列表数据
+void Pri_values_page::del_pri_v()		//删除列表数据
 {
 	int num = tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));

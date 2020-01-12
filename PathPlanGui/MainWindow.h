@@ -44,11 +44,17 @@ class MyTab
 public:
 	MyTab() {}
 	~MyTab() {}
-	QPointer<QPushButton> add;
+
+	QPushButton* add;
+	QPushButton* del;
+	QPushButton* save;
+	QTableWidget* my_table;
+
+	/*QPointer<QPushButton> add;
 	QPointer<QPushButton> del;
 	QPointer<QPushButton> save;
+	QPointer<QTableWidget>  my_table;*/
 	int myindex;
-	QPointer<QTableWidget>  my_table;
 };
 
 
@@ -93,8 +99,8 @@ private:
 	std::map<std::string, double> CofRada;
 	
 	bool isfinished;
-
-	QVector<MyTab*> vTab;
+public:
+	QVector<QPointer<MyTab>> vTab;
 	QVector<QTableWidget*> route_v;
 	QPushButton * tab_btn = NULL;
 	int route_index = -1;
