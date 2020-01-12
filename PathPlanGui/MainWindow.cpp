@@ -2,7 +2,7 @@
 #include "MainWindow.h"
 #include "de_types.hpp"
 #include "DE_main.hpp"
-#include "A_STAR.h"
+#include "mainAstar.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -3066,13 +3066,13 @@ void PathPlanGui::run_algorithm()
 
 			int ree = QMessageBox::information(this, "Tip", "Choose a* algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
 
-			QVector<Rada*> radav;
+			AS::VRada Radav; 
 			for (auto x : swRelation)
 			{
 				auto site = x.first;
 				auto weapon_cov = x.second;
-				Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
-				radav.append(&Rada2);
+				AS::Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
+				Radav.push_back(Rada2);
 			}
 
 			std::vector<sce::Point> mission_section1;
@@ -3095,15 +3095,15 @@ void PathPlanGui::run_algorithm()
 				qDebug() << "choice is  A*";
 				for (int i = 0; i < mission_section1.size() - 2; i++)
 				{
-					APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-					APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-					APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
-					Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
-					A_STAR a(sp, tp, ep, radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
+					AS::APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+					AS::APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+					AS::APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
+					AS::Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
+					auto ASroute = AS::Choose_Astar(sp, tp, ep, Radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
 
-					for (int i = 0; i < a.result_point.size(); i++)
+					for (int i = 0; i < ASroute.size(); i++)
 					{
-						route.addWayPoint(sce::WayPoint(i, a.result_point[i]->X, a.result_point[i]->Y, a.result_point[i]->Z));
+						route.addWayPoint(sce::WayPoint(i, ASroute[i]->X, ASroute[i]->Y, ASroute[i]->Z));
 					}
 
 				}
@@ -3111,9 +3111,9 @@ void PathPlanGui::run_algorithm()
 				scenario.addRoute(rt);
 				qDebug() << " A* complete";
 
-				//RouteProb = markov_init(1, rt, swRelation, CofRada);
-				//isfinished = true;
-				//cout << RouteProb;
+				auto RouteProb = markov_init(1, rt, swRelation, CofRada);
+				isfinished = true;
+				cout << RouteProb;
 
 			}
 		}
