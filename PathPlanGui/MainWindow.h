@@ -231,9 +231,9 @@ private slots:
 
 	void save_Ecm();
 
-	void save_ECMStrategy();
+	void save_EcmStrategy();
 
-	void save_ESMStrategy();
+	void save_EsmStrategy();
 
 	void save_Esm();
 

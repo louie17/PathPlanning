@@ -1503,46 +1503,48 @@ void PathPlanGui::save_Emitter() {
 	}
 }
 void PathPlanGui::save_Vertex() {
-	int num = ui.tableWidget_Vertex->currentRow();
-	if (num + 1 > scenario.getAllVertex().size()) {
-		QString a = ui.tableWidget_Vertex->item(num, 0)->text();
-		QString b = ui.tableWidget_Vertex->item(num, 1)->text();
-		QString c = ui.tableWidget_Vertex->item(num, 2)->text();
-		sce::Vertex new_data(a.toDouble(), b.toDouble(),c.toDouble());
-		scenario.addVertex(make_shared<sce::Vertex>(new_data));
-		QMessageBox::about(this, tr("Tip"), tr("Add Vertex successfully"));
-		QDomElement root = dom.documentElement();
-		QDomElement ver = dom.createElement("Vertex");
-		QDomElement la = dom.createElement("Latitude");
-		QDomElement lo = dom.createElement("Longitude");
-		QDomElement al = dom.createElement("Altitude");
-		QDomText text1 = dom.createTextNode(a);
-		QDomText text2 = dom.createTextNode(b);
-		QDomText text3 = dom.createTextNode(c);
-		la.appendChild(text1);
-		lo.appendChild(text2);
-		al.appendChild(text3);
-		ver.appendChild(la);
-		ver.appendChild(lo);
-		ver.appendChild(al);
-		root.appendChild(ver);
-	}
-	else {
-		QString a = ui.tableWidget_Vertex->item(num, 0)->text();
-		QString b = ui.tableWidget_Vertex->item(num, 1)->text();
-		QString c = ui.tableWidget_Vertex->item(num, 2)->text();
-		scenario.getAllVertex()[num]->setLatitude(a.toDouble());
-		scenario.getAllVertex()[num]->setLongitude(b.toDouble());
-		scenario.getAllVertex()[num]->setAltitude(c.toDouble());
-		QMessageBox::about(this, tr("Tip"), tr("Save Vertex successfully"));
-		QDomNodeList list = dom.elementsByTagName("Vertex");
-		QDomElement e = list.at(num).toElement();
-		e.firstChild().firstChild().setNodeValue(a);
-		e.firstChild().nextSiblingElement().firstChild().setNodeValue(b);
-		for (QDomNode son = e.firstChild(); !son.isNull(); son = son.nextSibling()) {
-			if (son.nodeName() == "Latitude") son.firstChild().setNodeValue(a);
-			if (son.nodeName() == "Longitude") son.firstChild().setNodeValue(b);
-			if (son.nodeName() == "Altitude") son.firstChild().setNodeValue(c);
+	//int num = ui.tableWidget_Vertex->currentRow();
+	for (int num = 0; num < ui.tableWidget_Vertex->rowCount(); num++) {
+		if (num + 1 > scenario.getAllVertex().size()) {
+			QString a = ui.tableWidget_Vertex->item(num, 0)->text();
+			QString b = ui.tableWidget_Vertex->item(num, 1)->text();
+			QString c = ui.tableWidget_Vertex->item(num, 2)->text();
+			sce::Vertex new_data(a.toDouble(), b.toDouble(), c.toDouble());
+			scenario.addVertex(make_shared<sce::Vertex>(new_data));
+			//QMessageBox::about(this, tr("Tip"), tr("Add Vertex successfully"));
+			QDomElement root = dom.documentElement();
+			QDomElement ver = dom.createElement("Vertex");
+			QDomElement la = dom.createElement("Latitude");
+			QDomElement lo = dom.createElement("Longitude");
+			QDomElement al = dom.createElement("Altitude");
+			QDomText text1 = dom.createTextNode(a);
+			QDomText text2 = dom.createTextNode(b);
+			QDomText text3 = dom.createTextNode(c);
+			la.appendChild(text1);
+			lo.appendChild(text2);
+			al.appendChild(text3);
+			ver.appendChild(la);
+			ver.appendChild(lo);
+			ver.appendChild(al);
+			root.appendChild(ver);
+		}
+		else {
+			QString a = ui.tableWidget_Vertex->item(num, 0)->text();
+			QString b = ui.tableWidget_Vertex->item(num, 1)->text();
+			QString c = ui.tableWidget_Vertex->item(num, 2)->text();
+			scenario.getAllVertex()[num]->setLatitude(a.toDouble());
+			scenario.getAllVertex()[num]->setLongitude(b.toDouble());
+			scenario.getAllVertex()[num]->setAltitude(c.toDouble());
+			//QMessageBox::about(this, tr("Tip"), tr("Save Vertex successfully"));
+			QDomNodeList list = dom.elementsByTagName("Vertex");
+			QDomElement e = list.at(num).toElement();
+			e.firstChild().firstChild().setNodeValue(a);
+			e.firstChild().nextSiblingElement().firstChild().setNodeValue(b);
+			for (QDomNode son = e.firstChild(); !son.isNull(); son = son.nextSibling()) {
+				if (son.nodeName() == "Latitude") son.firstChild().setNodeValue(a);
+				if (son.nodeName() == "Longitude") son.firstChild().setNodeValue(b);
+				if (son.nodeName() == "Altitude") son.firstChild().setNodeValue(c);
+			}
 		}
 	}
 }
@@ -1769,7 +1771,7 @@ void PathPlanGui::del_RouteTab() {
 			QMessageBox::about(this, "Tip", "Delete Route successfully");
 
 			QDomElement root = dom.documentElement();
-			QDomNodeList list_node = dom.elementsByTagName("Platform");
+			QDomNodeList list_node = dom.elementsByTagName("Route");
 			int flag = 0;
 			for (int i = 0; i < list_node.count(); i++)
 			{
@@ -1796,7 +1798,8 @@ void PathPlanGui::add_Vertex()
 	if (ok && !d.isEmpty()) {
 		if(d.toInt()<row_count)
 			ui.tableWidget_Vertex->insertRow(d.toInt() - 1);//添加新的一行
-		ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
+		else
+			ui.tableWidget_Vertex->insertRow(row_count);//添加新的一行
 	}
 }
 void PathPlanGui::del_Vertex()		//删除列表数据
@@ -3398,12 +3401,13 @@ void PathPlanGui::show_Vertex_data()
 		ui.tableWidget_Vertex->setItem(i, 0, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getLongitude()), 'f', 2)));
 		ui.tableWidget_Vertex->setItem(i, 1, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getLatitude()), 'f', 2)));
 		ui.tableWidget_Vertex->setItem(i, 2, new QTableWidgetItem(QString::number((scenario.getAllVertex()[i]->getAltitude()), 'f', 2)));
-		ui.tableWidget_Vertex->setCellWidget(i, 3, new QPushButton());
+
+		/*ui.tableWidget_Vertex->setCellWidget(i, 3, new QPushButton());
 		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Vertex->cellWidget(i, 3));
 		save->setText("Save");
-		connect(save, SIGNAL(clicked()), this, SLOT(save_Vertex()));
-		ui.tableWidget_Vertex->setCellWidget(i, 4, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Vertex->cellWidget(i, 4));
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Vertex()));*/
+		ui.tableWidget_Vertex->setCellWidget(i, 3, new QPushButton());
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Vertex->cellWidget(i, 3));
 		del->setText("Del");
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Vertex()));
 	}
@@ -3502,6 +3506,7 @@ void PathPlanGui::show_Site_data()
 		ui.tableWidget_Site->setItem(i, 1, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getAltitude()), 'f', 2)));
 		ui.tableWidget_Site->setItem(i, 2, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getLatitude()), 'f', 2)));
 		ui.tableWidget_Site->setItem(i, 3, new QTableWidgetItem(QString::number((scenario.getAllSite()[i]->getLongitude()), 'f', 2)));
+		
 		ui.tableWidget_Site->setCellWidget(i, 4, new QPushButton());
 		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Site->cellWidget(i, 4));
 		save->setText("Save");
@@ -3542,6 +3547,13 @@ void PathPlanGui::show_OwnPlatform_data()
 		//btn->setText("View");
 		ui.tableWidget_OPlatform->setItem(i, 9, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getplatformRCS(), 'f', 2)));
 		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_OPlatform->setCellWidget(i, 10, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_OPlatform->setCellWidget(i, 11, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
 	}
 }
 
@@ -3558,10 +3570,16 @@ void PathPlanGui::show_Ecm_data()
 		ui.tableWidget_Ecm->setItem(i, 4, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getRfMax()), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
 		ui.tableWidget_Ecm->setCellWidget(i, 5, btn);
-
 		//ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getplatformRCS()), 'f', 2)));
 		ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerERP()), 'f', 2)));
 		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_Ecm->setCellWidget(i, 7, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Ecm()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_Ecm->setCellWidget(i, 8, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Ecm()));
 	}
 }
 
@@ -3581,6 +3599,13 @@ void PathPlanGui::show_Esm_data()
 		ui.tableWidget_Esm->setItem(i, 7, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getesmMinDwellTime()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 8, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getPmin()), 'f', 2)));
 		ui.tableWidget_Esm->setItem(i, 9, new QTableWidgetItem(QString::number((scenario.getAllEsm()[i]->getAeff()), 'f', 2)));
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_Esm->setCellWidget(i, 10, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_Esm()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_Esm->setCellWidget(i, 11, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_Esm()));
 	}
 }
 
@@ -3598,6 +3623,13 @@ void PathPlanGui::show_EsmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ESMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_esmstrategy_section()));
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_ESMStra->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EsmStrategy()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_ESMStra->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EsmStrategy()));
 	}
 }
 
@@ -3615,6 +3647,13 @@ void PathPlanGui::show_EcmStratgy_data()
 		//QPushButton* ptn = qobject_cast<QPushButton*>(ui.tableWidget_ECMStra->cellWidget(i, 1));
 		//ptn->setText("View");
 		connect(ptn, SIGNAL(clicked()), this, SLOT(show_ecmstrategy_section()));
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_ECMStra->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EcmStrategy()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_ECMStra->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EcmStrategy()));
 	}
 }
 
@@ -3637,7 +3676,7 @@ void PathPlanGui::show_Route_data()
 		QPointer<QPushButton> save = new QPushButton("Save");
 
 		QStringList headers;
-		headers << QStringLiteral("Index") << QStringLiteral("Altitude") << QStringLiteral("Index") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << QStringLiteral("Time") << QStringLiteral("Velocity") << QStringLiteral("Acceleration");
+		headers << QStringLiteral("Index") << QStringLiteral("Altitude") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << QStringLiteral("Time") << QStringLiteral("Velocity") << QStringLiteral("Acceleration");
 		//创建route的表格
 		QPointer<QTableWidget> new_table = new QTableWidget();
 		new_table->setColumnCount(7);
@@ -3881,6 +3920,13 @@ void PathPlanGui::show_PSRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_PSR->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformSiteRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_PSR->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformSiteRelation()));
 	}
 }
 
@@ -3920,6 +3966,13 @@ void PathPlanGui::show_PERs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_PER->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformEmitterRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_PER->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformEmitterRelation()));
 	}
 }
 
@@ -3962,6 +4015,13 @@ void PathPlanGui::show_PWRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_PWR->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_PlatformWeaponRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_PWR->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_PlatformWeaponRelation()));
 	}
 }
 
@@ -4001,6 +4061,13 @@ void PathPlanGui::show_OPEsmRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_OEs->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEsmRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_OEs->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformEsmRelation()));
 	}
 }
 
@@ -4040,6 +4107,13 @@ void PathPlanGui::show_EsmESRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_EsmES->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EsmEsmStrategyRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_EsmES->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EsmEsmStrategyRelation()));
 	}
 }
 
@@ -4079,6 +4153,13 @@ void PathPlanGui::show_OPEcmRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_OPEcmR->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformEcmRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_OPEcmR->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformEcmRelation()));
 	}
 }
 
@@ -4122,6 +4203,13 @@ void PathPlanGui::show_EcmESRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_EcmES->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_EcmEcmStrategyRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_EcmES->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_EcmEcmStrategyRelation()));
 	}
 }
 
@@ -4161,6 +4249,13 @@ void PathPlanGui::show_OPRRs_data()
 				break;
 			}
 		}
+
+		QPointer<QPushButton> save(new QPushButton("Save"));
+		ui.tableWidget_ORR->setCellWidget(i, 2, save);
+		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatformRouteRelation()));
+		QPointer<QPushButton> del(new QPushButton("Del"));
+		ui.tableWidget_ORR->setCellWidget(i, 3, del);
+		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformRouteRelation()));
 	}
 }
 
