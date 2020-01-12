@@ -2310,6 +2310,13 @@ void PathPlanGui::add_OwnPlatform() {
 	combox->addItems(list);
 	ui.tableWidget_OPlatform->setCellWidget(num, 8, btn);
 	connect(btn, SIGNAL(clicked()), this, SLOT(show_mission()));
+
+	ui.tableWidget_OPlatform->setCellWidget(num, 10, new QPushButton("Save"));
+	QPointer<QPushButton> btn_save(qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(num, 10)));
+	connect(btn_save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
+	ui.tableWidget_OPlatform->setCellWidget(num, 11, new QPushButton("Del"));
+	QPointer<QPushButton> btn_del(qobject_cast<QPushButton*>(ui.tableWidget_OPlatform->cellWidget(num, 11)));
+	connect(btn_del, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
 }
 void PathPlanGui::del_OwnPlatform()
 {
@@ -3533,6 +3540,7 @@ void PathPlanGui::show_OwnPlatform_data()
 		ui.tableWidget_OPlatform->setItem(i, 7, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getMaxTurnRadius())));
 		QPointer<QPushButton> cb_mission(new QPushButton("View"));
 		ui.tableWidget_OPlatform->setCellWidget(i, 8, cb_mission);
+		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
 		//auto cellWidget = ui.tableWidget_OPlatform->cellWidget(i, 1);
 		//auto cellWidget_2 = ui.tableWidget_OPlatform->cellWidget(i, 8);
 		//QComboBox *combox = qobject_cast<QComboBox*>(cellWidget);
@@ -3541,7 +3549,13 @@ void PathPlanGui::show_OwnPlatform_data()
 		//QPushButton *btn = qobject_cast<QPushButton*>(cellWidget_2);
 		//btn->setText("View");
 		ui.tableWidget_OPlatform->setItem(i, 9, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getplatformRCS(), 'f', 2)));
-		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
+		QPointer<QPushButton> cb_save(new QPushButton("Save"));
+		ui.tableWidget_OPlatform->setCellWidget(i, 10, cb_save);
+		connect(cb_save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
+		QPointer<QPushButton> cb_del(new QPushButton("Del"));
+		ui.tableWidget_OPlatform->setCellWidget(i, 11, cb_del);
+		connect(cb_del, SIGNAL(clicked()), this, SLOT(del_OwnPlatform()));
+		
 	}
 }
 

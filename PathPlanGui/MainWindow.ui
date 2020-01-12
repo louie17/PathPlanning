@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -962,6 +962,16 @@
                    <column>
                     <property name="text">
                      <string>RCS</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
