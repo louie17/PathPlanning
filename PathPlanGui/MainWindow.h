@@ -246,6 +246,7 @@ private slots:
 
 	void save_Emitter();
 	void save_Vertex();
+	void modify_routeTab_name();
 	void add_RouteTab();
 	void del_RouteTab();
 	void on_actOpen_triggered();

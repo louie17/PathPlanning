@@ -259,6 +259,7 @@ PathPlanGui::PathPlanGui(QWidget *parent)
 	connect(ui.pushButton_EcmESdel, SIGNAL(clicked()), this, SLOT(del_EcmEcmStrategyRelation()));
 	connect(ui.pushButton_addTab, SIGNAL(clicked()), this, SLOT(add_RouteTab()));
 	connect(ui.pushButton_delTab, SIGNAL(clicked()), this, SLOT(del_RouteTab()));
+	connect(ui.pushButton_routeName, SIGNAL(clicked()), this, SLOT(modify_routeTab_name()));
 	connect(ui.pushButton_Vsave, SIGNAL(clicked()), this, SLOT(save_Vertex()));
 	connect(ui.pushButton_Esave, SIGNAL(clicked()), this, SLOT(save_Emitter()));
 	connect(ui.pushButton_Psave, SIGNAL(clicked()), this, SLOT(save_Platform()));
@@ -1544,6 +1545,31 @@ void PathPlanGui::save_Vertex() {
 				if (son.nodeName() == "Latitude") son.firstChild().setNodeValue(a);
 				if (son.nodeName() == "Longitude") son.firstChild().setNodeValue(b);
 				if (son.nodeName() == "Altitude") son.firstChild().setNodeValue(c);
+			}
+		}
+	}
+}
+void PathPlanGui::modify_routeTab_name() {
+	bool ok;
+	QString d = QInputDialog::getText(this, tr("Tip"), tr("The name of tabpage£º"), QLineEdit::Normal, "Route", &ok);
+	if (ok && !d.isEmpty()) {
+		int CurIndex = ui.tabWidget_Route->currentIndex();
+		ui.tabWidget_Route->setTabText(CurIndex, d);
+		scenario.getAllRoute()[CurIndex]->setName(d.toStdString());
+
+		QDomNodeList list = dom.elementsByTagName("Route");
+		int flag = 0;
+		for (int i = 0; i < list.count(); i++)
+		{
+			QDomElement e = list.at(i).toElement();
+			if (e.parentNode().nodeName() == "Scenario")
+			{
+				if (flag == CurIndex)
+				{
+					e.firstChild().firstChild().setNodeValue(d);					
+					break;
+				}
+				flag++;
 			}
 		}
 	}

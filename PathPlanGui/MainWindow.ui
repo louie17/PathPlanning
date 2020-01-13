@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -1379,6 +1379,13 @@
                 <widget class="QPushButton" name="pushButton_delTab">
                  <property name="text">
                   <string>Del_Tab</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_routeName">
+                 <property name="text">
+                  <string>Modify_Name</string>
                  </property>
                 </widget>
                </item>
