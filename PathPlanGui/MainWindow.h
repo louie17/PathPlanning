@@ -100,7 +100,8 @@ private:
 	
 	bool isfinished;
 public:
-	QVector<QPointer<MyTab>> vTab;
+	//QVector<QPointer<MyTab>> vTab;
+	QVector<MyTab*> vTab;
 	QVector<QTableWidget*> route_v;
 	QPushButton * tab_btn = NULL;
 	int route_index = -1;
