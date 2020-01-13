@@ -1554,6 +1554,18 @@ void PathPlanGui::modify_routeTab_name() {
 	QString d = QInputDialog::getText(this, tr("Tip"), tr("The name of tabpage£º"), QLineEdit::Normal, "Route", &ok);
 	if (ok && !d.isEmpty()) {
 		int CurIndex = ui.tabWidget_Route->currentIndex();
+		for (int i = 0;i < scenario.getAllRoute().size(); i++) {
+			if (i == CurIndex)
+				continue;
+			if (d.toStdString() == scenario.getAllRoute()[i]->getName()) {
+				QMessageBox::about(this, "Tip", "The Route name you entered is one of the names you already have,please input a valid name!");
+				return;
+			}
+		}
+		if (d.toStdString() == scenario.getAllRoute()[CurIndex]->getName()) {
+			QMessageBox::about(this, "Tip", "The route name you entered is the same as the current route name,please input a valid name!");
+			return;
+		}
 		ui.tabWidget_Route->setTabText(CurIndex, d);
 		scenario.getAllRoute()[CurIndex]->setName(d.toStdString());
 
@@ -3229,6 +3241,17 @@ void PathPlanGui::run_algorithm()
 	QString tips("Select the: ");
 	tips.append(QString::fromStdString(scenario.getAllOwnPlatform()[op_index]->getName()));
 	tips.append("\nNew route name: ");
+	bool flag = false;
+	for (int i = 0 ; i < scenario.getAllRoute().size(); i++) {
+		if (ui.lineEdit_Rnew->text().toStdString() == scenario.getAllRoute()[i]->getName()) {
+			flag = true;
+			break;
+		}
+	}
+	if (flag) {
+		QMessageBox::about(this, "Tip", "Please input a valid route name");
+		return;
+	}
 	tips.append(ui.lineEdit_Rnew->text());
 	int op_select = QMessageBox::information(this, "Tip", tips, QStringLiteral("Yes"), QStringLiteral("No"));
 	if (op_select != 0)
