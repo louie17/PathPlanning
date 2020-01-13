@@ -1568,7 +1568,11 @@ void PathPlanGui::add_RouteTab() {
 
 		//首先设置一个widget
 		QWidget * tab_nn = new QWidget();
-		QGridLayout* gridLayout_n = new QGridLayout();
+		QSpacerItem *horizontalSpacer_0 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);;
+		QSpacerItem *horizontalSpacer_1 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);;
+		
+		QHBoxLayout* hbLayout_n = new QHBoxLayout();
+		QVBoxLayout* vbLayout_n = new QVBoxLayout();
 		QPushButton *add = new QPushButton();
 		QPushButton *del = new QPushButton();
 		QPushButton *save = new QPushButton();
@@ -1589,11 +1593,16 @@ void PathPlanGui::add_RouteTab() {
 		new_table->horizontalHeader()->setCascadingSectionResizes(false);
 		new_table->verticalHeader()->setVisible(true);
 		new_table->setHorizontalHeaderLabels(headers);
-		gridLayout_n->addWidget(add);
-		gridLayout_n->addWidget(del);
-		gridLayout_n->addWidget(save);
-		gridLayout_n->addWidget(new_table);
-		tab_nn->setLayout(gridLayout_n);
+		hbLayout_n->addItem(horizontalSpacer_0);
+		hbLayout_n->addWidget(add);
+		hbLayout_n->addWidget(del);
+		hbLayout_n->addWidget(save);
+		hbLayout_n->addItem(horizontalSpacer_1);
+
+		vbLayout_n->addItem(hbLayout_n);
+		vbLayout_n->addWidget(new_table);
+
+		tab_nn->setLayout(vbLayout_n);
 		//this->setCentralWidget(tab_nn);
 		ui.tabWidget_Route->addTab(tab_nn, d);
 		//测试tab类
