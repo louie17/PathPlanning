@@ -121,14 +121,14 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;D:\Program Files\MATLAB\R2015b\extern\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;$(SolutionDir)MDepend;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)ScenarioEntity\Output\$(Configuration)\ScenarioEntity.lib;$(SolutionDir)QAStar\Output\$(Configuration)\QAStar.lib;$(SolutionDir)ECM\sojaSystem.lib;$(SolutionDir)ECM\spjaSystem.lib;$(SolutionDir)ESM\esmDwellSequenceGen.lib;libmx.lib;libmat.lib;mclmcr.lib;mclmcrrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files\MATLAB\R2015b\extern\lib\win64\microsoft;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)MDepend;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)ECM\sojaSystem.dll" "$(OutDir)"
@@ -149,14 +149,14 @@ copy "$(SolutionDir)ESM\esmDwellSequenceGen.dll" "$(OutDir)"</Command>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;D:\Program Files\MATLAB\R2015b\extern\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;$(SolutionDir)MDepend;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)ScenarioEntity\Output\$(Configuration)\ScenarioEntity.lib;$(SolutionDir)QAStar\Output\$(Configuration)\QAStar.lib;$(SolutionDir)ECM\sojaSystem.lib;$(SolutionDir)ECM\spjaSystem.lib;$(SolutionDir)ESM\esmDwellSequenceGen.lib;libmx.lib;libmat.lib;mclmcr.lib;mclmcrrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files\MATLAB\R2015b\extern\lib\win64\microsoft;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)MDepend;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)ECM\sojaSystem.dll" "$(OutDir)"
@@ -176,14 +176,14 @@ copy "$(SolutionDir)ESM\esmDwellSequenceGen.dll" "$(OutDir)"</Command>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;D:\Program Files\MATLAB\R2015b\extern\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;$(SolutionDir)MDepend;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)ScenarioEntity\Output\$(Configuration)\ScenarioEntity.lib;$(SolutionDir)QAStar\Output\$(Configuration)\QAStar.lib;$(SolutionDir)ECM\sojaSystem.lib;$(SolutionDir)ECM\spjaSystem.lib;$(SolutionDir)ESM\esmDwellSequenceGen.lib;libmx.lib;libmat.lib;mclmcr.lib;mclmcrrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files\MATLAB\R2015b\extern\lib\win64\microsoft;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)MDepend;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)ECM\sojaSystem.dll" "$(OutDir)"
@@ -204,14 +204,14 @@ copy "$(SolutionDir)ESM\esmDwellSequenceGen.dll" "$(OutDir)"</Command>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;D:\Program Files\MATLAB\R2015b\extern\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ESM\;$(SolutionDir)ECM\;$(SolutionDir)ScenarioEntity\include;$(SolutionDir)DE\include;$(SolutionDir)EigenLib;$(SolutionDir)QAStar\include;$(SolutionDir)MDepend;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)ScenarioEntity\Output\$(Configuration)\ScenarioEntity.lib;$(SolutionDir)QAStar\Output\$(Configuration)\QAStar.lib;$(SolutionDir)ECM\sojaSystem.lib;$(SolutionDir)ECM\spjaSystem.lib;$(SolutionDir)ESM\esmDwellSequenceGen.lib;libmx.lib;libmat.lib;mclmcr.lib;mclmcrrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files\MATLAB\R2015b\extern\lib\win64\microsoft;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)MDepend;$(Qt_LIBPATH_);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)ECM\sojaSystem.dll" "$(OutDir)"
