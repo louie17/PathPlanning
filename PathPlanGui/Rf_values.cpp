@@ -16,7 +16,7 @@ Rf_values_page::Rf_values_page(QMainWindow *parent)
 	save->setText("save");
 	QStringList headers_Erp;
 	headers_Erp << QStringLiteral("PhaseOrder") << QStringLiteral("NumberOfPulses") << QStringLiteral("Rfmin") << QStringLiteral("Rfmax") << QStringLiteral("SweepTime");
-	ui.tableWidget->setColumnCount(5);
+	ui.tableWidget->setColumnCount(7);
 	ui.tableWidget->setRowCount(2);
 	ui.tableWidget->setHorizontalHeaderLabels(headers_Erp);
 	ui.tableWidget->horizontalHeader()->setHighlightSections(false);
@@ -27,8 +27,8 @@ Rf_values_page::Rf_values_page(QMainWindow *parent)
 	layout->addWidget(ui.tableWidget);
 	widget->setLayout(layout);
 	setCentralWidget(widget);
-	connect(add, SIGNAL(clicked()), this, SLOT(add()));
-	connect(del, SIGNAL(clicked()), this, SLOT(del()));
+	connect(add, SIGNAL(clicked()), this, SLOT(add_rf_v()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_rf_v()));
 	connect(save, SIGNAL(clicked()), this, SLOT(save_rf_v()));
 }
 
@@ -182,12 +182,21 @@ void Rf_values_page::show_rf_v()
 	int num = scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues().size();
 	if (ui.tableWidget->currentRow() < num) 
 	{
+		ui.tableWidget->setRowCount(0);
 		for (int i = 0; i < scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues().size(); i++) {
+			ui.tableWidget->insertRow(i);
 			ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues()[i].getPhaseOrder())));
 			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues()[i].getNumberOfPulses())));
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues()[i].getMin(), 'f', 2)));
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues()[i].getMax())));
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getRf().getAllRfValues()[i].getSweepTime(), 'f', 2)));
+		
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			ui.tableWidget->setCellWidget(i, 5, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_rf_v()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget->setCellWidget(i, 6, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_rf_v()));
 		}
 		this->show();
 	}
@@ -197,11 +206,18 @@ void Rf_values_page::show_rf_v()
 	}
 }
 
-void Rf_values_page::add() {
+void Rf_values_page::add_rf_v() {
 	int row_count = ui.tableWidget->rowCount(); //获取表单行数
 	ui.tableWidget->insertRow(row_count);//添加新的一行
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget->setCellWidget(row_count, 5, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_rf_v()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget->setCellWidget(row_count, 6, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_rf_v()));
 }
-void Rf_values_page::del()		//删除列表数据
+void Rf_values_page::del_rf_v()		//删除列表数据
 {
 	int num = ui.tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));

@@ -17,10 +17,10 @@ public:
 	Pri_values_page(QMainWindow *parent = Q_NULLPTR);
 	~Pri_values_page();
 private slots:
-	void save();
+	void save_pri_v();
 	void show_pri_v();
-	void add();
-	void del();
+	void add_pri_v();
+	void del_pri_v();
 private:
 	QTableWidget *tableWidget = new QTableWidget(this);
 	Ui::Pri_values ui;

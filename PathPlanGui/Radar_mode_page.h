@@ -26,8 +26,8 @@ private slots:
 	void show_pri();
 	void show_scan();
 	void show_erp();
-	void add();
-	void del();
+	void add_radar();
+	void del_radar();
 signals:
 	void sign_rf();
 	void sign_pw();

@@ -16,11 +16,11 @@ public:
 	~DwellSquence_page();
 private slots:
 	void show_dwellsquence();
-	void add();
+	void add_dwellSquence();
 
-	void del();
+	void del_dwellSquence();
 
-	void save();
+	void save_dwellSquence();
 
 	void added_dwellsquence();
 

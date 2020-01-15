@@ -123,8 +123,14 @@ bool find_Ecm_data(const QDomElement &qd,sce::Scenario &scenario)
 					temp = Tech(3);
 				vtech.push_back(temp);
 			}
-			if (qdd.nodeName() == "ERP") {
+			if (qdd.nodeName() == "jammerERP") {
 				ec.setjammerERP(qdd.toElement().text().toDouble());
+			}
+			if (qdd.nodeName() == "jammerChannel") {
+				ec.setjammerChannel(qdd.toElement().text().toDouble());
+			}
+			if (qdd.nodeName() == "jammerCovRange") {
+				ec.setjammerCoVRange(qdd.toElement().text().toDouble());
 			}
 			ec.setAllTechs(vtech);
 		}

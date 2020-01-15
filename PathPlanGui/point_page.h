@@ -15,9 +15,9 @@ public:
 	~point_page();
 private slots:
 	void show_point();
-	void add();
-	void del();
-	void save();
+	void add_tar_point();
+	void del_tar_point();
+	void save_tar_point();
 private:
 	Ui::point_page ui;
 	
