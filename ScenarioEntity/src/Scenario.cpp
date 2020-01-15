@@ -1585,6 +1585,8 @@ namespace sce
 		,m_techName({ Tech::NOISE })
 		//,m_radarMSR(1.0)
 		,m_jammerERP(1.0)
+		,m_jammerChannel(1.0)
+		,m_jammerCoVRange(1000.0)
 		//,m_platformRCS(1.0)
 		//,m_radarDangerValue(1.0)
 	{
@@ -1599,6 +1601,8 @@ namespace sce
 		,m_techName({ Tech::NOISE })
 		//,m_radarMSR(1.0)
 		,m_jammerERP(1.0)
+		, m_jammerChannel(1.0)
+		, m_jammerCoVRange(1000.0)
 		//,m_platformRCS(1.0)
 		//,m_radarDangerValue(1.0)
 	{
@@ -1618,6 +1622,8 @@ namespace sce
 		, m_techName({ techName })
 		//, m_radarMSR(1.0)
 		, m_jammerERP(1.0)
+		, m_jammerChannel(1.0)
+		, m_jammerCoVRange(1000.0)
 		//, m_platformRCS(1.0)
 		//, m_radarDangerValue(1.0)
 	{
@@ -1637,6 +1643,8 @@ namespace sce
 		, m_techName(techName)
 		//, m_radarMSR(1.0)
 		, m_jammerERP(1.0)
+		, m_jammerChannel(1.0)
+		, m_jammerCoVRange(1000.0)
 		//, m_platformRCS(1.0)
 		//, m_radarDangerValue(1.0)
 	{
@@ -1660,6 +1668,8 @@ namespace sce
 		, m_techName(techName)
 		//, m_radarMSR(radarMSR)
 		, m_jammerERP(jammerERP)
+		, m_jammerChannel(1.0)
+		, m_jammerCoVRange(1000.0)
 		//, m_platformRCS(platformRCS)
 		//, m_radarDangerValue(radarDangerValue)
 	{
@@ -1829,13 +1839,8 @@ namespace sce
 	{
 	}
 
-	WayPoint::WayPoint(const size_t &index,
-		const double &altitude,
-		const double &latitude,
-		const double &longitude,
-		const double &time,
-		const double &velocity,
-		const double &acceleration)
+	WayPoint::WayPoint(const size_t &index,	const double &longitude, const double &latitude, const double &altitude,
+		const double &time,	const double &velocity,	const double &acceleration)
 		:m_index(index)
 		,m_altitude(altitude)
 		,m_latitude(latitude)
@@ -1937,7 +1942,7 @@ namespace sce
 	}
 
 	Route::Route(const std::string &name, const WayPoint &wayPoint)
-		:m_name(name)
+		: m_name(name), m_wayPoints({ wayPoint })
 	{
 	}
 
@@ -4096,6 +4101,42 @@ namespace sce
 	void Scenario::setAllOwnPlatformRouteRelation(std::vector<OwnPlatformRouteRelation>& ptr2AllEntities)
 	{
 		m_OwnPlatformRouteRelation = ptr2AllEntities;
+	}
+
+	EmittersVector Scenario::SiteEmitterRelation(Site_ptr sitePtr)
+	{
+		EmittersVector emiVector;
+		auto n = m_seRelation.count(sitePtr);//Number of elements stored with key
+		if (n == 1)
+			emiVector.push_back( m_seRelation.find(sitePtr)->second );
+		else if (n > 1)
+		{
+			auto pr = m_seRelation.equal_range(sitePtr); // pair of begin & end iterators returned
+			while (pr.first != pr.second)
+			{
+				emiVector.push_back(pr.first->second);
+				++pr.first; // Increment begin iterator
+			}
+		}
+		return emiVector;
+	}
+
+	WeaponsVector Scenario::SiteWeaponRelation(Site_ptr sitePtr)
+	{
+		WeaponsVector weaVector;
+		auto n = m_seRelation.count(sitePtr);//Number of elements stored with key
+		if (n == 1)
+			weaVector.push_back(m_swRelation.find(sitePtr)->second);
+		else if (n > 1)
+		{
+			auto pr = m_swRelation.equal_range(sitePtr); // pair of begin & end iterators returned
+			while (pr.first != pr.second)
+			{
+				weaVector.push_back(pr.first->second);
+				++pr.first; // Increment begin iterator
+			}
+		}
+		return weaVector;
 	}
 
 }

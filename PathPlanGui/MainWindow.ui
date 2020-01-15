@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1134</width>
-    <height>814</height>
+    <width>1144</width>
+    <height>899</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -959,6 +959,16 @@
                      <string>RCS</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -1129,6 +1139,16 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Channel</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>CovRange</string>
                     </property>
                    </column>
                    <column>
@@ -1317,6 +1337,16 @@
                    <column>
                     <property name="text">
                      <string>Aeff</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -3615,8 +3645,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1134</width>
-     <height>23</height>
+     <width>1144</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

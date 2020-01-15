@@ -64,17 +64,81 @@ void Mission_page::save()
 		QDomElement ele = list.at(z).toElement();
 		if (flag == choice_ownplatform)
 		{
-			ele.firstChild().firstChild().setNodeValue(mission_list[index]);
-			ele.firstChild().nextSibling().firstChild().firstChild().setNodeValue(a);
-			ele.firstChild().nextSibling().firstChild().nextSibling().firstChild().setNodeValue(b);
-			ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().firstChild().setNodeValue(c);
-			ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(d);
-			ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(e);
-			ele.firstChild().nextSibling().nextSibling().firstChild().firstChild().setNodeValue(f);
-			ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().firstChild().setNodeValue(g);
-			ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().firstChild().setNodeValue(h);
-			ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(i);
-			ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(j);
+			//ele.firstChild().firstChild().setNodeValue(mission_list[index]);
+			//ele.firstChild().nextSibling().firstChild().firstChild().setNodeValue(a);
+			//ele.firstChild().nextSibling().firstChild().nextSibling().firstChild().setNodeValue(b);
+			//ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().firstChild().setNodeValue(c);
+			//ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(d);
+			//ele.firstChild().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(e);
+			//ele.firstChild().nextSibling().nextSibling().firstChild().firstChild().setNodeValue(f);
+			//ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().firstChild().setNodeValue(g);
+			//ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().firstChild().setNodeValue(h);
+			//ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(i);
+			//ele.firstChild().nextSibling().nextSibling().firstChild().nextSibling().nextSibling().nextSibling().nextSibling().firstChild().setNodeValue(j);
+
+			for (QDomNode qd = ele.firstChild(); !qd.isNull(); qd = qd.nextSibling())
+			{
+				if (qd.nodeName() == "Type")
+				{
+					qd.firstChild().setNodeValue(mission_list[index]);
+				}
+				if (qd.nodeName() == "StartPoint")
+				{
+					for (QDomNode cqd = qd.firstChild(); !cqd.isNull(); cqd = cqd.nextSibling())
+					{
+						if (cqd.nodeName()=="Altitude")
+						{
+							cqd.firstChild().setNodeValue(a);
+						}
+						if (cqd.nodeName() == "Latitude")
+						{
+							cqd.firstChild().setNodeValue(b);
+						}
+						if (cqd.nodeName() == "Longitude")
+						{
+							cqd.firstChild().setNodeValue(c);
+						}
+						if (cqd.nodeName() == "Tmin")
+						{
+							cqd.firstChild().setNodeValue(d);
+						}
+						if (cqd.nodeName() == "Tmax")
+						{
+							cqd.firstChild().setNodeValue(e);
+						}
+						
+					}
+					
+				}
+				if (qd.nodeName() == "EndPoint")
+				{
+					for (QDomNode cqd = qd.firstChild(); !cqd.isNull(); cqd = cqd.nextSibling())
+					{
+						if (cqd.nodeName() == "Altitude")
+						{
+							cqd.firstChild().setNodeValue(f);
+						}
+						if (cqd.nodeName() == "Latitude")
+						{
+							cqd.firstChild().setNodeValue(g);
+						}
+						if (cqd.nodeName() == "Longitude")
+						{
+							cqd.firstChild().setNodeValue(h);
+						}
+						if (cqd.nodeName() == "Tmin")
+						{
+							cqd.firstChild().setNodeValue(i);
+						}
+						if (cqd.nodeName() == "Tmax")
+						{
+							cqd.firstChild().setNodeValue(j);
+						}
+
+					}
+
+				}
+			}
 			break;
 		}
 		flag++;

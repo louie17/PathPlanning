@@ -4,7 +4,13 @@
 #include "DE_main.hpp"
 #include "A_STAR.h"
 
+#include "sojasystem.h"
+#include "spjaSystem.h"
+
 #pragma execution_character_set("utf-8")
+//static constexpr<int> INTERVAL(10);
+#define INTERVAL 1 //定义支援平台路径点时间间隔
+
 
 int choice_emitter = 0;
 int choice_radar = 0;
@@ -1218,9 +1224,15 @@ void PathPlanGui::save_Ecm() {
 	QString c = ui.tableWidget_Ecm->item(num, 2)->text();
 	QString d = ui.tableWidget_Ecm->item(num, 3)->text();
 	QString e = ui.tableWidget_Ecm->item(num, 4)->text();
+	QString erp = ui.tableWidget_Ecm->item(num, 6)->text();
+	QString channel = ui.tableWidget_Ecm->item(num, 7)->text();
+	QString covRange = ui.tableWidget_Ecm->item(num, 8)->text();
 	if (num + 1 > scenario.getAllEcm().size())
 	{
 		sce::Ecm new_data(a.toStdString(), b.toDouble(), c.toInt(), d.toInt(), e.toInt());
+		new_data.setjammerERP(erp.toDouble());
+		new_data.setjammerChannel(channel.toDouble());
+		new_data.setjammerCoVRange(covRange.toDouble());
 		scenario.addEcm(std::make_shared<sce::Ecm>(new_data));
 		QMessageBox::about(this, tr("Tip"), tr("Save Ecm successfully"));
 		QDomElement root = dom.documentElement();
@@ -1230,21 +1242,33 @@ void PathPlanGui::save_Ecm() {
 		QDomElement third_3 = dom.createElement("Gain");
 		QDomElement third_4 = dom.createElement("Rfmin");
 		QDomElement third_5 = dom.createElement("Rfmax");
+		QDomElement third_6 = dom.createElement("jammerERP");
+		QDomElement third_7 = dom.createElement("jammerChannel");
+		QDomElement third_8 = dom.createElement("jammerCovRange");
 		QDomText text1 = dom.createTextNode(a);
 		QDomText text2 = dom.createTextNode(b);
 		QDomText text3 = dom.createTextNode(c);
 		QDomText text4 = dom.createTextNode(d);
 		QDomText text5 = dom.createTextNode(e);
+		QDomText text6 = dom.createTextNode(erp);
+		QDomText text7 = dom.createTextNode(channel);
+		QDomText text8 = dom.createTextNode(covRange);
 		third_1.appendChild(text1);
 		third_2.appendChild(text2);
 		third_3.appendChild(text3);
 		third_4.appendChild(text4);
 		third_5.appendChild(text5);
+		third_6.appendChild(text6);
+		third_7.appendChild(text7);
+		third_8.appendChild(text8);
 		second.appendChild(third_1);
 		second.appendChild(third_2);
 		second.appendChild(third_3);
 		second.appendChild(third_4);
 		second.appendChild(third_5);
+		second.appendChild(third_6);
+		second.appendChild(third_7);
+		second.appendChild(third_8);
 		root.appendChild(second);
 	}
 	else {
@@ -1253,6 +1277,9 @@ void PathPlanGui::save_Ecm() {
 		scenario.getAllEcm()[num]->setGain(c.toInt());
 		scenario.getAllEcm()[num]->setRfMin(d.toInt());
 		scenario.getAllEcm()[num]->setRfMax(e.toInt());
+		scenario.getAllEcm()[num]->setjammerERP(erp.toDouble());
+		scenario.getAllEcm()[num]->setjammerChannel(channel.toDouble());
+		scenario.getAllEcm()[num]->setjammerCoVRange(covRange.toDouble());
 		QMessageBox::about(this, tr("Tip"), tr("Save Ecm successfully"));
 		QDomNodeList list = dom.elementsByTagName("Ecm");
 		int flag = 0;
@@ -1284,6 +1311,18 @@ void PathPlanGui::save_Ecm() {
 						if (qd.nodeName() == "Rfmax")
 						{
 							qd.firstChild().setNodeValue(e);
+						}
+						if (qd.nodeName() == "jammerERP")
+						{
+							qd.firstChild().setNodeValue(erp);
+						}
+						if (qd.nodeName() == "jammerChannel")
+						{
+							qd.firstChild().setNodeValue(channel);
+						}
+						if (qd.nodeName() == "jammerCovRange")
+						{
+							qd.firstChild().setNodeValue(covRange);
 						}
 					}
 					break;
@@ -3240,7 +3279,7 @@ void PathPlanGui::run_algorithm()
 	int op_index = ui.comboBox_OPS->currentIndex();
 	QString tips("Select the: ");
 	tips.append(QString::fromStdString(scenario.getAllOwnPlatform()[op_index]->getName()));
-	tips.append("\nNew route name: ");
+	
 	bool flag = false;
 	for (int i = 0 ; i < scenario.getAllRoute().size(); i++) {
 		if (ui.lineEdit_Rnew->text().toStdString() == scenario.getAllRoute()[i]->getName()) {
@@ -3252,6 +3291,7 @@ void PathPlanGui::run_algorithm()
 		QMessageBox::about(this, "Tip", "Please input a valid route name");
 		return;
 	}
+	tips.append("\nNew route name: ");
 	tips.append(ui.lineEdit_Rnew->text());
 	int op_select = QMessageBox::information(this, "Tip", tips, QStringLiteral("Yes"), QStringLiteral("No"));
 	if (op_select != 0)
@@ -3346,144 +3386,196 @@ void PathPlanGui::run_algorithm()
 			auto ret = swRelation.insert(std::make_pair(iterS, wcrange[i]));
 			//assert(ret.second);//插入失败是因为出现重复的键值对
 		}
-		//获取路径片段的起始终止点序列
-		size_t target_size = scenario.getAllOwnPlatform()[op_index]->getMission().getAllTargetPoints().size();
-		assert(target_size);
+
 		std::vector<sce::Point> mission_section{ scenario.getAllOwnPlatform()[op_index]->getMission().getStartPoint() ,scenario.getAllOwnPlatform()[op_index]->getMission().getEndPoint() };
-		if (target_size > 0)
+		sce::WayPoint start_wp(1,mission_section[0].getLongitude(), mission_section[0].getLatitude(), mission_section[0].getAltitude());
+		start_wp.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
+		start_wp.setAcceleration(0);
+		start_wp.setTime(0);
+		sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),start_wp)) };
+		//根据平台任务类型规划路径
+		if (scenario.getAllOwnPlatform()[op_index]->getMission().getMissionType()==sce::MissionType::SUPPORT)
 		{
-			for (size_t i = 0; i < target_size; ++i)
+			de::Node startNode, endNode; startNode(mission_section[0]); endNode(mission_section[mission_section.size()-1]);
+
+			size_t time_section_size =((endNode - startNode).norm()/scenario.getAllOwnPlatform()[op_index]->getMaxSpeed())/INTERVAL;
+
+			//sce::WayPoint wpoint(mission_section[0].getLongitude(), mission_section[0].getLatitude(), mission_section[0].getAltitude());
+			//wpoint.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
+			//wpoint.setAcceleration(0);
+			//wpoint.setTime(0);
+			//sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),wpoint)) };
+
+			de::Node nodeInterval{ (endNode - startNode)*(1 / time_section_size) };
+			//支援平台的路径规划为一条直线
+			for (size_t i = 0; i < time_section_size; i++)
 			{
-				mission_section.insert(mission_section.end() - 1, scenario.getAllOwnPlatform()[op_index]->getMission().getTargetPoint(i));
+				//qDebug()<<route->getAllWayPoints().size();
+				route->addWayPoint(sce::WayPoint(i+2 , 
+					(route->getAllWayPoints().cend() - 1)->getLongitude()+ nodeInterval.longitude(),
+					(route->getAllWayPoints().cend() - 1)->getLatitude()+ nodeInterval.latitude(),
+					(route->getAllWayPoints().cend() - 1)->getAltitude()+ nodeInterval.altitude(),
+					(route->getAllWayPoints().cend() - 1)->getTime()+INTERVAL*(i+1),
+					(route->getAllWayPoints().cend() - 1)->getVelocity(),0));
 			}
+
+			scenario.addRoute(route);
+			qDebug() << "Support OwnPlatform route planning completed!";
+			soj(op_index,route);
+			qDebug() << "Soj strategy generation completed!";
 		}
-
-
-		//scenario.getAllOwnPlatform->at(0);
-
-		if (tab_index == 0) //choose a* algorithm
+		else if (scenario.getAllOwnPlatform()[op_index]->getMission().getMissionType() == sce::MissionType::STRIKE)
 		{
-
-
-			float survice_w1 = ui.lineEdit_SurW->text().toFloat();
-			float end_w1 = ui.lineEdit_TarW->text().toFloat();
-			float StepLength1 = ui.lineEdit_StepL->text().toFloat();
-			float hmin1 = ui.lineEdit_minLH->text().toFloat();
-			float hmax1 = ui.lineEdit_maxLH->text().toFloat();
-			float horizontal_corner1 = ui.lineEdit_HorCor->text().toFloat();
-			float verticality_corner1 = ui.lineEdit_VerCor->text().toFloat();
-			float e_w1 = ui.lineEdit_EW->text().toFloat();
-			float start_w1 = ui.lineEdit_StartW->text().toFloat();
-
-			int ree = QMessageBox::information(this, "Tip", "Choose a* algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
-
-			QVector<Rada*> radav;
-			for (auto x : swRelation)
+			//获取路径片段的起始终止点序列
+			size_t target_size = scenario.getAllOwnPlatform()[op_index]->getMission().getAllTargetPoints().size();
+			assert(target_size);
+			//std::vector<sce::Point> mission_section{ scenario.getAllOwnPlatform()[op_index]->getMission().getStartPoint() ,scenario.getAllOwnPlatform()[op_index]->getMission().getEndPoint() };
+			if (target_size > 0)
 			{
-				auto site = x.first;
-				auto weapon_cov = x.second;
-				Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
-				radav.append(&Rada2);
-			}
-
-			std::vector<sce::Point> mission_section1;
-			sce::Point p[3];
-			for (int i = 0; i < 3; i++)
-			{
-				p[i].setAltitude(1);
-				p[i].setLongitude(10 + i * 100);
-				p[i].setLatitude(20 + i * 50);
-				mission_section1.push_back(p[i]);
-			}
-
-			sce::Route route;
-
-			if (ree != 0)
-			{
-				return;
-			}
-			else {
-				qDebug() << "choice is  A*";
-				for (int i = 0; i < mission_section1.size() - 2; i++)
-				{
-					APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-					APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-					APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
-					Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
-					A_STAR a(sp, tp, ep, radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
-
-					for (int i = 0; i < a.result_point.size(); i++)
-					{
-						route.addWayPoint(sce::WayPoint(i, a.result_point[i]->X, a.result_point[i]->Y, a.result_point[i]->Z));
-					}
-
-				}
-				auto rt = std::make_shared<sce::Route>(route);
-				scenario.addRoute(rt);
-				qDebug() << " A* complete";
-
-				//RouteProb = markov_init(1, rt, swRelation, CofRada);
-				//isfinished = true;
-				//cout << RouteProb;
-
-			}
-		}
-		if (tab_index == 1) //choose DE algorithm
-		{
-			size_t Population_Number = ui.lineEdit_Popnum->text().toInt();
-			size_t Initial_Node_Number = ui.lineEdit_IniVnum->text().toInt();
-			size_t Evolution_Number = ui.lineEdit_ENum->text().toInt();
-			double Weight = ui.lineEdit_WF->text().toDouble();
-			double Cross_Probability = ui.lineEdit_CP->text().toDouble();
-			int ree = QMessageBox::information(this, "Tip", "Choose DE algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
-			if (ree != 0)
-			{
-				return;
-			}
-			else {
-				qDebug() << "choice is DE";
-				sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),sce::WayPoint(mission_section[0].getLongitude(),mission_section[0].getLatitude(),mission_section[0].getAltitude()))) };
-
 				for (size_t i = 0; i < target_size; ++i)
 				{
-					de::NVectorPtr route_section(de::De_alg(swRelation, scenario.getAllVertex(), mission_section[i], mission_section[i + 1], Population_Number, Initial_Node_Number, Evolution_Number, Weight, Cross_Probability));
+					mission_section.insert(mission_section.end() - 1, scenario.getAllOwnPlatform()[op_index]->getMission().getTargetPoint(i));
+				}
+			}
 
-					for (size_t iter = 1; iter < route_section->size(); ++iter)
-					{
-						de::Node node(route_section->at(iter));
-						route->addWayPoint(sce::WayPoint(iter, node.longitude(), node.latitude(), node.altitude()));
-					}
+			//scenario.getAllOwnPlatform->at(0);
+
+			if (tab_index == 0) //choose a* algorithm
+			{
+				float survice_w1 = ui.lineEdit_SurW->text().toFloat();
+				float end_w1 = ui.lineEdit_TarW->text().toFloat();
+				float StepLength1 = ui.lineEdit_StepL->text().toFloat();
+				float hmin1 = ui.lineEdit_minLH->text().toFloat();
+				float hmax1 = ui.lineEdit_maxLH->text().toFloat();
+				float horizontal_corner1 = ui.lineEdit_HorCor->text().toFloat();
+				float verticality_corner1 = ui.lineEdit_VerCor->text().toFloat();
+				float e_w1 = ui.lineEdit_EW->text().toFloat();
+				float start_w1 = ui.lineEdit_StartW->text().toFloat();
+
+				int ree = QMessageBox::information(this, "Tip", "Choose a* algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+
+				QVector<Rada*> radav;
+				for (auto x : swRelation)
+				{
+					auto site = x.first;
+					auto weapon_cov = x.second;
+					Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
+					radav.append(&Rada2);
 				}
 
-				scenario.addRoute(route);
-				qDebug() << "DE complete!";
-				//MatrixXd stateprob = markov_init(1, route, swRelation, CofRada);
+				std::vector<sce::Point> mission_section1=mission_section;
+				//sce::Point p[3];
+				//for (int i = 0; i < 3; i++)
+				//{
+				//	p[i].setAltitude(1);
+				//	p[i].setLongitude(10 + i * 100);
+				//	p[i].setLatitude(20 + i * 50);
+				//	mission_section1.push_back(p[i]);
+				//}
+
+				//sce::Route route;
+
+				if (ree != 0)
+				{
+					return;
+				}
+				else {
+					qDebug() << "choice is  A*";
+					for (int i = 0; i < mission_section1.size() - 2; i++)
+					{
+						APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+						APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
+						APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
+						Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
+						A_STAR a(sp, tp, ep, radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
+
+						for (int i = 0; i < a.result_point.size(); i++)
+						{
+							sce::WayPoint wayPoint(i+2, a.result_point[i]->X, a.result_point[i]->Y, a.result_point[i]->Z);
+							wayPoint.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
+							wayPoint.setAcceleration(0);
+							wayPoint.setTime(a.Calc_dist(a.result_point[i], a.result_point[i - 1]) / scenario.getAllOwnPlatform()[op_index]->getMaxSpeed() + (route->getAllWayPoints().cend() - 1)->getTime());
+							//wayPoint.setIndex(i+2);
+							route->addWayPoint(wayPoint);
+						}
+
+					}
+					//auto rt = std::make_shared<sce::Route>(route);
+					scenario.addRoute(route);
+					qDebug() << " A* complete";
+
+					//RouteProb = markov_init(1, rt, swRelation, CofRada);
+					//isfinished = true;
+					//cout << RouteProb;
+
+				}
 			}
-		}
-		//if (tab_index == 2) //choose PSO algorithm
-		//{
-		//	double Swarm_Size = ui.lineEdit_50->text().toDouble();
-		//	double Loop_Couner = ui.lineEdit_51->text().toDouble();
-		//	double Search_Step = ui.lineEdit_57->text().toDouble();
-		//	double Eecute_Step = ui.lineEdit_58->text().toDouble();
-		//	double Step_Distance = ui.lineEdit_59->text().toDouble();
-		//	double Detect_Range = ui.lineEdit_61->text().toDouble();
-		//	double Pitch = ui.lineEdit_60->text().toDouble();
-		//	double Yaw = ui.lineEdit_62->text().toDouble();
-		//	double RefPath = ui.lineEdit_55->text().toDouble();
-		//	double OilCost = ui.lineEdit_53->text().toDouble();
-		//	double Missions = ui.lineEdit_56->text().toDouble();
-		//	double HightConstrain = ui.lineEdit_54->text().toDouble();
-		//	double SurvivalCost = ui.lineEdit_52->text().toDouble();
-		//	int ree = QMessageBox::information(this, "Tip", "Choose PSO algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
-		//	if (ree != 0)
-		//	{
-		//		return;
-		//	}
-		//	else {
-		//		qDebug() << "choice is PSO";
-		//	}
-		//}
+			if (tab_index == 1) //choose DE algorithm
+			{
+				size_t Population_Number = ui.lineEdit_Popnum->text().toInt();
+				size_t Initial_Node_Number = ui.lineEdit_IniVnum->text().toInt();
+				size_t Evolution_Number = ui.lineEdit_ENum->text().toInt();
+				double Weight = ui.lineEdit_WF->text().toDouble();
+				double Cross_Probability = ui.lineEdit_CP->text().toDouble();
+				int ree = QMessageBox::information(this, "Tip", "Choose DE algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+				if (ree != 0)
+				{
+					return;
+				}
+				else {
+					qDebug() << "choice is DE";
+					//sce::WayPoint wpoint(mission_section[0].getLongitude(), mission_section[0].getLatitude(), mission_section[0].getAltitude());
+					//wpoint.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
+					//wpoint.setAcceleration(0);
+					//wpoint.setTime(0);
+					//sce::Route_ptr route{ std::make_shared<sce::Route>(sce::Route(ui.lineEdit_Rnew->text().toStdString(),wpoint)) };
+
+					for (size_t i = 0; i < target_size; ++i)
+					{
+						de::NVectorPtr route_section(de::De_alg(swRelation, scenario.getAllVertex(), mission_section[i], mission_section[i + 1], Population_Number, Initial_Node_Number, Evolution_Number, Weight, Cross_Probability));
+
+						for (size_t iter = 1; iter < route_section->size(); ++iter)
+						{
+							de::Node node(route_section->at(iter));
+							sce::WayPoint wp(iter+1, node.longitude(), node.latitude(), node.altitude());
+							wp.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
+							wp.setAcceleration(0);
+							wp.setTime((route_section->at(iter) - route_section->at(iter - 1)).norm() / scenario.getAllOwnPlatform()[op_index]->getMaxSpeed() + (route->getAllWayPoints().cend() - 1)->getTime());
+							//wp.setIndex(i + 1);
+							route->addWayPoint(wp);
+						}
+					}
+
+					scenario.addRoute(route);
+					qDebug() << "DE complete!";
+					//MatrixXd stateprob = markov_init(1, route, swRelation, CofRada);
+				}
+			}
+			//if (tab_index == 2) //choose PSO algorithm
+			//{
+			//	double Swarm_Size = ui.lineEdit_50->text().toDouble();
+			//	double Loop_Couner = ui.lineEdit_51->text().toDouble();
+			//	double Search_Step = ui.lineEdit_57->text().toDouble();
+			//	double Eecute_Step = ui.lineEdit_58->text().toDouble();
+			//	double Step_Distance = ui.lineEdit_59->text().toDouble();
+			//	double Detect_Range = ui.lineEdit_61->text().toDouble();
+			//	double Pitch = ui.lineEdit_60->text().toDouble();
+			//	double Yaw = ui.lineEdit_62->text().toDouble();
+			//	double RefPath = ui.lineEdit_55->text().toDouble();
+			//	double OilCost = ui.lineEdit_53->text().toDouble();
+			//	double Missions = ui.lineEdit_56->text().toDouble();
+			//	double HightConstrain = ui.lineEdit_54->text().toDouble();
+			//	double SurvivalCost = ui.lineEdit_52->text().toDouble();
+			//	int ree = QMessageBox::information(this, "Tip", "Choose PSO algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+			//	if (ree != 0)
+			//	{
+			//		return;
+			//	}
+			//	else {
+			//		qDebug() << "choice is PSO";
+			//	}
+			//}
+		}	
 	}
 }
 
@@ -3856,7 +3948,6 @@ void PathPlanGui::show_OwnPlatform_data()
 		//btn->setText("View");
 		ui.tableWidget_OPlatform->setItem(i, 9, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[i]->getplatformRCS(), 'f', 2)));
 		connect(cb_mission, SIGNAL(clicked()), this, SLOT(show_mission()));
-
 		QPointer<QPushButton> save(new QPushButton("Save"));
 		ui.tableWidget_OPlatform->setCellWidget(i, 10, save);
 		connect(save, SIGNAL(clicked()), this, SLOT(save_OwnPlatform()));
@@ -3883,11 +3974,13 @@ void PathPlanGui::show_Ecm_data()
 		ui.tableWidget_Ecm->setItem(i, 6, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerERP()), 'f', 2)));
 		connect(btn, SIGNAL(clicked()), this, SLOT(ecm_tech()));
 
+		ui.tableWidget_Ecm->setItem(i, 7, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerChannel()), 'f', 2)));
+		ui.tableWidget_Ecm->setItem(i, 8, new QTableWidgetItem(QString::number((scenario.getAllEcm()[i]->getjammerCoVRange()), 'f', 2)));
 		QPointer<QPushButton> save(new QPushButton("Save"));
-		ui.tableWidget_Ecm->setCellWidget(i, 7, save);
+		ui.tableWidget_Ecm->setCellWidget(i, 9, save);
 		connect(save, SIGNAL(clicked()), this, SLOT(save_Ecm()));
 		QPointer<QPushButton> del(new QPushButton("Del"));
-		ui.tableWidget_Ecm->setCellWidget(i, 8, del);
+		ui.tableWidget_Ecm->setCellWidget(i, 10, del);
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Ecm()));
 	}
 }
@@ -4854,6 +4947,248 @@ void PathPlanGui::show_OPRRs_data()
 		ui.tableWidget_ORR->setCellWidget(i, 3, del);
 		connect(del, SIGNAL(clicked()), this, SLOT(del_OwnPlatformRouteRelation()));
 	}
+}
+
+void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
+{
+	mclmcrInitialize();
+	if (!mclInitializeApplication(NULL, 0)) return ;
+	if (!sojaSystemInitialize()) return ;
+
+	//根据关联关系表，找到支援平台携带的ECM设备信息
+	vector<double> jammerERP_V;
+	double thera, jammerCovRange;
+	for (auto iter_o : scenario.getAllOwnPlatformEcmRelation())
+	{
+		if (iter_o.getOwnPlatformName() == scenario.getAllOwnPlatform()[OwnPlatformIndex]->getName())
+		{
+			thera=iter_o.getEcm()->getjammerChannel();//扇角
+			jammerCovRange = iter_o.getEcm()->getjammerCoVRange();//有效作用半径
+			break;
+		}
+	}
+
+	sce::EcmStrategy ecmStrategy;
+	for (size_t iter = 0;iter< route->getAllWayPoints().size()-1;++iter)
+	{
+		de::Node preNode(route->getAllWayPoints()[iter].getLongitude(), route->getAllWayPoints()[iter].getLatitude(), route->getAllWayPoints()[iter].getAltitude());
+		de::Node lastNode(route->getAllWayPoints()[iter+1].getLongitude(), route->getAllWayPoints()[iter+1].getLatitude(), route->getAllWayPoints()[iter+1].getAltitude());
+
+		sce::SitesVector sites;
+		de::Node tmpSite;
+		double distance, V_angle{0};
+		bool isCovered=false;
+		for (auto it : scenario.getAllSite())
+		{
+			distance = (preNode-tmpSite(*it)).norm();
+			if (distance<jammerCovRange)
+			{
+				V_angle = acos((lastNode - preNode)*(preNode - tmpSite(*it)) / ((lastNode - preNode).norm()*distance))*180.0 / PI;
+				if (V_angle<thera)
+				{
+					isCovered = true;
+				}
+			}
+			if (isCovered)
+			{
+				sites.push_back(it);
+			}
+		}
+
+		double num = sites.size();//获取场景文件中辐射源数量
+		mwArray radarIndex(1, num, mxDOUBLE_CLASS, mxREAL);
+		mwArray radarERP(1, num, mxDOUBLE_CLASS, mxREAL);
+		mwArray radarMSR(1, num, mxDOUBLE_CLASS, mxREAL);
+		mwArray radarSojRange(1, num, mxDOUBLE_CLASS, mxREAL);
+		mwArray jammerERP(1, 1, mxDOUBLE_CLASS, mxREAL);
+		mwArray platformRCS(1, 1, mxDOUBLE_CLASS, mxREAL);
+		mwArray lutTecEffect(6, 4, mxDOUBLE_CLASS, mxREAL);
+
+		vector<double> radarIndex_V;
+		for (size_t i = 1; i <= num; i++)
+		{
+			radarIndex_V.push_back(i);
+		}
+
+		vector<double> radarERP_V;
+		vector<double> radarMSR_V;
+		vector<double> radarSojRange_V;
+
+		//根据Site——Emitter对应关系获取的radar参数
+		for (auto iterS : sites)
+		{
+			for (auto iter : scenario.SiteEmitterRelation(iterS))
+			{
+				//获取每个辐射源各RadarMode中ERP有效值的最大值
+				vector<double> radarERP_temp;
+				assert(iter->getAllPtr2RadarModes().size()>0);
+				if (iter->getAllPtr2RadarModes().size() <= 0)
+				{
+					radarERP_temp.push_back(0);
+				}
+				else
+				{
+					for (auto it : iter->getAllPtr2RadarModes())
+					{
+						radarERP_temp.push_back((it->getErp().getErpMax() + it->getErp().getErpMin()) / 2);
+					}
+				}
+				radarERP_V.push_back(*std::max_element(radarERP_temp.cbegin(), radarERP_temp.cend()));
+				//获取每个辐射源的MSR
+				radarMSR_V.push_back(iter->getradarMSR());
+			}
+		}
+		
+		//获取SOJ干扰机的ERP
+		vector<double> jammerERP_V;
+		auto indexOP = ui.comboBox_OPS->currentIndex();
+		for (auto iter_o : scenario.getAllOwnPlatformEcmRelation())
+		{
+			if (iter_o.getOwnPlatformName() == scenario.getAllOwnPlatform()[indexOP]->getName())
+			{
+				jammerERP_V.push_back(iter_o.getEcm()->getjammerERP());
+			}
+		}
+
+		vector<double> platformRCS_V{ scenario.getAllOwnPlatform()[indexOP]->getplatformRCS() };
+		vector<double> lutTecEffect_V = { 1, 2, 3, 4, 5, 6, 1, 1, 1, 1, 1, 1, 15, 8, 5, 8, 7, 12, 1, 1, 1, 1, 1, 1 };
+
+		radarIndex.SetData(radarIndex_V.data(), num);
+		radarERP.SetData(radarERP_V.data(), num);
+		radarMSR.SetData(radarMSR_V.data(), num);
+		radarSojRange.SetData(radarSojRange_V.data(), num);
+		jammerERP.SetData(jammerERP_V.data(), 1);
+		platformRCS.SetData(platformRCS_V.data(), 1);
+		lutTecEffect.SetData(lutTecEffect_V.data(), 24);
+
+		mwArray jammingAllocation;
+
+		sojaSystem(1, jammingAllocation, radarIndex, radarERP, radarMSR, radarSojRange, jammerERP, platformRCS, lutTecEffect);
+
+		mwArray dims = jammingAllocation.GetDimensions();
+		int row = dims.Get(1, 1);
+		int col = dims.Get(1, 2);
+
+		double *jammingAllocation_pt;
+		jammingAllocation_pt = new double[row*col];
+		jammingAllocation.GetData(jammingAllocation_pt, row*col);
+
+		sce::EcmStrategySection ecmStraSection(route->getAllWayPoints()[iter].getTime(), 
+			route->getAllWayPoints()[iter+1].getTime(),
+			sce::Location(preNode.longitude(),preNode.latitude(),preNode.altitude()),
+			sce::Location(lastNode.longitude(), lastNode.latitude(), lastNode.altitude()));
+		size_t tech= jammingAllocation_pt[1];
+		ecmStraSection.setTechName(sce::Tech(tech));
+		ecmStrategy.addSection(std::make_shared<sce::EcmStrategySection>(ecmStraSection));
+
+		std::cout << "The value of jammingAllocation matrix is:" << std::endl;
+		std::cout << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离\n" << std::endl;
+		 
+		for (int i = 0; i < col; i++)
+		{
+			printf("%f  %f  %.2e\n", jammingAllocation_pt[i*row + 0], jammingAllocation_pt[i*row + 1],
+				jammingAllocation_pt[i*row + 2]);
+		}
+
+		delete jammingAllocation_pt;
+	}
+	scenario.addEcmStrategy(std::make_shared<sce::EcmStrategy>(ecmStrategy));
+	
+	sojaSystemTerminate();
+	mclTerminateApplication();
+
+}
+
+void PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
+{
+	mclmcrInitialize();
+	if (!mclInitializeApplication(NULL, 0)) return ;
+	if (!spjaSystemInitialize()) return ;
+
+	double num = scenario.getAllEmitter().size();
+	mwArray radarIndex(1, num, mxDOUBLE_CLASS, mxREAL);
+	mwArray radarERP(1, num, mxDOUBLE_CLASS, mxREAL);
+	mwArray radarDangerValue(1, num, mxDOUBLE_CLASS, mxREAL);
+	mwArray jammerChannel(1, 1, mxDOUBLE_CLASS, mxREAL);
+	mwArray jammerERP(1, 1, mxDOUBLE_CLASS, mxREAL);
+	mwArray platformRCS(1, 1, mxDOUBLE_CLASS, mxREAL);
+	mwArray lutTecEffect(6, 4, mxDOUBLE_CLASS, mxREAL);
+
+
+	vector<double> radarIndex_data;
+	for (size_t i = 1; i <= num; i++)
+	{
+		radarIndex_data.push_back(i);
+	}
+
+	vector<double> radarERP_V;
+	vector<double> radarDangetValue_V;
+	vector<double> jammerChannel_V{1};
+	for (auto iter: scenario.getAllEmitter())
+	{
+		//获取每个辐射源各RadarMode中ERP有效值的最大值
+		vector<double> radarERP_temp;
+		assert(iter->getAllPtr2RadarModes().size()>0);
+		if (iter->getAllPtr2RadarModes().size()<=0)
+		{
+			radarERP_temp.push_back(0);
+		}
+		else
+		{
+			for (auto it : iter->getAllPtr2RadarModes())
+			{
+				radarERP_temp.push_back((it->getErp().getErpMax() + it->getErp().getErpMin()) / 2);
+			}
+		}
+		radarERP_V.push_back(*std::max_element(radarERP_temp.cbegin(), radarERP_temp.cend()));
+		//获取每个辐射源的威胁系数
+		radarDangetValue_V.push_back(iter->getradarDangerValue());
+	}
+		
+	auto indexOP = ui.comboBox_OPS->currentIndex();
+	vector<double> jammerERP_V;
+	for (auto iter_o : scenario.getAllOwnPlatformEcmRelation())
+	{
+		if (iter_o.getOwnPlatformName()==scenario.getAllOwnPlatform()[indexOP]->getName())
+		{
+			jammerERP_V.push_back(iter_o.getEcm()->getjammerERP());
+		}
+	}
+
+	vector<double> platformRCS_V{ scenario.getAllOwnPlatform()[indexOP]->getplatformRCS() };
+	vector<double> lutTecEffect_V = { 1, 2, 3, 4, 5, 6, 1, 1, 1, 1, 1, 1, 15, 8, 5, 8, 7, 12, 1, 1, 1, 1, 1, 1 };
+	radarIndex.SetData(radarIndex_data.data(), num);
+	radarERP.SetData(radarERP_V.data(), num);
+	radarDangerValue.SetData(radarDangetValue_V.data(), num);
+	jammerChannel.SetData(jammerChannel_V.data(), 1);
+	jammerERP.SetData(jammerERP_V.data(), 1);
+	platformRCS.SetData(platformRCS_V.data(), 1);
+	lutTecEffect.SetData(lutTecEffect_V.data(), 24);
+
+	mwArray jammingAllocation;
+
+	spjaSystem(1, jammingAllocation, radarIndex, radarERP, radarDangerValue, jammerChannel, jammerERP, platformRCS, lutTecEffect);
+
+	mwArray dims = jammingAllocation.GetDimensions();
+	int row = dims.Get(1, 1);
+	int col = dims.Get(1, 2);
+
+	double* jammingAllocation_pt = new double[row * col];
+	jammingAllocation.GetData(jammingAllocation_pt, row * col);
+
+	std::cout << "The value of jammingAllocation matrix is:" << std::endl;
+	std::cout << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离" << std::endl;
+
+	for (int i = 0; i < col; i++)
+	{
+		printf("%f  %f  %.2e\n", jammingAllocation_pt[i * row + 0], jammingAllocation_pt[i * row + 1],
+			jammingAllocation_pt[i * row + 2]);
+	}
+
+	delete[] jammingAllocation_pt;
+
+	spjaSystemTerminate();
+	mclTerminateApplication();
 }
 
 void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)

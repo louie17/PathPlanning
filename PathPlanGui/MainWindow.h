@@ -191,6 +191,9 @@ public:
 	void show_EcmESRs_data();
 	void show_OPRRs_data();
 //	QVector<MyTab*> vTab;
+
+	void soj(size_t OwnPlatformIndex, sce::Route_ptr route);
+	void spj(size_t OwnPlatformIndex, sce::Route_ptr route);
 	
 signals:
 	void go_next();//отй╬обр╩рЁ
