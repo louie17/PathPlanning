@@ -134,7 +134,7 @@
       <Command>copy "$(SolutionDir)ECM\sojaSystem.dll" "$(OutDir)"
 copy "$(SolutionDir)ECM\spjaSystem.dll" "$(OutDir)"
 copy "$(SolutionDir)ESM\esmDwellSequenceGen.dll" "$(OutDir)"
-copy "$(SolutionDir)MDpend\mclmcrrt9_0.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)MDepend\mclmcrrt9_0.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
