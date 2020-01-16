@@ -186,6 +186,11 @@
     <ClCompile Include="src\DE.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScenarioEntity\ScenarioEntity.vcxproj">
+      <Project>{ddb9128b-72cb-4a2a-9eab-22a7d65dca90}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

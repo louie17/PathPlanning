@@ -338,6 +338,9 @@ namespace sce
 
 		Site_Weapon_relation SiteWeaponRelation() { return m_swRelation; }
 		Site_Emitter_relation SiteEmitterRelation() { return m_seRelation; }
+
+		EmittersVector SiteEmitterRelation(Site_ptr sitePtr); //{ return m_seRelation.find(sitePtr)->second; }
+		WeaponsVector SiteWeaponRelation(Site_ptr sitePtr); //{ return m_swRelation.find(sitePtr)->second; }
 	};
 
 	class Vertex
@@ -1109,7 +1112,8 @@ namespace sce
 		const size_t& getRfMin(void);
 		const size_t& getRfMax(void);
 		const double& getjammerERP(void) { return m_jammerERP; }
-		
+		const double& getjammerChannel(void) { return m_jammerChannel; }
+		const double& getjammerCoVRange(void) { return m_jammerCoVRange; }
 		//const double& getplatformRCS(void) { return m_platformRCS; }
 		//const double& getjammerERP_support(void) { return m_jammerERP_support; }
 		//const double & getradarMSR(void) { return m_radarMSR; }
@@ -1143,6 +1147,8 @@ namespace sce
 		void setRfMax(const size_t& rfMax);
 		//void setradarMSR(const double &radarMSR);
 		void setjammerERP(const double &jammerERP);
+		void setjammerChannel(const double& jammerChannel) { m_jammerChannel=jammerChannel; }
+		void setjammerCoVRange(const double& jammerCoVRange) { m_jammerCoVRange=jammerCoVRange; }
 		//void setplatformRCS(const double &platformRCS);
 		//void setradarDangerValue(const double&radarDangerValue);
 		//void setjammerERP_attack(const double &jammerERP_attack);
@@ -1161,6 +1167,8 @@ namespace sce
 		double m_jammerERP;
 		//double m_platformRCS;
 		//double m_radarDangerValue;
+		double m_jammerChannel;//SOJ为扇面角，SPJ为可同时干扰的雷达个数
+		double m_jammerCoVRange;//SOJ扇面半径，SPJ有效作用距离
 	};
 
 	class WayPoint

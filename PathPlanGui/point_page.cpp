@@ -5,7 +5,7 @@ point_page::point_page(QWidget *parent)
 {
 	ui.setupUi(this);
 	setWindowTitle(tr("Point"));
-	resize(600, 400);
+	resize(720, 400);
 	ui.tableWidget->setGeometry(QRect(200, 70, 700, 300));
 	ui.tableWidget->horizontalHeader()->setHighlightSections(false);
 	ui.tableWidget->horizontalHeader()->setHighlightSections(false);
@@ -16,25 +16,28 @@ point_page::~point_page()
 }
 
 void point_page::show_point() {
+	QVBoxLayout *layout = new QVBoxLayout();
+	QWidget *widget = new QWidget(this);
+	ui.tableWidget->setColumnCount(7);
+	QStringList headers_pw;
+	headers_pw << QStringLiteral("Altitude") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << "Tmin" << "Tmax";
+	ui.tableWidget->setHorizontalHeaderLabels(headers_pw);
+	QPushButton *add = new QPushButton();
+	QPushButton *del = new QPushButton();
+	QPushButton *save = new QPushButton();
+	add->setText("add");
+	del->setText("del");
+	save->setText("save");
+	layout->addWidget(add);
+	layout->addWidget(del);
+	layout->addWidget(save);
+	layout->addWidget(ui.tableWidget);
+	widget->setLayout(layout);
+	connect(add, SIGNAL(clicked()), this, SLOT(add_tar_point()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_tar_point()));
+	connect(save, SIGNAL(clicked()), this, SLOT(save_tar_point()));
+	this->setCentralWidget(widget);
 	if (scenario.getAllOwnPlatform()[choice_ownplatform]->getMission().getAllTargetPoints().size() > 0) {
-		QVBoxLayout *layout = new QVBoxLayout();
-		QWidget *widget = new QWidget(this);
-		ui.tableWidget->setColumnCount(5);
-		QStringList headers_pw;
-		headers_pw << QStringLiteral("Altitude") << QStringLiteral("Latitude") << QStringLiteral("Longitude") << "Tmin" << "Tmax";
-		ui.tableWidget->setHorizontalHeaderLabels(headers_pw);
-		QPushButton *add = new QPushButton();
-		QPushButton *del = new QPushButton();
-		QPushButton *save = new QPushButton();
-		add->setText("add");
-		del->setText("del");
-		save->setText("save");
-		layout->addWidget(add);
-		layout->addWidget(del);
-		layout->addWidget(save);
-		layout->addWidget(ui.tableWidget);
-		widget->setLayout(layout);
-		this->setCentralWidget(widget);
 		ui.tableWidget->setRowCount(0);
 		for (int i = 0; i < scenario.getAllOwnPlatform()[choice_ownplatform]->getMission().getAllTargetPoints().size(); i++) 
 		{
@@ -44,10 +47,14 @@ void point_page::show_point() {
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[choice_ownplatform]->getMission().getAllTargetPoints()[i].getLongitude(), 'f', 2)));
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[choice_ownplatform]->getMission().getAllTargetPoints()[i].getTmin(), 'f', 2)));
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllOwnPlatform()[choice_ownplatform]->getMission().getAllTargetPoints()[i].getTmax(), 'f', 2)));
+		
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			ui.tableWidget->setCellWidget(i, 5, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_tar_point()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget->setCellWidget(i, 6, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_tar_point()));
 		}
-		connect(add, SIGNAL(clicked()), this, SLOT(add()));
-		connect(del, SIGNAL(clicked()), this, SLOT(del()));
-		connect(save, SIGNAL(clicked()), this, SLOT(save()));
 		this->show();
 	}
 	else 
@@ -56,13 +63,19 @@ void point_page::show_point() {
 		this->show();
 	}
 }
-void point_page::add() 
+void point_page::add_tar_point()
 {
 	int num = ui.tableWidget->rowCount();
 	ui.tableWidget->insertRow(num);
 
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget->setCellWidget(num, 5, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_tar_point()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget->setCellWidget(num, 6, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_tar_point()));
 }
-void point_page::del() 
+void point_page::del_tar_point()
 {
 	unsigned int num = ui.tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
@@ -115,7 +128,7 @@ void point_page::del()
 		}
 	}
 }
-void point_page::save() 
+void point_page::save_tar_point() 
 {
 	int num = ui.tableWidget->currentRow();
 	QString a = ui.tableWidget->item(num, 0)->text();

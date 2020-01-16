@@ -44,11 +44,17 @@ class MyTab
 public:
 	MyTab() {}
 	~MyTab() {}
-	QPointer<QPushButton> add;
+
+	QPushButton* add;
+	QPushButton* del;
+	QPushButton* save;
+	QTableWidget* my_table;
+
+	/*QPointer<QPushButton> add;
 	QPointer<QPushButton> del;
 	QPointer<QPushButton> save;
+	QPointer<QTableWidget>  my_table;*/
 	int myindex;
-	QPointer<QTableWidget>  my_table;
 };
 
 
@@ -93,7 +99,8 @@ private:
 	std::map<std::string, double> CofRada;
 	
 	bool isfinished;
-
+public:
+	//QVector<QPointer<MyTab>> vTab;
 	QVector<MyTab*> vTab;
 	QVector<QTableWidget*> route_v;
 	QPushButton * tab_btn = NULL;
@@ -184,6 +191,9 @@ public:
 	void show_EcmESRs_data();
 	void show_OPRRs_data();
 //	QVector<MyTab*> vTab;
+
+	void soj(size_t OwnPlatformIndex, sce::Route_ptr route);
+	void spj(size_t OwnPlatformIndex, sce::Route_ptr route);
 	
 signals:
 	void go_next();//œ‘ æœ¬“ª“≥
@@ -231,14 +241,15 @@ private slots:
 
 	void save_Ecm();
 
-	void save_ECMStrategy();
+	void save_EcmStrategy();
 
-	void save_ESMStrategy();
+	void save_EsmStrategy();
 
 	void save_Esm();
 
 	void save_Emitter();
 	void save_Vertex();
+	void modify_routeTab_name();
 	void add_RouteTab();
 	void del_RouteTab();
 	void on_actOpen_triggered();

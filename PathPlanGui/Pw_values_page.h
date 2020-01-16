@@ -18,9 +18,9 @@ public:
 	~Pw_values_page();
 private slots:
 	void show_pw_v();
-	void save();
-	void add();
-	void del();
+	void save_pw_v();
+	void add_pw_v();
+	void del_pw_v();
 private:
 	Ui::Pw_values ui;
 };
