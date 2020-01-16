@@ -16,9 +16,9 @@ public:
 	~Rf_values_page();
 private slots:
 	void save_rf_v();
-	void add();
+	void add_rf_v();
 	void show_rf_v();
-	void del();
+	void del_rf_v();
 	void add_new();
 private:
 	Ui::Rf_values ui;

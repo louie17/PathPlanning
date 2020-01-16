@@ -5,7 +5,7 @@ DwellSquence_page::DwellSquence_page(QWidget *parent)
 {
 	ui.setupUi(this);
 	setWindowTitle(tr("DwellSquence"));
-	resize(600, 400);
+	resize(720, 400);
 	QStringList headers_pw;
 	QWidget *widget = new QWidget(this);
 	QPushButton *add = new QPushButton();
@@ -26,20 +26,27 @@ DwellSquence_page::DwellSquence_page(QWidget *parent)
 	layout->addWidget(save_btn);
 	layout->addWidget(ui.tableWidget);
 	widget->setLayout(layout);
-	connect(add, SIGNAL(clicked()), this, SLOT(add()));
-	connect(del, SIGNAL(clicked()), this, SLOT(del()));
-	connect(save_btn, SIGNAL(clicked()), this, SLOT(save()));
+	connect(add, SIGNAL(clicked()), this, SLOT(add_dwellSquence()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_dwellSquence()));
+	connect(save_btn, SIGNAL(clicked()), this, SLOT(save_dwellSquence()));
 	this->setCentralWidget(widget);
 }
 
 DwellSquence_page::~DwellSquence_page()
 {
 }
-void DwellSquence_page::add() {
+void DwellSquence_page::add_dwellSquence() {
 	int num = ui.tableWidget->rowCount();
 	ui.tableWidget->insertRow(num);
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget->setCellWidget(num, 5, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_dwellSquence()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget->setCellWidget(num, 6, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_dwellSquence()));
 }
-void DwellSquence_page::del() {
+void DwellSquence_page::del_dwellSquence() {
 	int num = ui.tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
 	if (ree != 0)
@@ -91,7 +98,7 @@ void DwellSquence_page::del() {
 		}
 	}
 }
-void DwellSquence_page::save() {
+void DwellSquence_page::save_dwellSquence() {
 	int num = ui.tableWidget->currentRow();
 	QString a = ui.tableWidget->item(num, 0)->text();
 	QString b = ui.tableWidget->item(num, 1)->text();
@@ -217,6 +224,13 @@ void DwellSquence_page::show_dwellsquence()
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEsmStrategy()[choice_esmstrategy]->getAllPtr2Sections()[choice_section]->getAllDwellSquences()[i].getMaxFreq(), 'f', 2)));
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllEsmStrategy()[choice_esmstrategy]->getAllPtr2Sections()[choice_section]->getAllDwellSquences()[i].getStartTime(), 'f', 2)));
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllEsmStrategy()[choice_esmstrategy]->getAllPtr2Sections()[choice_section]->getAllDwellSquences()[i].getEndTime(), 'f', 2)));
+		
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			ui.tableWidget->setCellWidget(i, 5, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_dwellSquence()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget->setCellWidget(i, 6, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_dwellSquence()));
 		}
 		this->show();
 	}

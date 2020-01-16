@@ -12,13 +12,15 @@ Radar_mode_page::Radar_mode_page(QMainWindow *parent)
 	QPushButton *del = new QPushButton(this);
 	QPushButton *save = new QPushButton(this);
 	QStringList headers_rada;
-	headers_rada << QStringLiteral("ModeCode") << QStringLiteral("ModeType") << QStringLiteral("Rf") << QStringLiteral("Pw") << QStringLiteral("Pri") << QStringLiteral("Scan") << QStringLiteral("Erp");
-	
+	//headers_rada << QStringLiteral("ModeCode") << QStringLiteral("ModeType") << QStringLiteral("Rf") << QStringLiteral("Pw") << QStringLiteral("Pri") << QStringLiteral("Scan") << QStringLiteral("Erp");
+	headers_rada << QStringLiteral("ModeCode") << QStringLiteral("ModeType") << QStringLiteral("Rf") << QStringLiteral("Pw") << QStringLiteral("Pri") << QStringLiteral("Scan") << QStringLiteral("Erp")<<"Save"<<"Del";
+
 	add->setText("add");
 	del->setText("del");
 	save->setText("save");
 	
-	ui.tableWidget->setColumnCount(7);
+	//ui.tableWidget->setColumnCount(7);
+	ui.tableWidget->setColumnCount(9);
 
 	ui.tableWidget->setHorizontalHeaderLabels(headers_rada);
 	ui.tableWidget->setGeometry(QRect(200, 70, 700, 281));
@@ -30,8 +32,8 @@ Radar_mode_page::Radar_mode_page(QMainWindow *parent)
 	widget->setLayout(layout);
 	setCentralWidget(widget);
 	connect(save, SIGNAL(clicked()), this, SLOT(save_radar()));
-	connect(add, SIGNAL(clicked()), this, SLOT(add()));
-	connect(del, SIGNAL(clicked()), this, SLOT(del()));
+	connect(add, SIGNAL(clicked()), this, SLOT(add_radar()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_radar()));
 	modetype_list << "Pulse";
 }
 
@@ -85,6 +87,13 @@ void Radar_mode_page::rada_show() {
 			auto erp_cellwidget = ui.tableWidget->cellWidget(i, 6);
 			QPushButton *pb_erp = qobject_cast<QPushButton*>(erp_cellwidget);
 			connect(pb_erp, &QPushButton::clicked, this, &Radar_mode_page::show_erp);
+
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			ui.tableWidget->setCellWidget(i, 7, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_radar()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget->setCellWidget(i, 8, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_radar()));
 		}
 		this->show();	
 	}
@@ -250,7 +259,7 @@ void Radar_mode_page::show_erp() {
 	qDebug() << "choice_radar" << choice_radar;
 	emit sign_erp();
 }
-void Radar_mode_page::add() {
+void Radar_mode_page::add_radar() {
 	int row_count = ui.tableWidget->rowCount(); //获取表单行数
 	ui.tableWidget->insertRow(row_count);//添加新的一行
 	QPushButton *but = new QPushButton();
@@ -280,8 +289,14 @@ void Radar_mode_page::add() {
 	connect(but3, SIGNAL(clicked()), this, SLOT(show_scan()));
 	connect(but4, SIGNAL(clicked()), this, SLOT(show_erp()));
 
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget->setCellWidget(row_count, 7, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_radar()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget->setCellWidget(row_count, 8, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_radar()));
 }
-void Radar_mode_page::del()		//删除列表数据
+void Radar_mode_page::del_radar()		//删除列表数据
 {
 	size_t num = ui.tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "Tip", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));

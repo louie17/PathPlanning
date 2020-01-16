@@ -47,7 +47,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -193,11 +193,6 @@
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Save</string>
                     </property>
                    </column>
                    <column>
@@ -1136,6 +1131,16 @@
                      <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -1377,6 +1382,13 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_routeName">
+                 <property name="text">
+                  <string>Modify_Name</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
@@ -1492,6 +1504,16 @@
                  <column>
                   <property name="text">
                    <string>Section</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Del</string>
                   </property>
                  </column>
                 </widget>
@@ -1611,6 +1633,16 @@
                   </property>
                   <property name="textAlignment">
                    <set>AlignJustify|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Del</string>
                   </property>
                  </column>
                 </widget>
@@ -1748,6 +1780,16 @@
                      <string>Site</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -1857,6 +1899,16 @@
                    <column>
                     <property name="text">
                      <string>Emitter</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -1970,6 +2022,16 @@
                      <string>Weapon</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -2079,6 +2141,16 @@
                    <column>
                     <property name="text">
                      <string>Esm</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -2192,6 +2264,16 @@
                      <string>EsmStratey</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -2301,6 +2383,16 @@
                    <column>
                     <property name="text">
                      <string>Route</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>
@@ -2414,6 +2506,16 @@
                      <string>Ecm</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>
@@ -2523,6 +2625,16 @@
                    <column>
                     <property name="text">
                      <string>EcmStratey</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Save</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Del</string>
                     </property>
                    </column>
                   </widget>

@@ -17,7 +17,7 @@ Pw_values_page::Pw_values_page(QMainWindow *parent)
 	QStringList headers_pw;
 	QPushButton *btn = new QPushButton();
 	headers_pw << QStringLiteral("PhaseOrder") << QStringLiteral("NumberOfPulses") << QStringLiteral("Pwmin") << QStringLiteral("Pwmax") << QStringLiteral("SweepTime");
-	ui.tableWidget->setColumnCount(5);
+	ui.tableWidget->setColumnCount(7);
 	ui.tableWidget->setRowCount(2);
 	ui.tableWidget->setHorizontalHeaderLabels(headers_pw);
 	ui.tableWidget->horizontalHeader()->setHighlightSections(false);
@@ -29,9 +29,9 @@ Pw_values_page::Pw_values_page(QMainWindow *parent)
 	layout->addWidget(ui.tableWidget);
 	widget->setLayout(layout);
 	this->setCentralWidget(widget);
-	connect(add, SIGNAL(clicked()), this, SLOT(add()));
-	connect(del, SIGNAL(clicked()), this, SLOT(del()));
-	connect(save, SIGNAL(clicked()), this, SLOT(save()));
+	connect(add, SIGNAL(clicked()), this, SLOT(add_pw_v()));
+	connect(del, SIGNAL(clicked()), this, SLOT(del_pw_v()));
+	connect(save, SIGNAL(clicked()), this, SLOT(save_pw_v()));
 }
 
 Pw_values_page::~Pw_values_page()
@@ -40,13 +40,22 @@ Pw_values_page::~Pw_values_page()
 
 void Pw_values_page::show_pw_v() {
 	int num = scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues().size();
+	ui.tableWidget->setRowCount(0);
 	if (ui.tableWidget->currentRow() < num) {
 		for (int i = 0; i < scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues().size(); i++) {
+			ui.tableWidget->insertRow(i);
 			ui.tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues()[i].getPhaseOrder())));
 			ui.tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues()[i].getNumberOfPulses())));
 			ui.tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues()[i].getMin(), 'f', 2)));
 			ui.tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues()[i].getMax())));
 			ui.tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[choice_emitter]->getAllPtr2RadarModes()[choice_radar]->getPw().getAllPwValues()[i].getSweepTime(), 'f', 2)));
+		
+			QPointer<QPushButton> save(new QPushButton("Save"));
+			ui.tableWidget->setCellWidget(i, 5, save);
+			connect(save, SIGNAL(clicked()), this, SLOT(save_pw_v()));
+			QPointer<QPushButton> del(new QPushButton("Del"));
+			ui.tableWidget->setCellWidget(i, 6, del);
+			connect(del, SIGNAL(clicked()), this, SLOT(del_pw_v()));
 		}
 		this->show();
 	}
@@ -55,7 +64,7 @@ void Pw_values_page::show_pw_v() {
 		this->show();
 	}
 }
-void Pw_values_page::save() {
+void Pw_values_page::save_pw_v() {
 	int num = ui.tableWidget->currentRow();
 	QString a = ui.tableWidget->item(num, 0)->text();
 	QString b = ui.tableWidget->item(num, 1)->text();
@@ -197,11 +206,18 @@ void Pw_values_page::save() {
 		}
 	}
 }
-void Pw_values_page::add() {
+void Pw_values_page::add_pw_v() {
 	int row_count = ui.tableWidget->rowCount(); //获取表单行数
 	ui.tableWidget->insertRow(row_count);//添加新的一行
+
+	QPointer<QPushButton> save(new QPushButton("Save"));
+	ui.tableWidget->setCellWidget(row_count, 5, save);
+	connect(save, SIGNAL(clicked()), this, SLOT(save_pw_v()));
+	QPointer<QPushButton> del(new QPushButton("Del"));
+	ui.tableWidget->setCellWidget(row_count, 6, del);
+	connect(del, SIGNAL(clicked()), this, SLOT(del_pw_v()));
 }
-void Pw_values_page::del()		//删除列表数据
+void Pw_values_page::del_pw_v()		//删除列表数据
 {
 	int num = ui.tableWidget->currentRow();
 	int ree = QMessageBox::information(this, "", "Confirm deletion?", QStringLiteral("Yes"), QStringLiteral("No"));
