@@ -4976,7 +4976,7 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		}
 	}
 
-	sce::EcmStrategy ecmStrategy;
+	sce::EcmStrategy ecmStrategy(ui.lineEdit_SOJStra_Name->text().toString());
 	for (size_t iter = 0;iter< route->getAllWayPoints().size()-1;++iter)
 	{
 		de::Node preNode(route->getAllWayPoints()[iter].getLongitude(), route->getAllWayPoints()[iter].getLatitude(), route->getAllWayPoints()[iter].getAltitude());

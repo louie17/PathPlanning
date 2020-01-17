@@ -1428,7 +1428,7 @@ namespace sce
 	{
 	public:
 		EcmStrategy(void);
-		EcmStrategy(const std::string&);
+		EcmStrategy(const std::string& name);
 		EcmStrategy(const std::string &name, const std::shared_ptr<EcmStrategySection>&ptrEcmStrategySection);
 		EcmStrategy(const std::string &name, const std::vector<std::shared_ptr<EcmStrategySection>>& ptrEcmStrategySections);
 

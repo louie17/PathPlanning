@@ -3216,6 +3216,9 @@
                </widget>
               </item>
               <item>
+               <widget class="QLineEdit" name="lineEdit_SOJStra_Name"/>
+              </item>
+              <item>
                <widget class="QCheckBox" name="ecmsojchkbox">
                 <property name="text">
                  <string>ECM:SOJ</string>
