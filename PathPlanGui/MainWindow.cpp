@@ -1294,7 +1294,7 @@ void PathPlanGui::save_Ecm() {
 		}
 	}
 }
-void PathPlanGui::save_ECMStrategy() {
+void PathPlanGui::save_EcmStrategy() {
 	int num = ui.tableWidget_ECMStra->currentRow();
 	QString a = ui.tableWidget_ECMStra->item(num, 0)->text();
 	//vector<EsmStrategySection>
@@ -1338,7 +1338,7 @@ void PathPlanGui::save_ECMStrategy() {
 		}
 	}
 }
-void PathPlanGui::save_ESMStrategy() {
+void PathPlanGui::save_EsmStrategy() {
 	int num = ui.tableWidget_ESMStra->currentRow();
 	QString a = ui.tableWidget_ESMStra->item(num, 0)->text();
 	sce::EsmStrategy new_data(a.toStdString());
@@ -3161,6 +3161,7 @@ void PathPlanGui::run_algorithm()
 			double alpha = ui.lineEdit_CP_3->text().toDouble();
 			double axis_max = ui.lineEdit_CP_4->text().toDouble();
 			double axis_min = ui.lineEdit_CP_5->text().toDouble();
+			
 
 			PSO::VRada swrada;
 			for (auto x : swRelation)

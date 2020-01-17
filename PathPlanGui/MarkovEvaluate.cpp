@@ -24,7 +24,7 @@ MatrixXd markov_init(size_t timestep, sce::Route_ptr route, sce::Site_WeaponRang
 
 	index = 0;
 
-	for (auto &x : swRelation)
+	for (auto& x : swRelation)
 	{
 		rangeSensor(index / 3) = x.second;
 		posSensor(index++) = x.first->getLongitude();
@@ -44,61 +44,82 @@ MatrixXd markov_init(size_t timestep, sce::Route_ptr route, sce::Site_WeaponRang
 
 	//}
 
+
+	double Lud = CofRada["Lud_o"];
+	double Ldu = CofRada["Ldu_o"];
+	double Ldt = CofRada["Ldt_o"];
+	double Ltd = CofRada["Ltd_o"];
+	double Lte = CofRada["Lte_o"];
+	double Let = CofRada["Let_o"];
+	double Leh = CofRada["Leh_o"];
 	MatrixXd outsideTransitionIntensity(5, 5);
 	outsideTransitionIntensity <<
-		0.0, 0.0, 0.0, 0.0, 0.0,
-		0.2, -0.2, 0.0, 0.0, 0.0,
-		0.0, 0.2, -0.2, 0.0, 0.0,
-		0.0, 0.0, 1.0, -1.0, 0.0,
+		-Lud, Lud, 0.0, 0.0, 0.0,
+		Ldu, -(Ldu + Ldt), Ldt, 0.0, 0.0,
+		0.0, Ltd, -(Ltd + Lte), Lte, 0.0,
+		0.0, 0.0, Let, -(Let + Leh), Leh,
 		0.0, 0.0, 0.0, 0.0, 0.0;
 	//cout << outsideTransitionIntensity << endl;
 
 	//TransitionIntensity sensorTransitionIntensity[10];
 	std::vector<TransitionIntensity> sensorTransitionIntensity(nWeapon);
 
-	double Lud = CofRada["Sud"];
-	double Ldu = CofRada["Sdu"];
-	double Ldt = CofRada["Sdt"];
-	double Ltd = CofRada["Std"];
-	double Lte = CofRada["Ste"];
-	double Let = CofRada["Set"];
-	double Leh = CofRada["Seh"];
+	Lud = CofRada["Lud_r"];
+	Ldu = CofRada["Ldu_r"];
+	Ldt = CofRada["Ldt_r"];
+	Ltd = CofRada["Ltd_r"];
+	Lte = CofRada["Lte_r"];
+	Let = CofRada["Let_r"];
+	Leh = CofRada["Leh_r"];
 
 	for (int i = 0; i < nWeapon; i++)
 	{
 		sensorTransitionIntensity[i].weapon.setIdentity(5, 5);
 
 		sensorTransitionIntensity[i].weapon <<
-			-0.4, 0.4, 0.0, 0.0, 0.0,
-			0.1, -0.4, 0.3, 0.0, 0.0,
-			0.0, 0.1, -0.1, 0.0, 0.0,
-			0.0, 0.0, 1.0, -1.0, 0,
-			0.0, 0.0, 0.0, 0.0, 0;
+			-Lud, Lud, 0.0, 0.0, 0.0,
+			Ldu, -(Ldu + Ldt), Ldt, 0.0, 0.0,
+			0.0, Ltd, -(Ltd + Lte), Lte, 0.0,
+			0.0, 0.0, Let, -(Let + Leh), Leh,
+			0.0, 0.0, 0.0, 0.0, 0.0;
+
+		//-0.4, 0.4, 0.0, 0.0, 0.0,
+		//0.1, -0.4, 0.3, 0.0, 0.0,
+		//0.0, 0.1, -0.1, 0.0, 0.0,
+		//0.0, 0.0, 1.0, -1.0, 0,
+		//0.0, 0.0, 0.0, 0.0, 0;
 	}
 
 	//1 - (Ldu), Lud, 0.0, 0.0, 0.0,
 	//	Ldu, 1 - Lud - Ltd, Ldt, 0.0, 0.0,
 	//	0.0, Ltd, 1 - Lte - Ldt, Lte, 0.0,
 	//	0.0, 0.0, Let, 1 - Lte, Leh,
-	//	0.0, 0.0, 0.0, 0.0, 0;
+	//	0.0, 0.0, 0.0, 0.0, 1;
 
 
 	//for (int i = 0; i < 3; i++)
 	//{
 	//	cout << sensorTransitionIntensity[i].weapon<<endl;
 	//}
-
+	Lud = CofRada["Lud_w"];
+	Ldu = CofRada["Ldu_w"];
+	Ldt = CofRada["Ldt_w"];
+	Ltd = CofRada["Ltd_w"];
+	Lte = CofRada["Lte_w"];
+	Let = CofRada["Let_w"];
+	Leh = CofRada["Leh_w"];
 	std::vector<TransitionIntensity> weaponTransitionIntensity(nWeapon);
 
 	for (int i = 0; i < nWeapon; i++)
 	{
 		weaponTransitionIntensity[i].weapon.setIdentity(5, 5);
 		weaponTransitionIntensity[i].weapon <<
-			-0.4, 0.4, 0.0, 0.0, 0.0,
-			0.1, -0.4, 0.3, 0.0, 0.0,
-			0.0, 0.1, -0.1, 0.0, 0.0,
-			0.0, 0.0, 1.0, -1.0, 0,
-			0.0, 0.0, 0.0, 0.0, 0;
+			-Lud, Lud, 0.0, 0.0, 0.0,
+			Ldu, -(Ldu + Ldt), Ldt, 0.0, 0.0,
+			0.0, Ltd, -(Ltd + Lte), Lte, 0.0,
+			0.0, 0.0, Let, -(Let + Leh), Leh,
+			0.0, 0.0, 0.0, 0.0, 0.0;
+
 	}
 
 	MatrixXd stateCost(1, 5);
@@ -124,11 +145,11 @@ ProbBack reRecursionSolver(MatrixXd previousStateProbability, double previousExp
 	X_previous << previousStateProbability, previousExpectedCost;
 	//cout << X_previous << endl;
 	double XiU_previous, XiD_previous, XiT_previous, XiE_previous, XiH_previous;
-	XiU_previous = stateCost(0) + previousTransitionIntensity.row(0)*transitionCost.row(0).transpose() - previousTransitionIntensity(0, 0)*transitionCost(0, 0);
-	XiD_previous = stateCost(1) + previousTransitionIntensity.row(1)*transitionCost.row(1).transpose() - previousTransitionIntensity(1, 1)*transitionCost(1, 1);
-	XiT_previous = stateCost(2) + previousTransitionIntensity.row(2)*transitionCost.row(2).transpose() - previousTransitionIntensity(2, 2)*transitionCost(2, 2);
-	XiE_previous = stateCost(3) + previousTransitionIntensity.row(3)*transitionCost.row(3).transpose() - previousTransitionIntensity(3, 3)*transitionCost(3, 3);
-	XiH_previous = stateCost(4) + previousTransitionIntensity.row(4)*transitionCost.row(4).transpose() - previousTransitionIntensity(4, 4)*transitionCost(4, 4);
+	XiU_previous = stateCost(0) + previousTransitionIntensity.row(0) * transitionCost.row(0).transpose() - previousTransitionIntensity(0, 0) * transitionCost(0, 0);
+	XiD_previous = stateCost(1) + previousTransitionIntensity.row(1) * transitionCost.row(1).transpose() - previousTransitionIntensity(1, 1) * transitionCost(1, 1);
+	XiT_previous = stateCost(2) + previousTransitionIntensity.row(2) * transitionCost.row(2).transpose() - previousTransitionIntensity(2, 2) * transitionCost(2, 2);
+	XiE_previous = stateCost(3) + previousTransitionIntensity.row(3) * transitionCost.row(3).transpose() - previousTransitionIntensity(3, 3) * transitionCost(3, 3);
+	XiH_previous = stateCost(4) + previousTransitionIntensity.row(4) * transitionCost.row(4).transpose() - previousTransitionIntensity(4, 4) * transitionCost(4, 4);
 
 	MatrixXd	B_previous(5, 6), A_previous(6, 6);
 	B_previous << previousTransitionIntensity.transpose(), MatrixXd::Zero(5, 1);
@@ -150,12 +171,14 @@ ProbBack reRecursionSolver(MatrixXd previousStateProbability, double previousExp
 		{
 			for (int jj = 1; jj <= ii; jj++)
 			{
-				result = result*jj;
+				result = result * jj;
 			}
 
 			for (int kk = 1; kk < ii; kk++)
 			{
-				mat = mat*A_previous;
+				//	cout << "mat:" << mat<<endl;
+				mat = mat * A_previous;
+				//	cout << "mat:" << mat<<endl;
 			}
 			//cout << "mat:" << endl;
 			//cout << mat << endl;
@@ -347,7 +370,7 @@ MatrixXd reRouteEvaluation(MatrixXd posRouteInterp, MatrixXd posSensor, MatrixXd
 		stateProbabilityProcess.col(ii) = Probability.prob;
 		expectedCostProcess(ii) = Probability.cost;
 		//cout << endl;
-		//cout << "state_probability:"<<endl<<global_stateProbability << endl;
+		cout << "state_probability:" << endl << stateProbability << endl;
 		cout << "i:" << ii << "expect_cost:" << Probability.cost << endl;
 
 	}
