@@ -42,12 +42,12 @@
         </property>
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Times New Roman</family>
           <pointsize>12</pointsize>
          </font>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="tab">
          <property name="layoutDirection">
@@ -93,6 +93,11 @@
                    </item>
                    <item>
                     <widget class="QPushButton" name="pushButton_VaddRow">
+                     <property name="font">
+                      <font>
+                       <family>Times New Roman</family>
+                      </font>
+                     </property>
                      <property name="text">
                       <string>Add</string>
                      </property>
@@ -131,7 +136,7 @@
                   <widget class="QTableWidget" name="tableWidget_Vertex">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -208,17 +213,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox_3">
+             <widget class="QGroupBox" name="groupBox_7">
               <property name="title">
-               <string>Emitter</string>
+               <string>Weapon</string>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_11">
+              <layout class="QVBoxLayout" name="verticalLayout_8">
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
+                <layout class="QVBoxLayout" name="verticalLayout_5">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <layout class="QHBoxLayout" name="horizontalLayout">
                    <item>
-                    <spacer name="horizontalSpacer_9">
+                    <spacer name="horizontalSpacer_3">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -231,28 +236,28 @@
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_EaddRow">
+                    <widget class="QPushButton" name="pushButton_WaddRow">
                      <property name="text">
                       <string>Add</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_EdeRow">
+                    <widget class="QPushButton" name="pushButton_WdelRow">
                      <property name="text">
                       <string>Delete</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_Esave">
+                    <widget class="QPushButton" name="pushButton_Wsave">
                      <property name="text">
                       <string>Save</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_10">
+                    <spacer name="horizontalSpacer_4">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -267,21 +272,45 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QTableWidget" name="tableWidget_Emitter">
+                  <widget class="QTableWidget" name="tableWidget_Weapon">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="lineWidth">
+                    <number>0</number>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAsNeeded</enum>
+                   </property>
+                   <property name="dragEnabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectItems</enum>
+                   </property>
+                   <property name="textElideMode">
+                    <enum>Qt::ElideMiddle</enum>
                    </property>
                    <property name="sortingEnabled">
                     <bool>true</bool>
                    </property>
+                   <attribute name="horizontalHeaderCascadingSectionResizes">
+                    <bool>false</bool>
+                   </attribute>
                    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </attribute>
                    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                     <bool>true</bool>
@@ -296,17 +325,15 @@
                    </column>
                    <column>
                     <property name="text">
-                     <string>MSR</string>
+                     <string>CEPR</string>
+                    </property>
+                    <property name="textAlignment">
+                     <set>AlignJustify|AlignVCenter</set>
                     </property>
                    </column>
                    <column>
                     <property name="text">
-                     <string>DangerValue</string>
-                    </property>
-                   </column>
-                   <column>
-                    <property name="text">
-                     <string>Radar Mode</string>
+                     <string>AreaCoverage</string>
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
@@ -392,7 +419,7 @@
                   <widget class="QTableWidget" name="tableWidget_Platform">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -470,17 +497,17 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
-             <widget class="QGroupBox" name="groupBox_7">
+             <widget class="QGroupBox" name="groupBox_3">
               <property name="title">
-               <string>Weapon</string>
+               <string>Emitter</string>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
+              <layout class="QVBoxLayout" name="verticalLayout_11">
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_5">
+                <layout class="QVBoxLayout" name="verticalLayout_3">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout">
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <item>
-                    <spacer name="horizontalSpacer_3">
+                    <spacer name="horizontalSpacer_9">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -493,28 +520,28 @@
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_WaddRow">
+                    <widget class="QPushButton" name="pushButton_EaddRow">
                      <property name="text">
                       <string>Add</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_WdelRow">
+                    <widget class="QPushButton" name="pushButton_EdeRow">
                      <property name="text">
                       <string>Delete</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_Wsave">
+                    <widget class="QPushButton" name="pushButton_Esave">
                      <property name="text">
                       <string>Save</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_4">
+                    <spacer name="horizontalSpacer_10">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -529,45 +556,21 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QTableWidget" name="tableWidget_Weapon">
+                  <widget class="QTableWidget" name="tableWidget_Emitter">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
-                   </property>
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="lineWidth">
-                    <number>0</number>
-                   </property>
-                   <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOn</enum>
-                   </property>
-                   <property name="horizontalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAsNeeded</enum>
-                   </property>
-                   <property name="dragEnabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="selectionBehavior">
-                    <enum>QAbstractItemView::SelectItems</enum>
-                   </property>
-                   <property name="textElideMode">
-                    <enum>Qt::ElideMiddle</enum>
                    </property>
                    <property name="sortingEnabled">
                     <bool>true</bool>
                    </property>
-                   <attribute name="horizontalHeaderCascadingSectionResizes">
-                    <bool>false</bool>
-                   </attribute>
                    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </attribute>
                    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                     <bool>true</bool>
@@ -582,15 +585,22 @@
                    </column>
                    <column>
                     <property name="text">
-                     <string>CEPR</string>
-                    </property>
-                    <property name="textAlignment">
-                     <set>AlignJustify|AlignVCenter</set>
+                     <string>MSR</string>
                     </property>
                    </column>
                    <column>
                     <property name="text">
-                     <string>AreaCoverage</string>
+                     <string>DangerValue</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>taoScan</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Radar Mode</string>
                     </property>
                     <property name="textAlignment">
                      <set>AlignJustify|AlignVCenter</set>
@@ -697,7 +707,7 @@
                   <widget class="QTableWidget" name="tableWidget_Site">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -863,7 +873,7 @@
                   <widget class="QTableWidget" name="tableWidget_OPlatform">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -1039,7 +1049,7 @@
                   <widget class="QTableWidget" name="tableWidget_Ecm">
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -1504,7 +1514,7 @@
                 <widget class="QTableWidget" name="tableWidget_ESMStra">
                  <property name="font">
                   <font>
-                   <family>Arial</family>
+                   <family>Times New Roman</family>
                    <pointsize>12</pointsize>
                   </font>
                  </property>
@@ -1616,7 +1626,7 @@
                 <widget class="QTableWidget" name="tableWidget_ECMStra">
                  <property name="font">
                   <font>
-                   <family>Arial</family>
+                   <family>Times New Roman</family>
                    <pointsize>12</pointsize>
                   </font>
                  </property>
@@ -2951,7 +2961,7 @@
                <widget class="QGroupBox" name="groupBox_16">
                 <property name="font">
                  <font>
-                  <family>Arial</family>
+                  <family>Times New Roman</family>
                   <pointsize>12</pointsize>
                  </font>
                 </property>
@@ -2969,7 +2979,7 @@
                    </property>
                    <property name="font">
                     <font>
-                     <family>Arial</family>
+                     <family>Times New Roman</family>
                      <pointsize>12</pointsize>
                     </font>
                    </property>
@@ -3206,6 +3216,27 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="ecmsojchkbox">
+                <property name="text">
+                 <string>ECM:SOJ</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="ecmspjchkbox">
+                <property name="text">
+                 <string>ECM:SPJ</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="esmspjchkbox">
+                <property name="text">
+                 <string>ESM:SPJ</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="verticalSpacer_3">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -3239,7 +3270,7 @@
                    <widget class="QLabel" name="label_18">
                     <property name="font">
                      <font>
-                      <family>Arial</family>
+                      <family>Times New Roman</family>
                       <pointsize>12</pointsize>
                      </font>
                     </property>
@@ -3253,12 +3284,6 @@
                   </item>
                   <item row="0" column="2">
                    <widget class="QLabel" name="label_20">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>MissionType:</string>
                     </property>
@@ -3279,12 +3304,6 @@
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_21">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Route Name:</string>
                     </property>
@@ -3292,12 +3311,6 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="lineEdit_Rnew">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Route1</string>
                     </property>
@@ -3363,12 +3376,6 @@
           </item>
           <item row="0" column="0" rowspan="2">
            <widget class="QGroupBox" name="groupBox_10">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
             <property name="title">
              <string>OwnPlatform Select</string>
             </property>
@@ -3377,12 +3384,6 @@
               <layout class="QGridLayout" name="gridLayout_11">
                <item row="0" column="0" alignment="Qt::AlignRight">
                 <widget class="QLabel" name="label_28">
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>OwnPlatform:</string>
                  </property>
@@ -3393,12 +3394,6 @@
                </item>
                <item row="0" column="2">
                 <widget class="QLabel" name="label_29">
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>MissionType:</string>
                  </property>
@@ -3406,12 +3401,6 @@
                </item>
                <item row="0" column="3">
                 <widget class="QLabel" name="label_OMissionT">
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>null</string>
                  </property>
@@ -3419,12 +3408,6 @@
                </item>
                <item row="1" column="0" alignment="Qt::AlignRight">
                 <widget class="QLabel" name="label_31">
-                 <property name="font">
-                  <font>
-                   <family>Arial</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>Route:</string>
                  </property>
@@ -3445,12 +3428,6 @@
                  <layout class="QGridLayout" name="gridLayout_10">
                   <item row="1" column="2">
                    <widget class="QLabel" name="label_27">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>ESMStrategy:</string>
                     </property>
@@ -3458,12 +3435,6 @@
                   </item>
                   <item row="0" column="0" alignment="Qt::AlignRight">
                    <widget class="QCheckBox" name="checkBox_Ecm">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>ECM:</string>
                     </property>
@@ -3474,12 +3445,6 @@
                   </item>
                   <item row="0" column="2">
                    <widget class="QLabel" name="label_4">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>ECMStrategy:</string>
                     </property>
@@ -3496,12 +3461,6 @@
                   </item>
                   <item row="1" column="0" alignment="Qt::AlignRight">
                    <widget class="QCheckBox" name="checkBox_Esm">
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>ESM:</string>
                     </property>
@@ -3584,7 +3543,7 @@
        <widget class="QPushButton" name="pushButton_back">
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Times New Roman</family>
           <pointsize>12</pointsize>
          </font>
         </property>
@@ -3597,7 +3556,7 @@
        <widget class="QPushButton" name="pushButton_next">
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Times New Roman</family>
           <pointsize>12</pointsize>
          </font>
         </property>
@@ -3673,6 +3632,11 @@
    <addaction name="menuEdit"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="font">
+    <font>
+     <family>Times New Roman</family>
+    </font>
+   </property>
    <property name="acceptDrops">
     <bool>true</bool>
    </property>

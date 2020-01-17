@@ -850,6 +850,7 @@ namespace sce
 		:m_name("Emitter1")
 		, m_radarMSR(1.0)
 		, m_radarDangerValue(0.0)
+		, m_taoScan(1.0)
 	{
 	}
 
@@ -857,16 +858,17 @@ namespace sce
 		:m_name(name)
 		, m_radarMSR(1.0)
 		, m_radarDangerValue(0.0)
+		, m_taoScan(1.0)
 	{
 	}
 
 	Emitter::Emitter(const std::string &name, std::shared_ptr<Radar_Mode> ptrRadarMode)
-		:m_name(name), m_ptrRadarMode({ ptrRadarMode }), m_radarMSR(1.0), m_radarDangerValue(0.0)
+		:m_name(name), m_ptrRadarMode({ ptrRadarMode }), m_radarMSR(1.0), m_radarDangerValue(0.0), m_taoScan(1.0)
 	{
 	}
 
 	Emitter::Emitter(const std::string& name, std::vector<std::shared_ptr<Radar_Mode>>& ptrRadarModes)
-		:m_name(name), m_ptrRadarMode(ptrRadarModes), m_radarMSR(1.0), m_radarDangerValue(0.0)
+		:m_name(name), m_ptrRadarMode(ptrRadarModes), m_radarMSR(1.0), m_radarDangerValue(0.0), m_taoScan(1.0)
 	{
 	}
 
@@ -949,6 +951,11 @@ namespace sce
 	void Emitter::setradarDangerValue(const double & radarDangerValue)
 	{
 		m_radarDangerValue = radarDangerValue;
+	}
+
+	void Emitter::setTaoScan(const double & taoScan)
+	{
+		m_taoScan = taoScan;
 	}
 
 	void Emitter::setAllPtr2RadarModes(std::vector<std::shared_ptr<Radar_Mode>>& ptrRadarModes)
@@ -1426,11 +1433,11 @@ namespace sce
 
 	Esm::Esm(const std::string &name,
 		const double &dwellFreqResolution,
-		const size_t &tuningStep,
-		const size_t &rfCovMin,
-		const size_t &rfCovMax,
-		const size_t &numPulsesAcquisition,
-		const size_t &numPulsesAlarm)
+		const double &tuningStep,
+		const double &rfCovMin,
+		const double &rfCovMax,
+		const double &numPulsesAcquisition,
+		const double &numPulsesAlarm)
 		:m_name(name)
 		, m_dwellFreqResolution(dwellFreqResolution)
 		, m_tuningStep(tuningStep)
@@ -1448,13 +1455,13 @@ namespace sce
 
 	Esm::Esm(const std::string &name,
 		const double &dwellFreqResolution,
-		const size_t &tuningStep,
-		const size_t &rfCovMin,
-		const size_t &rfCovMax,
-		const size_t &numPulsesAcquisition,
-		const size_t &numPulsesAlarm,
+		const double &tuningStep,
+		const double &rfCovMin,
+		const double &rfCovMax,
+		const double &numPulsesAcquisition,
+		const double &numPulsesAlarm,
 		const double &esmMinDwellTime,
-		//const size_t &nEmitter,
+		//const double &nEmitter,
 		//const double &taoScan,
 		const double &Pmin,
 		const double &Aeff)
@@ -1485,31 +1492,31 @@ namespace sce
 		return m_dwellFreqResolution;
 	}
 
-	const size_t & Esm::getTuningStep(void)
+	const double & Esm::getTuningStep(void)
 	{
 		// TODO: 在此处插入 return 语句
 		return m_tuningStep;
 	}
 
-	const size_t & Esm::getRfCovMin(void)
+	const double & Esm::getRfCovMin(void)
 	{
 		// TODO: 在此处插入 return 语句
 		return m_rfCovMin;
 	}
 
-	const size_t & Esm::getRfCovMax(void)
+	const double & Esm::getRfCovMax(void)
 	{
 		// TODO: 在此处插入 return 语句
 		return m_rfCovMax;
 	}
 
-	const size_t & Esm::getNumPulsesAcquisition(void)
+	const double & Esm::getNumPulsesAcquisition(void)
 	{
 		// TODO: 在此处插入 return 语句
 		return m_numPulsesAcquisition;
 	}
 
-	const size_t & Esm::getNumPulsesAlarm(void)
+	const double & Esm::getNumPulsesAlarm(void)
 	{
 		// TODO: 在此处插入 return 语句
 		return m_numPulsesAlarm;
@@ -1525,27 +1532,27 @@ namespace sce
 		m_dwellFreqResolution = dwellFreqResolution;
 	}
 
-	void Esm::setTuningStep(const size_t &tuningStep)
+	void Esm::setTuningStep(const double &tuningStep)
 	{
 		m_tuningStep = tuningStep;
 	}
 
-	void Esm::setRfCovMin(const size_t &rfCovMin)
+	void Esm::setRfCovMin(const double &rfCovMin)
 	{
 		m_rfCovMin = rfCovMin;
 	}
 
-	void Esm::setRfCovMax(const size_t &rfCovMax)
+	void Esm::setRfCovMax(const double &rfCovMax)
 	{
 		m_rfCovMax = rfCovMax;
 	}
 
-	void Esm::setNumPulsesAcquisition(const size_t &numPulsesAcquisition)
+	void Esm::setNumPulsesAcquisition(const double &numPulsesAcquisition)
 	{
 		m_numPulsesAcquisition = numPulsesAcquisition;
 	}
 
-	void Esm::setNumPulsesAlarm(const size_t &numPulsesAlarm)
+	void Esm::setNumPulsesAlarm(const double &numPulsesAlarm)
 	{
 		m_numPulsesAlarm = numPulsesAlarm;
 	}

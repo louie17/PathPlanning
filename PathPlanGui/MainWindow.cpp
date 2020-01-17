@@ -6,6 +6,7 @@
 
 #include "sojasystem.h"
 #include "spjaSystem.h"
+#include "esmDwellSequenceGen.h"
 
 #pragma execution_character_set("utf-8")
 //static constexpr<int> INTERVAL(10);
@@ -1509,11 +1510,10 @@ void PathPlanGui::save_Esm() {
 }
 void PathPlanGui::save_Emitter() {
 	int num = ui.tableWidget_Emitter->currentRow();
-	if (num + 1 > scenario.getAllEmitter().size()) {
-		sce::Emitter new_data(ui.tableWidget_Emitter->item(num, 0)->text().toStdString());
+	if (num + 1 > scenario.getAllEmitter().size()) { /*末尾新添加一行数据*/
+		sce::Emitter new_data(ui.tableWidget_Emitter->item(num, 0)->text().toStdString());//获取新添加Emitter的name
 		scenario.addEmitter(make_shared<sce::Emitter>(new_data));
 		QMessageBox::about(this, tr("Tip"), tr("Add Emitter successfully"));
-
 		QDomElement root = dom.documentElement();
 		QDomElement ver = dom.createElement("Emitter");
 		QDomElement third_1 = dom.createElement("Name");
@@ -1522,8 +1522,11 @@ void PathPlanGui::save_Emitter() {
 		ver.appendChild(third_1);
 		root.appendChild(ver);
 	}
-	else {
+	else {/*修改是数据*/
 		scenario.getAllEmitter()[num]->setName(ui.tableWidget_Emitter->item(num, 0)->text().toStdString());
+		scenario.getAllEmitter()[num]->setradarMSR(ui.tableWidget_Emitter->item(num, 1)->text().toDouble());
+		scenario.getAllEmitter()[num]->setradarDangerValue(ui.tableWidget_Emitter->item(num, 2)->text().toDouble());
+		scenario.getAllEmitter()[num]->setTaoScan(ui.tableWidget_Emitter->item(num, 3)->text().toDouble());
 		QMessageBox::about(this, tr("Tip"), tr("Save Emitter successfully"));
 		QDomNodeList list = dom.elementsByTagName("Emitter");
 		int flag = 0;
@@ -2800,14 +2803,14 @@ void PathPlanGui::add_Emitter() {
 	ui.tableWidget_Emitter->insertRow(row_count);//添加新的一行
 	QPushButton *but = new QPushButton();
 	but->setText("View");
-	ui.tableWidget_Emitter->setCellWidget(row_count, 3, but);
+	ui.tableWidget_Emitter->setCellWidget(row_count, 4, but);
 	connect(but, SIGNAL(clicked()), this, SLOT(show_rada()));
 
 	QPointer<QPushButton> save(new QPushButton("Save"));
-	ui.tableWidget_Emitter->setCellWidget(row_count, 4, save);
+	ui.tableWidget_Emitter->setCellWidget(row_count, 5, save);
 	connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
 	QPointer<QPushButton> del(new QPushButton("Del"));
-	ui.tableWidget_Emitter->setCellWidget(row_count, 5, del);
+	ui.tableWidget_Emitter->setCellWidget(row_count, 6, del);
 	connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
 	
 }
@@ -3421,8 +3424,12 @@ void PathPlanGui::run_algorithm()
 
 			scenario.addRoute(route);
 			qDebug() << "Support OwnPlatform route planning completed!";
-			soj(op_index,route);
-			qDebug() << "Soj strategy generation completed!";
+			if(ui.ecmsojchkbox->checkState()==Qt::Checked){
+				soj(op_index, route);
+				qDebug() << "Soj strategy generation completed!";
+			}
+			
+			
 		}
 		else if (scenario.getAllOwnPlatform()[op_index]->getMission().getMissionType() == sce::MissionType::STRIKE)
 		{
@@ -3861,14 +3868,15 @@ void PathPlanGui::show_Emitter_data()
 		ui.tableWidget_Emitter->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(scenario.getAllEmitter()[i]->getName())));
 		ui.tableWidget_Emitter->setItem(i, 1, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarMSR(), 'f', 2)));
 		ui.tableWidget_Emitter->setItem(i, 2, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getradarDangerValue(), 'f', 2)));
+		ui.tableWidget_Emitter->setItem(i, 3, new QTableWidgetItem(QString::number(scenario.getAllEmitter()[i]->getTaoScan(), 'f', 2)));
 		QPointer<QPushButton> btn(new QPushButton("View"));
-		ui.tableWidget_Emitter->setCellWidget(i, 3, btn);
+		ui.tableWidget_Emitter->setCellWidget(i, 4, btn);
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_rada()));
-		ui.tableWidget_Emitter->setCellWidget(i, 4, new QPushButton());
+		ui.tableWidget_Emitter->setCellWidget(i, 5, new QPushButton());
 		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 4));
 		save->setText("Save");
 		connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
-		ui.tableWidget_Emitter->setCellWidget(i, 5, new QPushButton());
+		ui.tableWidget_Emitter->setCellWidget(i, 6, new QPushButton());
 		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 5));
 		del->setText("Del");
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
@@ -4957,12 +4965,12 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 
 	//根据关联关系表，找到支援平台携带的ECM设备信息
 	vector<double> jammerERP_V;
-	double thera, jammerCovRange;
+	double theta, jammerCovRange;
 	for (auto iter_o : scenario.getAllOwnPlatformEcmRelation())
 	{
 		if (iter_o.getOwnPlatformName() == scenario.getAllOwnPlatform()[OwnPlatformIndex]->getName())
 		{
-			thera=iter_o.getEcm()->getjammerChannel();//扇角
+			theta=iter_o.getEcm()->getjammerChannel();//扇角
 			jammerCovRange = iter_o.getEcm()->getjammerCoVRange();//有效作用半径
 			break;
 		}
@@ -4984,7 +4992,7 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 			if (distance<jammerCovRange)
 			{
 				V_angle = acos((lastNode - preNode)*(preNode - tmpSite(*it)) / ((lastNode - preNode).norm()*distance))*180.0 / PI;
-				if (V_angle<thera)
+				if (V_angle<theta)
 				{
 					isCovered = true;
 				}
@@ -5081,6 +5089,8 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		ecmStraSection.setTechName(sce::Tech(tech));
 		ecmStrategy.addSection(std::make_shared<sce::EcmStrategySection>(ecmStraSection));
 
+		qDebug() << "ECM Strategy genarating....";
+
 		std::cout << "The value of jammingAllocation matrix is:" << std::endl;
 		std::cout << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离\n" << std::endl;
 		 
@@ -5093,7 +5103,7 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		delete jammingAllocation_pt;
 	}
 	scenario.addEcmStrategy(std::make_shared<sce::EcmStrategy>(ecmStrategy));
-	
+	qDebug() << "ECM Startegy genaration completely！";
 	sojaSystemTerminate();
 	mclTerminateApplication();
 
@@ -5190,6 +5200,165 @@ void PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
 	spjaSystemTerminate();
 	mclTerminateApplication();
 }
+
+void PathPlanGui::esm(size_t OwnPlatformIndex, sce::Route_ptr route)
+{
+	//初始化MATLAB函数支持调用
+	mclmcrInitialize();
+	if (!mclInitializeApplication(NULL, 0)) return;
+	if (!esmDwellSequenceGenInitialize()) return;
+
+	//Demo:ESM实例化
+	sce::Esm_ptr esm_ptr;
+	for (auto iter : scenario.getAllOwnPlatformEsmRelation())
+	{
+		if (scenario.getAllOwnPlatform()[OwnPlatformIndex]->getName() == iter.getOwnPlatformName())
+		{
+			esm_ptr=iter.getEsm();
+			break;
+		}
+	}
+	
+	mwArray esmStartFreq(1, 1, mxDOUBLE_CLASS, mxREAL);//sce::RfConvmin 固定1
+	mwArray esmEndFreq(1, 1, mxDOUBLE_CLASS, mxREAL);//sce::RfCovmax 固定1
+	mwArray esmStepFreq(1, 1, mxDOUBLE_CLASS, mxREAL);//sce::Tuning_Step 固定1
+	mwArray esmInstBand(1, 1, mxDOUBLE_CLASS, mxREAL);//Dwell_Freq_resolution
+	mwArray esmMinDwellTime(1, 1, mxDOUBLE_CLASS, mxREAL);//用户输入 默认0.01
+
+	//初始化储存空间
+	vector<double> esmStartFreq_V { esm_ptr->getRfCovMin() };
+	vector<double> esmEndFreq_V { esm_ptr->getRfCovMax() };
+	vector<double> esmStepFreq_V { esm_ptr->getTuningStep() };
+	vector<double> esmInstBand_V { esm_ptr->getDwellFreqResolution() };
+	vector<double> esmMinDwellTime_V { esm_ptr->getesmMinDwellTime() };
+
+
+	mwArray nEmitter(1, 1, mxDOUBLE_CLASS, mxREAL);//计算可探测到的Emitter数量
+	mwArray freqStart(1, 2, mxDOUBLE_CLASS, mxREAL);//sce::Rfmin Emitter参数
+	mwArray freqEnd(1, 2, mxDOUBLE_CLASS, mxREAL);//sce::Rfmax Emitter参数
+	mwArray tScan(1, 2, mxDOUBLE_CLASS, mxREAL);//sce::Spmax Emitter参数
+	mwArray taoScan(1, 2, mxDOUBLE_CLASS, mxREAL);//用户输入
+	mwArray taoDwell(1, 2, mxDOUBLE_CLASS, mxREAL);//sce::Num_Pulses_Acquisition*sce::Primax
+	mwArray pInterceptDesired(1, 2, mxDOUBLE_CLASS, mxREAL);//用户输入
+	mwArray tInterceptDesired(1, 2, mxDOUBLE_CLASS, mxREAL);//用户输入
+	
+	//根据关联关系表，找到攻击平台的覆盖的辐射源
+	for (size_t iter = 0; iter < route->getAllWayPoints().size() - 1; ++iter)
+	{
+		de::Node preNode(route->getAllWayPoints()[iter].getLongitude(), route->getAllWayPoints()[iter].getLatitude(), route->getAllWayPoints()[iter].getAltitude());
+		de::Node lastNode(route->getAllWayPoints()[iter + 1].getLongitude(), route->getAllWayPoints()[iter + 1].getLatitude(), route->getAllWayPoints()[iter + 1].getAltitude());
+
+		sce::EmittersVector emitters;
+		de::Node tmpSite;
+		
+		double distance, EmitterPower;
+		double Pmin = esm_ptr->getPmin();
+		bool isCovered = false;
+
+		//判断辐射源是否在ESM设备工作半径内
+		//for (auto it : scenario.getAllSite())
+		//{	
+		double Aeff = esm_ptr->getAeff();
+		//根据Site——Emitter对应关系获取的radar参数
+		for (auto iterS : scenario.getAllSite())
+		{
+			distance = (preNode - tmpSite(*iterS)).norm();
+			for (auto iterE : scenario.SiteEmitterRelation(iterS))
+				{
+					//获取每个辐射源各RadarMode中ERP有效值的最大值
+					vector<double> radarERP_temp;
+					assert(iterE->getAllPtr2RadarModes().size()>0);
+					if (iterE->getAllPtr2RadarModes().size() <= 0)
+					{
+						radarERP_temp.push_back(0);
+					}
+					else
+					{
+						for (auto it : iterE->getAllPtr2RadarModes())
+						{
+							radarERP_temp.push_back((it->getErp().getErpMax() + it->getErp().getErpMin()) / 2);
+						}
+					}
+					double rERP = *std::max_element(radarERP_temp.cbegin(), radarERP_temp.cend());
+					EmitterPower = rERP / (4 * PI*((preNode - tmpSite(*iterS)).norm())*Aeff);
+					if (EmitterPower > Pmin)
+					{
+						isCovered = true;
+					}
+					if (isCovered)
+					{
+						emitters.push_back(iterE);
+					}
+				}
+		}
+
+		vector<double> nEmitter_V{ static_cast<double>(emitters.size()) };//辐射源数量等于序列中元素的个数
+
+		vector<double> freqStart_V;
+		vector<double> freqEnd_V;
+		vector<double> tScan_V;
+		vector<double> taoScan_V;
+		vector<double> taoDwell_V;//taoDwell计算如下sce::Num_Pulses_Acquisition*sce::Primax
+		vector<double> pInterceptDesired_V;
+		vector<double> tInterceptDesired_V;
+
+		//抓取ESM工作半径内辐射源参数并调用ESM策略生成算法
+		for (auto iterEs:emitters)
+		{	
+			freqStart_V.push_back(iterEs->getPtr2RadarMode(0)->getRf().getRfMin());
+			freqEnd_V.push_back(iterEs->getPtr2RadarMode(0)->getRf().getRfMax());
+			tScan_V.push_back(iterEs->getPtr2RadarMode(0)->getScan().getScanMax());
+			taoScan_V.push_back(iterEs->getTaoScan());
+			taoDwell_V.push_back(esm_ptr->getNumPulsesAcquisition()* (iterEs->getPtr2RadarMode(0)->getPri().getPriMax()));
+			pInterceptDesired_V.push_back(0.9);
+			tInterceptDesired_V.push_back(0.9);
+		}
+
+		esmStartFreq.SetData(esmStartFreq_V.data(), 1);
+		esmEndFreq.SetData(esmEndFreq_V.data(), 1);
+		esmStepFreq.SetData(esmStepFreq_V.data(), 1);
+		esmInstBand.SetData(esmInstBand_V.data(), 1);
+		esmMinDwellTime.SetData(esmMinDwellTime_V.data(), 1);
+		nEmitter.SetData(nEmitter_V.data(), 1);
+		freqStart.SetData(freqStart_V.data(), 2);
+		freqEnd.SetData(freqEnd_V.data(), 2);
+		tScan.SetData(tScan_V.data(), 2);
+		taoScan.SetData(taoScan_V.data(), 2);
+		taoDwell.SetData(taoDwell_V.data(), 2);
+		pInterceptDesired.SetData(pInterceptDesired_V.data(), 2);
+		tInterceptDesired.SetData(tInterceptDesired_V.data(), 2);
+
+		mwArray dwellSequence;
+		mwArray pIntercept;
+
+		esmDwellSequenceGen(2, dwellSequence, pIntercept, esmStartFreq, esmEndFreq, esmStepFreq, esmInstBand, esmMinDwellTime,
+			nEmitter, freqStart, freqEnd, tScan, taoScan, taoDwell, pInterceptDesired, tInterceptDesired);
+
+		mwArray dims = dwellSequence.GetDimensions();
+		int row = dims.Get(1, 1);
+		int col = dims.Get(1, 2);
+
+		double *dwellSequence_pt;
+		dwellSequence_pt = new double[row*col];
+		dwellSequence.GetData(dwellSequence_pt, row*col);
+
+		std::cout << "The value of dwellSequence matrix is:" << std::endl;
+
+		for (int i = 0; i < row; i++)
+		{
+			printf("%.4f  %.4f  %.4e  %.4e\n", dwellSequence_pt[i], dwellSequence_pt[row + i],
+				dwellSequence_pt[2 * row + i], dwellSequence_pt[3 * row + i]);
+		}
+
+		delete dwellSequence_pt;
+
+		esmDwellSequenceGenTerminate();
+		mclTerminateApplication();
+	}
+}
+
+
+
 
 void PathPlanGui::onStatusInfo(QtMsgType type, QString msg)
 {

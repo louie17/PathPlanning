@@ -194,6 +194,8 @@ public:
 
 	void soj(size_t OwnPlatformIndex, sce::Route_ptr route);
 	void spj(size_t OwnPlatformIndex, sce::Route_ptr route);
+	//modified by Q
+	void esm(size_t OwnPlatformIndex, sce::Route_ptr route);
 	
 signals:
 	void go_next();//отй╬обр╩рЁ
