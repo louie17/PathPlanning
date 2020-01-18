@@ -2694,7 +2694,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_27">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_26">
+           <layout class="QHBoxLayout" name="horizontalLayout_28">
             <item>
              <widget class="QTabWidget" name="tabWidget">
               <property name="font">
@@ -3216,41 +3216,114 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_SOJStra_Name"/>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="ecmsojchkbox">
-                <property name="text">
-                 <string>ECM:SOJ</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="ecmspjchkbox">
-                <property name="text">
-                 <string>ECM:SPJ</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="esmspjchkbox">
-                <property name="text">
-                 <string>ESM:SPJ</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <spacer name="verticalSpacer_3">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>340</width>
-                  <height>35</height>
+                  <width>541</width>
+                  <height>23</height>
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_26">
+                <item>
+                 <spacer name="horizontalSpacer_21">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_5">
+                  <item row="2" column="2">
+                   <widget class="QLineEdit" name="lineEdit_ESMStra_Name">
+                    <property name="text">
+                     <string>Esm Strategy1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="checkBox_SPJ">
+                    <property name="text">
+                     <string>SPJ</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QLineEdit" name="lineEdit_SOJStra_Name">
+                    <property name="text">
+                     <string>SOJ Startegy1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="lineEdit_SPJStra_Name">
+                    <property name="text">
+                     <string>SPJ Strategy1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="checkBox_ESM">
+                    <property name="text">
+                     <string>ESM</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="checkBox_SOJ">
+                    <property name="text">
+                     <string>SOJ</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>ECM Strategy Name:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>ECM Strategy Name:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>ESM Strategy Name:</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_20">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -3463,7 +3536,7 @@
                    <widget class="QComboBox" name="comboBox_EcmSel"/>
                   </item>
                   <item row="1" column="0" alignment="Qt::AlignRight">
-                   <widget class="QCheckBox" name="checkBox_Esm">
+                   <widget class="QCheckBox" name="checkBox_Esm_Eva">
                     <property name="text">
                      <string>ESM:</string>
                     </property>
@@ -3608,7 +3681,7 @@
      <x>0</x>
      <y>0</y>
      <width>1144</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

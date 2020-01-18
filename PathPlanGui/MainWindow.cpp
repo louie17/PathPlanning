@@ -3401,7 +3401,8 @@ void PathPlanGui::run_algorithm()
 		{
 			de::Node startNode, endNode; startNode(mission_section[0]); endNode(mission_section[mission_section.size()-1]);
 
-			size_t time_section_size =((endNode - startNode).norm()/scenario.getAllOwnPlatform()[op_index]->getMaxSpeed())/INTERVAL;
+			size_t ts_tmp = static_cast<int>((endNode - startNode).norm() / scenario.getAllOwnPlatform()[op_index]->getMaxSpeed() / INTERVAL);
+			size_t time_section_size = (ts_tmp > 1 ) ? ts_tmp :1;
 
 			//sce::WayPoint wpoint(mission_section[0].getLongitude(), mission_section[0].getLatitude(), mission_section[0].getAltitude());
 			//wpoint.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
@@ -3424,11 +3425,18 @@ void PathPlanGui::run_algorithm()
 
 			scenario.addRoute(route);
 			qDebug() << "Support OwnPlatform route planning completed!";
-			if(ui.ecmsojchkbox->checkState()==Qt::Checked){
-				soj(op_index, route);
-				qDebug() << "Soj strategy generation completed!";
+			if(ui.checkBox_SOJ->checkState()==Qt::Checked )
+			{
+				if (soj(op_index, route) >= 0)
+				{
+					qDebug() << "Soj strategy generation completed!";
+				}
+				else
+				{
+					qDebug() << "Soj strategy generation failed!";
+				}
+				
 			}
-			
 			
 		}
 		else if (scenario.getAllOwnPlatform()[op_index]->getMission().getMissionType() == sce::MissionType::STRIKE)
@@ -3873,11 +3881,11 @@ void PathPlanGui::show_Emitter_data()
 		ui.tableWidget_Emitter->setCellWidget(i, 4, btn);
 		connect(btn, SIGNAL(clicked()), this, SLOT(show_rada()));
 		ui.tableWidget_Emitter->setCellWidget(i, 5, new QPushButton());
-		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 4));
+		QPushButton *save = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 5));
 		save->setText("Save");
 		connect(save, SIGNAL(clicked()), this, SLOT(save_Emitter()));
 		ui.tableWidget_Emitter->setCellWidget(i, 6, new QPushButton());
-		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 5));
+		QPushButton *del = qobject_cast<QPushButton*>(ui.tableWidget_Emitter->cellWidget(i, 6));
 		del->setText("Del");
 		connect(del, SIGNAL(clicked()), this, SLOT(del_Emitter()));
 	}
@@ -4957,11 +4965,11 @@ void PathPlanGui::show_OPRRs_data()
 	}
 }
 
-void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
+int PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 {
 	mclmcrInitialize();
-	if (!mclInitializeApplication(NULL, 0)) return ;
-	if (!sojaSystemInitialize()) return ;
+	if (!mclInitializeApplication(NULL, 0)) return -1;
+	if (!sojaSystemInitialize()) return -1;
 
 	//根据关联关系表，找到支援平台携带的ECM设备信息
 	vector<double> jammerERP_V;
@@ -4976,7 +4984,9 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		}
 	}
 
-	sce::EcmStrategy ecmStrategy(ui.lineEdit_SOJStra_Name->text().toString());
+	if (ui.checkBox_SOJ->checkState() == Qt::Checked && !ui.lineEdit_SOJStra_Name->text().isEmpty()) {
+		sce::EcmStrategy ecmStrategy(ui.lineEdit_SOJStra_Name->text().toStdString());
+	}
 	for (size_t iter = 0;iter< route->getAllWayPoints().size()-1;++iter)
 	{
 		de::Node preNode(route->getAllWayPoints()[iter].getLongitude(), route->getAllWayPoints()[iter].getLatitude(), route->getAllWayPoints()[iter].getAltitude());
@@ -5091,8 +5101,8 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 
 		qDebug() << "ECM Strategy genarating....";
 
-		std::cout << "The value of jammingAllocation matrix is:" << std::endl;
-		std::cout << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离\n" << std::endl;
+		qDebug() << "The value of jammingAllocation matrix is:" ;
+		qDebug() << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离\n";
 		 
 		for (int i = 0; i < col; i++)
 		{
@@ -5107,13 +5117,15 @@ void PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 	sojaSystemTerminate();
 	mclTerminateApplication();
 
+	return 0;
+
 }
 
-void PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
+int PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
 {
 	mclmcrInitialize();
-	if (!mclInitializeApplication(NULL, 0)) return ;
-	if (!spjaSystemInitialize()) return ;
+	if (!mclInitializeApplication(NULL, 0)) return -1;
+	if (!spjaSystemInitialize()) return -1;
 
 	double num = scenario.getAllEmitter().size();
 	mwArray radarIndex(1, num, mxDOUBLE_CLASS, mxREAL);
@@ -5199,14 +5211,15 @@ void PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
 
 	spjaSystemTerminate();
 	mclTerminateApplication();
+	return 0;
 }
 
-void PathPlanGui::esm(size_t OwnPlatformIndex, sce::Route_ptr route)
+int PathPlanGui::esm(size_t OwnPlatformIndex, sce::Route_ptr route)
 {
 	//初始化MATLAB函数支持调用
 	mclmcrInitialize();
-	if (!mclInitializeApplication(NULL, 0)) return;
-	if (!esmDwellSequenceGenInitialize()) return;
+	if (!mclInitializeApplication(NULL, 0)) return -1;
+	if (!esmDwellSequenceGenInitialize()) return -1;
 
 	//Demo:ESM实例化
 	sce::Esm_ptr esm_ptr;
@@ -5351,10 +5364,12 @@ void PathPlanGui::esm(size_t OwnPlatformIndex, sce::Route_ptr route)
 		}
 
 		delete dwellSequence_pt;
-
-		esmDwellSequenceGenTerminate();
-		mclTerminateApplication();
 	}
+
+	esmDwellSequenceGenTerminate();
+	mclTerminateApplication();
+
+	return 0;
 }
 
 

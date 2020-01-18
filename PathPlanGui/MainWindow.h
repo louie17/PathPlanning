@@ -192,10 +192,10 @@ public:
 	void show_OPRRs_data();
 //	QVector<MyTab*> vTab;
 
-	void soj(size_t OwnPlatformIndex, sce::Route_ptr route);
-	void spj(size_t OwnPlatformIndex, sce::Route_ptr route);
+	int soj(size_t OwnPlatformIndex, sce::Route_ptr route);
+	int spj(size_t OwnPlatformIndex, sce::Route_ptr route);
 	//modified by Q
-	void esm(size_t OwnPlatformIndex, sce::Route_ptr route);
+	int esm(size_t OwnPlatformIndex, sce::Route_ptr route);
 	
 signals:
 	void go_next();//œ‘ æœ¬“ª“≥
