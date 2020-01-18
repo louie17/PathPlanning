@@ -3515,13 +3515,34 @@ void PathPlanGui::run_algorithm()
 						}
 
 					}
-					//auto rt = std::make_shared<sce::Route>(route);
-					scenario.addRoute(route);
 					qDebug() << " A* complete";
+					scenario.addRoute(route);					
 
-					//RouteProb = markov_init(1, rt, swRelation, CofRada);
-					//isfinished = true;
-					//cout << RouteProb;
+					qDebug() << "Strike OwnPlatform route planning completed!";
+					if (ui.checkBox_SPJ->checkState() == Qt::Checked)
+					{
+						if (spj(op_index, route) >= 0)
+						{
+							qDebug() << "Spj strategy generation completed!";
+						}
+						else
+						{
+							qDebug() << "Spj strategy generation failed!";
+						}
+
+					}
+					if (ui.checkBox_ESM->checkState() == Qt::Checked)
+					{
+						if (esm(op_index, route) >= 0)
+						{
+							qDebug() << "Esm strategy generation completed!";
+						}
+						else
+						{
+							qDebug() << "Esm strategy generation failed!";
+						}
+
+					}
 
 				}
 			}
@@ -3560,10 +3581,34 @@ void PathPlanGui::run_algorithm()
 							route->addWayPoint(wp);
 						}
 					}
-
-					scenario.addRoute(route);
 					qDebug() << "DE complete!";
-					//MatrixXd stateprob = markov_init(1, route, swRelation, CofRada);
+					scenario.addRoute(route);
+					
+					qDebug() << "Strike OwnPlatform route planning completed!";
+					if (ui.checkBox_SPJ->checkState() == Qt::Checked)
+					{
+						if (spj(op_index, route) >= 0)
+						{
+							qDebug() << "Spj strategy generation completed!";
+						}
+						else
+						{
+							qDebug() << "Spj strategy generation failed!";
+						}
+
+					}
+					if (ui.checkBox_ESM->checkState() == Qt::Checked)
+					{
+						if (esm(op_index, route) >= 0)
+						{
+							qDebug() << "Esm strategy generation completed!";
+						}
+						else
+						{
+							qDebug() << "Esm strategy generation failed!";
+						}
+
+					}
 				}
 			}
 			//if (tab_index == 2) //choose PSO algorithm
@@ -5103,12 +5148,11 @@ int PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		qDebug() << "ECM Strategy genarating....";
 
 		qDebug() << "The value of jammingAllocation matrix is:" ;
-		qDebug() << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离\n";
+		qDebug() << "Radar Mode\tTech\tCovRange\n";
 		 
 		for (int i = 0; i < col; i++)
 		{
-			printf("%f  %f  %.2e\n", jammingAllocation_pt[i*row + 0], jammingAllocation_pt[i*row + 1],
-				jammingAllocation_pt[i*row + 2]);
+			qDebug() << jammingAllocation_pt[i*row + 0]<<"\t"<< jammingAllocation_pt[i*row + 1] << "\t" <<jammingAllocation_pt[i*row + 2]<<"\n";
 		}
 
 		delete jammingAllocation_pt;
@@ -5199,13 +5243,12 @@ int PathPlanGui::spj(size_t OwnPlatformIndex, sce::Route_ptr route)
 	double* jammingAllocation_pt = new double[row * col];
 	jammingAllocation.GetData(jammingAllocation_pt, row * col);
 
-	std::cout << "The value of jammingAllocation matrix is:" << std::endl;
-	std::cout << "被干扰的雷达工作模式	采用的干扰技术 	烧穿距离" << std::endl;
+	qDebug() << "The value of jammingAllocation matrix is:";
+	qDebug() <<  "Radar Mode\tTech\tCovRange\n";
 
 	for (int i = 0; i < col; i++)
 	{
-		printf("%f  %f  %.2e\n", jammingAllocation_pt[i * row + 0], jammingAllocation_pt[i * row + 1],
-			jammingAllocation_pt[i * row + 2]);
+		qDebug() <<jammingAllocation_pt[i * row + 0]<<"\t"<< jammingAllocation_pt[i * row + 1]<<"\t"<<jammingAllocation_pt[i * row + 2]<<"\n";
 	}
 
 	delete[] jammingAllocation_pt;
@@ -5356,12 +5399,11 @@ int PathPlanGui::esm(size_t OwnPlatformIndex, sce::Route_ptr route)
 		dwellSequence_pt = new double[row*col];
 		dwellSequence.GetData(dwellSequence_pt, row*col);
 
-		std::cout << "The value of dwellSequence matrix is:" << std::endl;
+		qDebug()<< "The value of dwellSequence matrix is:";
 
 		for (int i = 0; i < row; i++)
 		{
-			printf("%.4f  %.4f  %.4e  %.4e\n", dwellSequence_pt[i], dwellSequence_pt[row + i],
-				dwellSequence_pt[2 * row + i], dwellSequence_pt[3 * row + i]);
+			qDebug() << dwellSequence_pt[i]<<"\t"<< dwellSequence_pt[row + i]<<"\t"<<dwellSequence_pt[2 * row + i]<<"\t"<<dwellSequence_pt[3 * row + i]<<"\n";
 		}
 
 		delete dwellSequence_pt;
