@@ -4984,8 +4984,9 @@ int PathPlanGui::soj(size_t OwnPlatformIndex, sce::Route_ptr route)
 		}
 	}
 
+	sce::EcmStrategy ecmStrategy;
 	if (ui.checkBox_SOJ->checkState() == Qt::Checked && !ui.lineEdit_SOJStra_Name->text().isEmpty()) {
-		sce::EcmStrategy ecmStrategy(ui.lineEdit_SOJStra_Name->text().toStdString());
+		ecmStrategy.setName(ui.lineEdit_SOJStra_Name->text().toStdString());
 	}
 	for (size_t iter = 0;iter< route->getAllWayPoints().size()-1;++iter)
 	{
