@@ -2,8 +2,8 @@
 #include "MainWindow.h"
 #include "de_types.hpp"
 #include "DE_main.hpp"
-#include "A_STAR.h"
-
+#include "mainAstar.h"
+#include "CreateModel.h"
 #include "sojasystem.h"
 #include "spjaSystem.h"
 #include "esmDwellSequenceGen.h"
@@ -3455,8 +3455,9 @@ void PathPlanGui::run_algorithm()
 
 			//scenario.getAllOwnPlatform->at(0);
 
-			if (tab_index == 0) //choose a* algorithm
+			if (tab_index == 0)
 			{
+
 				float survice_w1 = ui.lineEdit_SurW->text().toFloat();
 				float end_w1 = ui.lineEdit_TarW->text().toFloat();
 				float StepLength1 = ui.lineEdit_StepL->text().toFloat();
@@ -3469,24 +3470,24 @@ void PathPlanGui::run_algorithm()
 
 				int ree = QMessageBox::information(this, "Tip", "Choose a* algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
 
-				QVector<Rada*> radav;
+				AS::VRada Radav;
 				for (auto x : swRelation)
 				{
 					auto site = x.first;
 					auto weapon_cov = x.second;
-					Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
-					radav.append(&Rada2);
+					AS::Rada Rada2(2, site->getLongitude(), site->getLatitude(), site->getAltitude(), weapon_cov, 1);
+					Radav.push_back(Rada2);
 				}
 
-				std::vector<sce::Point> mission_section1=mission_section;
-				//sce::Point p[3];
-				//for (int i = 0; i < 3; i++)
-				//{
-				//	p[i].setAltitude(1);
-				//	p[i].setLongitude(10 + i * 100);
-				//	p[i].setLatitude(20 + i * 50);
-				//	mission_section1.push_back(p[i]);
-				//}
+				std::vector<sce::Point> mission_section1;
+				/*		sce::Point p[3];
+				for (int i = 0; i < 3; i++)
+				{
+				p[i].setAltitude(1);
+				p[i].setLongitude(10 + i * 100);
+				p[i].setLatitude(20 + i * 50);
+				mission_section1.push_back(p[i]);
+				}*/
 
 				//sce::Route route;
 
@@ -3496,53 +3497,27 @@ void PathPlanGui::run_algorithm()
 				}
 				else {
 					qDebug() << "choice is  A*";
-					for (int i = 0; i < mission_section1.size() - 2; i++)
+					for (int i = 0; i < mission_section.size() - 2; i++)
 					{
-						APoint sp(mission_section1[i].getLongitude(), mission_section1[i].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-						APoint tp(mission_section1[i].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i].getAltitude(), 0, 0, 0, 0, 0);
-						APoint ep(mission_section1[i + 2].getLongitude(), mission_section1[i + 2].getLatitude(), mission_section1[i + 2].getAltitude(), 0, 0, 0, 0, 0);
-						Mission_G mg(1, mission_section1[i + 1].getLongitude(), mission_section1[i + 1].getLatitude(), mission_section1[i + 1].getAltitude(), 2, 0.25);
-						A_STAR a(sp, tp, ep, radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
+						AS::APoint sp(mission_section[i].getLongitude(), mission_section[i].getLatitude(), mission_section[i].getAltitude(), 0, 0, 0, 0, 0);
+						AS::APoint tp(mission_section[i + 1].getLongitude(), mission_section[i + 1].getLatitude(), mission_section[i + 1].getAltitude(), 0, 0, 0, 0, 0);
+						AS::APoint ep(mission_section[i + 2].getLongitude(), mission_section[i + 2].getLatitude(), mission_section[i + 2].getAltitude(), 0, 0, 0, 0, 0);
+						AS::Mission_G mg(1, mission_section[i + 1].getLongitude(), mission_section[i + 1].getLatitude(), mission_section[i + 1].getAltitude(), 0, 0);
+						auto ASroute = AS::Choose_Astar(sp, tp, ep, Radav, mg, e_w1, survice_w1, start_w1, end_w1, horizontal_corner1, verticality_corner1, hmin1, hmax1, StepLength1);
 
-						for (int i = 0; i < a.result_point.size(); i++)
+						for (int i = 0; i < ASroute.size(); i++)
 						{
-							sce::WayPoint wayPoint(i+2, a.result_point[i]->X, a.result_point[i]->Y, a.result_point[i]->Z);
-							wayPoint.setVelocity(scenario.getAllOwnPlatform()[op_index]->getMaxSpeed());
-							wayPoint.setAcceleration(0);
-							wayPoint.setTime(a.Calc_dist(a.result_point[i], a.result_point[i - 1]) / scenario.getAllOwnPlatform()[op_index]->getMaxSpeed() + (route->getAllWayPoints().cend() - 1)->getTime());
-							//wayPoint.setIndex(i+2);
-							route->addWayPoint(wayPoint);
+							route->addWayPoint(sce::WayPoint(i, ASroute[i]->X, ASroute[i]->Y, ASroute[i]->Z));
 						}
 
 					}
+					//auto rt = std::make_shared<sce::Route>(route);
+					scenario.addRoute(route);
 					qDebug() << " A* complete";
-					scenario.addRoute(route);					
 
-					qDebug() << "Strike OwnPlatform route planning completed!";
-					if (ui.checkBox_SPJ->checkState() == Qt::Checked)
-					{
-						if (spj(op_index, route) >= 0)
-						{
-							qDebug() << "Spj strategy generation completed!";
-						}
-						else
-						{
-							qDebug() << "Spj strategy generation failed!";
-						}
-
-					}
-					if (ui.checkBox_ESM->checkState() == Qt::Checked)
-					{
-						if (esm(op_index, route) >= 0)
-						{
-							qDebug() << "Esm strategy generation completed!";
-						}
-						else
-						{
-							qDebug() << "Esm strategy generation failed!";
-						}
-
-					}
+					auto RouteProb = markov_init(1, route, swRelation, CofRada);
+					isfinished = true;
+					cout << RouteProb;
 
 				}
 			}
@@ -3611,30 +3586,59 @@ void PathPlanGui::run_algorithm()
 					}
 				}
 			}
-			//if (tab_index == 2) //choose PSO algorithm
-			//{
-			//	double Swarm_Size = ui.lineEdit_50->text().toDouble();
-			//	double Loop_Couner = ui.lineEdit_51->text().toDouble();
-			//	double Search_Step = ui.lineEdit_57->text().toDouble();
-			//	double Eecute_Step = ui.lineEdit_58->text().toDouble();
-			//	double Step_Distance = ui.lineEdit_59->text().toDouble();
-			//	double Detect_Range = ui.lineEdit_61->text().toDouble();
-			//	double Pitch = ui.lineEdit_60->text().toDouble();
-			//	double Yaw = ui.lineEdit_62->text().toDouble();
-			//	double RefPath = ui.lineEdit_55->text().toDouble();
-			//	double OilCost = ui.lineEdit_53->text().toDouble();
-			//	double Missions = ui.lineEdit_56->text().toDouble();
-			//	double HightConstrain = ui.lineEdit_54->text().toDouble();
-			//	double SurvivalCost = ui.lineEdit_52->text().toDouble();
-			//	int ree = QMessageBox::information(this, "Tip", "Choose PSO algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
-			//	if (ree != 0)
-			//	{
-			//		return;
-			//	}
-			//	else {
-			//		qDebug() << "choice is PSO";
-			//	}
-			//}
+			if (tab_index == 2) //choose PSO algorithm
+			{
+				size_t MaxIt = ui.lineEdit_Popnum_2->text().toUInt();
+				size_t NP = ui.lineEdit_IniVnum_2->text().toUInt();
+				double W = ui.lineEdit_ENum_2->text().toDouble();
+				double C1 = ui.lineEdit_WF_2->text().toDouble();
+				double C2 = ui.lineEdit_CP_2->text().toDouble();
+				double alpha = ui.lineEdit_CP_3->text().toDouble();
+				double axis_max = ui.lineEdit_CP_4->text().toDouble();
+				double axis_min = ui.lineEdit_CP_5->text().toDouble();
+
+
+				PSO::VRada swrada;
+				for (auto x : swRelation)
+				{
+					auto site = x.first;
+					auto weapon_cov = x.second;
+					PSO::Rada r;
+					r.setPoint(PSO::Point(site->getLongitude(), site->getLatitude(), site->getAltitude()));
+					r.setR(weapon_cov);
+					swrada.push_back(r);
+				}
+
+
+				int ree = QMessageBox::information(this, "Tip", "Choose PSO algorithm ?", QStringLiteral("Yes"), QStringLiteral("No"));
+				if (ree != 0)
+				{
+					return;
+				}
+				else
+				{
+					size_t dim = 2;
+					double damp = 0.98;
+					qDebug() << "choice is PSO";
+					for (size_t i = 0; i <= target_size; ++i)
+					{
+
+						PSO::Point start(mission_section[i].getLongitude(), mission_section[i].getLatitude(), mission_section[i].getAltitude());
+						PSO::Point end(mission_section[i + 1].getLongitude(), mission_section[i + 1].getLatitude(), mission_section[i + 1].getAltitude());
+						auto route_section = init(start, end, swrada, axis_min, axis_max, axis_min, axis_max, axis_min, axis_max, dim,
+							MaxIt, NP, W, damp, C1, C2, alpha);
+
+						for (size_t i = 0; i < route_section.size(); i++)
+						{
+							route->addWayPoint(sce::WayPoint(i, route_section[i].getPointX(), route_section[i].getPointY(), route_section[i].getPointZ()));
+						}
+
+					}
+					scenario.addRoute(route);
+					qDebug() << "PSO complete!";
+					MatrixXd stateprob = markov_init(1, route, swRelation, CofRada);
+				}
+			}
 		}	
 	}
 }
